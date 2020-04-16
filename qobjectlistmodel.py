@@ -140,7 +140,7 @@ class QObjectListModel(QAbstractListModel):
 #        m_objects.move(from, to);
 #        endMoveRows();
     
-    def removeAt(self,i, count):
+    def removeAt(self,i, count = 1):
 #        beginRemoveRows(QModelIndex(), i, i + count - 1);
 #        for (int j = 0; j < count; ++j)
 #            m_objects.removeAt(i);

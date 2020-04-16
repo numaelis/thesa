@@ -1,0 +1,21 @@
+module thesatools
+
+StackDesktop 1.0 StackDesktop.qml
+StackSubDesktop 1.0 StackSubDesktop.qml
+TabDesktop 1.0 TabDesktop.qml
+ButtonAwesone 1.0 ButtonAwesone.qml
+Calendar 1.0 Calendar.qml
+FieldCalendar 1.0 FieldCalendar.qml
+FieldDocument 1.0 FieldDocument.qml
+InputAreaCube 1.0 InputAreaCube.qml
+InputCalendarCube 1.0 InputCalendarCube.qml
+InputComboBoxCube 1.0 InputComboBoxCube.qml
+InputDocumentCube 1.0 InputDocumentCube.qml
+InputDocumentHorizontal 1.0 InputDocumentHorizontal.qml
+InputLabelCube 1.0 InputLabelCube.qml
+InputLabelHorizontal 1.0 InputLabelHorizontal.qml
+ListViewEditable 1.0 ListViewEditable.qml
+MessageLib 1.0 messages.js
+Messages 1.0 Messages.qml
+MessagesLog 1.0 MessagesLog.qml
+MiniButton 1.0 MiniButton.qml
