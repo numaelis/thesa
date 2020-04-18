@@ -176,8 +176,8 @@ class QJsonNetwork(QObject):
         self.mhost=host
         self.mdbase=dbase
         self.mport=port
-        url = "http://"+host+":"+port+"/"+dbase+"/"
-        self.urlServer=QUrl(url)#//"http://localhost:8000/tryton50db/"
+        url = host+":"+port+"/"+dbase+"/"
+        self.urlServer=QUrl(url)
     
         self.token.clear()
         self.boolConnect=False
