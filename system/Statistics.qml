@@ -70,10 +70,18 @@ TabDesktop {
                 '11':0,
                 '12':0
             }
+            if(resultArray.length==0){
+                MessageLib.showMessage(qsTr("there were no sales this year"), mainroot);
+            }
 
             for(var i=0,len=resultArray.length;i<len;i++){
                 record = resultArray[i];
-                mk=record["sale.sale_date"].month.toString();
+                if(record.hasOwnProperty("sale.")){
+                    mk=record["sale."]["sale_date"].month.toString();
+                }else{
+                    mk=record["sale.sale_date"].month.toString();
+                }
+
                 if(objectQuantyMonth.hasOwnProperty(mk)){
                     objectQuantyMonth[mk]=objectQuantyMonth[mk]+record.quantity;
                 }

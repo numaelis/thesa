@@ -35,11 +35,24 @@ TabDesktop {
 
     function selectProduct(mid){
         boolBlocking=true;
-        var data= QJsonNetworkQml.callDirect("mpidproduct","model.product.template.search_read",
-                                             [[['id', '=', mid]],{}]);
+        var data= QJsonNetworkQml.callDirect("mpidproduct","model.product.template.read",
+                                                     [
+                                                         [mid],["cost_price","list_price"],preferences
+                                                     ]);
         if(data.data!=="error"){
-            var resultObject = data.data.result[0];
-            showData(resultObject.cost_price.decimal, resultObject.list_price.decimal);
+            if(data.data.result.length>0){
+                var resultObject = data.data.result[0];
+                var costp=0;
+                var listp=0;
+                if(resultObject.hasOwnProperty("cost_price")){
+                    costp=resultObject.cost_price.decimal;
+                }
+                if(resultObject.hasOwnProperty("list_price")){
+                    listp=resultObject.list_price.decimal;
+                }
+
+                showData(costp, listp);
+            }
         }else{
             showData("","");
         }
