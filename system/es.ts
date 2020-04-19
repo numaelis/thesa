@@ -79,5 +79,9 @@
         <source>product sales statistics per year</source>
         <translation>estadisticas por año de ventas de productos</translation>
     </message>
+    <message>
+        <source>there were no sales this year</source>
+        <translation>no hay ventas en este año</translation>
+    </message>
 </context>
 </TS>

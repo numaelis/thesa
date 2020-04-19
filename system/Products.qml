@@ -34,7 +34,7 @@ TabDesktop {
     }
 
     function selectProduct(mid){
-        boolBlocking=true;
+        openBusy();
         var data= QJsonNetworkQml.callDirect("mpidproduct","model.product.template.read",
                                                      [
                                                          [mid],["cost_price","list_price"],preferences
@@ -57,7 +57,7 @@ TabDesktop {
             showData("","");
         }
 
-        timerBlockingFalse.start();
+        closeBusy();
     }
     function showData(cost, list){
         if(boolShortWidth135){
