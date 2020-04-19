@@ -13,7 +13,7 @@ __version__ = "1.0"
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
-from PySide2.QtCore import QObject, Slot
+from PySide2.QtCore import QObject, Slot, QJsonArray
 #from PySide2.QtQml import QQmlApplicationEngine
 from qjsonmodel import ProxyModelJson, ModelJson
 #from qjsonnetwork import QJsonNetwork
@@ -60,6 +60,7 @@ class ModelManager(QObject):
     def deleteModels(self):
         for obj in self.m_listModel:
             obj.clear()
+            obj.setFields(QJsonArray())
             self.m_listModelLast.append(obj)
         
         for bj in self.m_listProxy:
