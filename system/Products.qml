@@ -72,7 +72,7 @@ TabDesktop {
             dia_pricepur.text=qsTr("cost price:")+" $"+formatCentUp(cost);
             dia_pricesale.text=qsTr("list price:")+" $"+formatCentUp(list);
         }else{
-            pricepur.text=qsTr("cost price name:")+" $"+formatCentUp(cost);
+            pricepur.text=qsTr("cost price:")+" $"+formatCentUp(cost);
             pricesale.text=qsTr("list price:")+" $"+formatCentUp(list);
         }
     }

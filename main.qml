@@ -443,12 +443,14 @@ ApplicationWindow {
     }
 
     function closeSession(){
+
         boolLogin=false;
         boolSession=false;
         bool403=false;
         bool401=false;
         psignature="";
         luser="";
+        openBusy();
         barroot.currentIndex=-1;
         barroot.deleteTabs();
         if(boolDrawer){
@@ -470,6 +472,7 @@ ApplicationWindow {
         };
         QJsonNetworkQml.call("desconect","common.db.logout",
                              []);
+        closeBusy();
     }
 
     function  jsonNetSignalResponse(pid, option, data){
