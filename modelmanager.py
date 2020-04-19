@@ -49,28 +49,30 @@ class ModelManager(QObject):
         i=0
         idel=-1
         for obj in self.m_listProxyLast:
-            #obj.deleteLater()
-            if obj.objectName()==proxy:
-                obj.setObjectName("cero")
-                del obj
+            if obj.sourceModel().objectName()==model.lower():
                 idel=i
+                break
             i+=1
+            
         if idel!=-1:
+            obj = self.m_listProxyLast[idel]
             self.m_listProxyLast.pop(idel)
+            del obj
+            
         i=0
         idel=-1
-        
         for obj in self.m_listModelLast:
             #obj.deleteLater()
-            if obj.objectName()==model:
-                obj.setObjectName("cero")
-                del obj
+            if obj.objectName()==model.lower():
                 idel=i
+                break
             i+=1
         if idel!=-1:
+            obj = self.m_listModelLast[idel]
+            obj.setObjectName("cero")
             self.m_listModelLast.pop(idel)
-#        self.m_listProxyLast=[]
-#        self.m_listModelLast=[]
+            del obj
+
         print("iniciando model...")
     
     @Slot()    
@@ -79,7 +81,7 @@ class ModelManager(QObject):
             obj.prepareDeletion();
             self.m_listModelLast.append(obj)
         
-        for bj in self.m_listProxy:
+        for obj in self.m_listProxy:
             self.m_listProxyLast.append(obj)
         
         self.m_listModel=[]
