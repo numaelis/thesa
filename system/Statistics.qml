@@ -27,13 +27,19 @@ TabDesktop {
         ModelManagerQml.addModel("ModelProduct2","ProxyModelProduct2");
         //ModelProduct2.signalResponseData.connect(onsignalResponseData);
         ModelProduct2.setLanguage(planguage);
-        ModelProduct2.setSearch("model.product.template",
-                                [],
-                                1000,
-                                [['name', 'ASC']],
-                                ["rec_name", "name"]
-                                );
+        ModelProduct2.setModelMethod("model.product.template");
+        ModelProduct2.setDomain([]);
+        ModelProduct2.setMaxLimit(1000);
+        ModelProduct2.setOrder([['name', 'ASC']])
+        ModelProduct2.setFields(["rec_name", "name"]);
         ModelProduct2.setPreferences(preferences);
+
+//        ModelProduct2.setSearch("model.product.template",
+//                                [],
+//                                1000,
+//                                [['name', 'ASC']],
+//                                ["rec_name", "name"]
+//                                );
     }
 
     function selectProduct(mid){

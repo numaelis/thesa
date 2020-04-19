@@ -23,13 +23,20 @@ TabDesktop {
         ModelManagerQml.addModel("ModelProduct","ProxyModelProduct");
         //ModelProduct.signalResponseData.connect(onsignalResponseData);
         ModelProduct.setLanguage(planguage);
-        ModelProduct.setSearch("model.product.template",
-                               [],
-                               1000,
-                               [['name', 'ASC']],
-                               ["rec_name", "name"]
-                               );
+        ModelProduct.setModelMethod("model.product.template");
+        ModelProduct.setDomain([]);
+        ModelProduct.setMaxLimit(1000);
+        ModelProduct.setOrder([['name', 'ASC']])
+        ModelProduct.setFields(["rec_name", "name"]);
         ModelProduct.setPreferences(preferences);
+
+//        ModelProduct.setSearch("model.product.template",
+//                               [],
+//                               1000,
+//                               [['name', 'DESC']],
+//                               ["rec_name", "name"]
+//                               );
+
 
     }
 
@@ -65,7 +72,7 @@ TabDesktop {
             dia_pricepur.text=qsTr("cost price:")+" $"+formatCentUp(cost);
             dia_pricesale.text=qsTr("list price:")+" $"+formatCentUp(list);
         }else{
-            pricepur.text=qsTr("cost price:")+" $"+formatCentUp(cost);
+            pricepur.text=qsTr("cost price name:")+" $"+formatCentUp(cost);
             pricesale.text=qsTr("list price:")+" $"+formatCentUp(list);
         }
     }

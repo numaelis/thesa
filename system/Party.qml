@@ -25,13 +25,19 @@ TabDesktop {
         ModelManagerQml.addModel("ModelPerson","ProxyModelPerson");
         //ModelPerson.signalResponseData.connect(onsignalResponseData);
         ModelPerson.setLanguage(planguage);
-        ModelPerson.setSearch("model.party.party",
-                              [],
-                              1000,
-                              [['name', 'ASC']],
-                              ["rec_name", "name"]
-                              );
+        ModelPerson.setModelMethod("model.party.party");
+        ModelPerson.setDomain([]);
+        ModelPerson.setMaxLimit(1000);
+        ModelPerson.setOrder([['name', 'ASC']])
+        ModelPerson.setFields(["rec_name", "name"]);
         ModelPerson.setPreferences(preferences);
+
+//        ModelPerson.setSearch("model.party.party",
+//                              [],
+//                              1000,
+//                              [['name', 'ASC']],
+//                              ["rec_name", "name"]
+//                              );
     }
 
 
@@ -209,7 +215,7 @@ TabDesktop {
                 visible: !boolShortWidth135
                 ListView {
                     id: listViewPhone
-                    width: 150
+                    width: 300
                     height: parent.height
                     anchors.centerIn: parent
                     clip: true
@@ -249,7 +255,7 @@ TabDesktop {
             anchors.fill: parent
             ListView {
                 id: listViewPhone2
-                width: 150
+                width: 300
                 anchors.fill: parent
                 clip: true
                 ScrollBar.vertical: ScrollBar { }
