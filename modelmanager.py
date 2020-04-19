@@ -45,22 +45,38 @@ class ModelManager(QObject):
         self.m_listProxy.append(proxyjson)
         self.m_listProperty.append(model)
         self.m_listProperty.append(proxy)
-    
+        
+        i=0
+        idel=-1
         for obj in self.m_listProxyLast:
-            del obj
+            #obj.deleteLater()
+            if obj.objectName()==proxy:
+                obj.setObjectName("cero")
+                del obj
+                idel=i
+            i+=1
+        if idel!=-1:
+            self.m_listProxyLast.pop(idel)
+        i=0
+        idel=-1
         
         for obj in self.m_listModelLast:
-            del obj
-        
-        self.m_listProxyLast=[]
-        self.m_listModelLast=[]
+            #obj.deleteLater()
+            if obj.objectName()==model:
+                obj.setObjectName("cero")
+                del obj
+                idel=i
+            i+=1
+        if idel!=-1:
+            self.m_listModelLast.pop(idel)
+#        self.m_listProxyLast=[]
+#        self.m_listModelLast=[]
         print("iniciando model...")
     
     @Slot()    
     def deleteModels(self):
         for obj in self.m_listModel:
-            obj.clear()
-            obj.setFields(QJsonArray())
+            obj.prepareDeletion();
             self.m_listModelLast.append(obj)
         
         for bj in self.m_listProxy:

@@ -92,9 +92,9 @@ class ModelJson(QObjectListModel):
         #self.m_proxy = ProxyModelJson()
         self.m_order=""
         self.boolMetadata=False
-        self.m_fields=[]#QJsonArray
+        self.m_fields=QJsonArray()#[]#QJsonArray
         self.m_maxLimit=100
-        self.m_domain=[]#QJsonArray
+        self.m_domain=QJsonArray()#[]#QJsonArray
         self.m_orderTryton=QJsonArray()#[]#QJsonArray
         self.m_preferences={}
         self.m_qjsonnetwork = QJsonNetwork()
@@ -107,6 +107,10 @@ class ModelJson(QObjectListModel):
         
         #QHash<int,int> m_hasIndexOfId;
         #Q_INVOKABLE int indexisOfId (const int & in) const;
+    def prepareDeletion(self):
+        self.setFields(QJsonArray())
+        self.clear()
+        
     @Slot(int, result=int)
     def indexisOfId(self,mid):
         return self.m_hasIndexOfId.get(mid,-1)
