@@ -37,7 +37,7 @@ ApplicationWindow {
     property int maxHeightDialog: 500
 
     property bool boolMovil: false //textArea textfield for android = true
-    property bool boolqrclocal: false //for android = true
+    property bool boolqrclocal: false //for android = true and drawer=true
 
     property real miradius: 2
 
@@ -941,7 +941,7 @@ ApplicationWindow {
     Settings {
         id: setting
         //property string style: "Default"
-        property string host: "localhost"
+        property string host: "http://localhost"
         property string port: "8000"
         property string dbase: "tryton"
         property string user: "admin"
