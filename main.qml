@@ -128,24 +128,35 @@ ApplicationWindow {
                 font.family: myFontPrenta
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
-                // anchors{bottom: tob1.top;bottomMargin: -14;horizontalCenter: tob1.horizontalCenter}
-                //Layout.alignment: Qt.AlignLeft|Qt.AlignTop
-                //                Layout.fillWidth: true
-                //                Layout.fillHeight: true
-
             }
-
-            Label {
-                id:lTitleBarra
-                text: boolShortWidth?objtitle.icon:objtitle.icon+"  "+objtitle.name
-                elide: Label.ElideRight
-                font.pixelSize: 22
-                font.italic: false
-                font.family: fawesome.name
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
+            Label{
+                text:"  "
                 Layout.fillWidth: true
-                property var objtitle: {"name":"","icon":""}
+            }
+            RowLayout {
+                 id:lTitleBarra
+                 property var objtitle: {"name":"","icon":""}
+                 Label {
+                     id: t1
+                     width: paintedWidth
+                     text:lTitleBarra.objtitle.icon
+                     font.family: fawesome.name
+                     font.pixelSize: 22
+                     font.italic: false
+                     verticalAlignment: Label.AlignVCenter
+                 }
+                 Label {
+                     id: t2
+                     width: boolShortWidth?0:paintedWidth
+                     font.pixelSize: 22
+                     font.italic: false
+                     text: boolShortWidth?"":lTitleBarra.objtitle.name
+                     verticalAlignment: Label.AlignVCenter
+                 }
+            }
+            Label{
+                text:"  "
+                Layout.fillWidth: true
             }
             TabBar {
                 id: barroot
