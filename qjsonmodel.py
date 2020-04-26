@@ -80,9 +80,9 @@ class DataJson(QObject):
             self.metadataChanged.emit()
         
     id = Property(int, _id, notify= idChanged)
-    order = Property(str, _order, setOrder, notify= orderChanged)
+    order = Property(str, _order, setOrder, notify= orderChanged) #only order internal for proxy, default false
     json = Property(QJsonValue, _json, setJson, notify= jsonChanged)
-    metadata = Property(str, _metadata, setMetadata, notify= metadataChanged)
+    metadata = Property(str, _metadata, setMetadata, notify= metadataChanged)# search proxy memory, defaul false
     
 class ModelJson(QObjectListModel):
     def __init__(self, objname, parent = None):
@@ -105,14 +105,13 @@ class ModelJson(QObjectListModel):
         self.m_engine=None#QQmlApplicationEngine()
         self.autoBusy=True
         
-        #QHash<int,int> m_hasIndexOfId;
-        #Q_INVOKABLE int indexisOfId (const int & in) const;
     def prepareDeletion(self):
+        self.m_qjsonnetwork.signalResponse.disconnect(self.slotJsonConnect)
         self.setFields(QJsonArray())
         self.clear()
         
     @Slot(int, result=int)
-    def indexisOfId(self,mid):
+    def indexisOfId(self,mid):#el index del record en el modelo, no en el proxy
         return self.m_hasIndexOfId.get(mid,-1)
     
     @Slot(bool)
@@ -124,7 +123,7 @@ class ModelJson(QObjectListModel):
         self.m_preferences=preferences
         
     @Slot(str)
-    def setOrderInternal(self, order):
+    def setOrderInternal(self, order):# only proxy, defaul false, no es necesario con order tryton
         self.m_order = order
         if self.m_order!="":
             self.m_proxy.setSortData("order")
@@ -157,7 +156,7 @@ class ModelJson(QObjectListModel):
         self.m_orderTryton=ordertryton
         
     @Slot(QJsonArray)  
-    def setFields(self, fields):
+    def setFields(self, fields):# si es [], son todos
         self.m_fields=fields
         
     @Slot(str)
@@ -167,14 +166,14 @@ class ModelJson(QObjectListModel):
     @Slot()
     @Slot(QJsonArray)
     @Slot(QJsonArray, int)
-    def find(self, domain=QJsonArray(), maxlimit=-1):
+    def find(self, domain=QJsonArray(), maxlimit=-1):# metodo asincronico
         if domain!=QJsonArray():
             self.m_domain=domain#.toVariantList()
         self.initSearch(maxlimit)
 
     @Slot()
     @Slot(int)
-    def initSearch(self, maxlimit=-1):
+    def initSearch(self, maxlimit=-1):# metodo asincronico
         self.clear()
         self.m_hasIndexOfId={}
         self.nextSearch(maxlimit)
@@ -182,13 +181,10 @@ class ModelJson(QObjectListModel):
     def addResult(self, result, update=False):#QJsonArray
         jsonobj = {}
         mis = self._count()
-        #print("omega",result)
         for res in result:
             mid = int(res["id"])
             mapJsonDoc = res
             jsonobj = {}
-            #mid = result[res]["id"]
-            #mapJsonDoc = result[res]
             order = "" if self.m_order=="" else mapJsonDoc[self.m_order].strip()
             metadata=""
             #import locale
@@ -200,43 +196,37 @@ class ModelJson(QObjectListModel):
                 if self.boolMetadata:
                     doct = QJsonDocument(jsonobj)
                     metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
-                    #print(metadata)
-                    #data = str(mapJsonDoc[v]).strip()   #dict to str para metadata             
-                    #metadata+=data.lower()+" "
             else:
                 jsonobj=mapJsonDoc
                 if self.boolMetadata:
                     doct = QJsonDocument(mapJsonDoc)
                     metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
-#                    print(metadata)
-#                    for value in mapJsonDoc:
-#                        data = str(mapJsonDoc[value]).strip() 
-#                        metadata+=data.lower()+" "
-#                    print(metadata)
                 
             for v in self.m_fieldsFormatDecimal:
                 if mapJsonDoc.__contains__(v):
-                    jsonobj[v+"_format"] = self.m_locale.toString(float(mapJsonDoc[v]["decimal"]),'f',2)
+                    if mapJsonDoc[v]!= None:
+                        jsonobj[v+"_format"] = self.m_locale.toString(float(mapJsonDoc[v]["decimal"]),'f',2)
             for v in self.m_fieldsFormatDateTime:
                 mfield = v[0]
                 mformat = v[1]
                 if mapJsonDoc.__contains__(mfield):
                     mdateTime = QDateTime()
-                    if mapJsonDoc[mfield].__contains__("__class__"):
-                        if mapJsonDoc[mfield]["__class__"]=="date":
-                            mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
-                                                        mapJsonDoc[mfield]["month"],
-                                                        mapJsonDoc[mfield]["day"]),
-                                                  QTime())
-                        if mapJsonDoc[mfield]["__class__"]=="datetime":
-                            mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
-                                                        mapJsonDoc[mfield]["month"],
-                                                        mapJsonDoc[mfield]["day"]),
-                                                  QTime(mapJsonDoc[mfield]["hour"],
-                                                        mapJsonDoc[mfield]["minute"],
-                                                        mapJsonDoc[mfield]["second"]))
-        
-                        jsonobj[mfield+"_format"] =  mdateTime.toString(mformat)
+                    if mapJsonDoc[mfield] != None:
+                        if mapJsonDoc[mfield].__contains__("__class__"):
+                            if mapJsonDoc[mfield]["__class__"]=="date":
+                                mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
+                                                            mapJsonDoc[mfield]["month"],
+                                                            mapJsonDoc[mfield]["day"]),
+                                                      QTime())
+                            if mapJsonDoc[mfield]["__class__"]=="datetime":
+                                mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
+                                                            mapJsonDoc[mfield]["month"],
+                                                            mapJsonDoc[mfield]["day"]),
+                                                      QTime(mapJsonDoc[mfield]["hour"],
+                                                            mapJsonDoc[mfield]["minute"],
+                                                            mapJsonDoc[mfield]["second"]))
+            
+                            jsonobj[mfield+"_format"] =  mdateTime.toString(mformat)
                    
             
             if update==False:
@@ -250,15 +240,11 @@ class ModelJson(QObjectListModel):
                 if index!=-1:
                     self.at(index).setProperty("order",order)
                     self.at(index).setProperty("json",jsonobj)
-                    self.at(index).setProperty("metadata",metadata)
-                
-        
+                    self.at(index).setProperty("metadata",metadata)        
 
     @Slot()
     @Slot(int)
-    def nextSearch(self, maxlimit=-1):
-#        QJsonArray params;
-        #mc=self.count()
+    def nextSearch(self, maxlimit=-1):# metodo asincronico
         self.openBusy()
         limit = self.m_maxLimit
         if maxlimit !=-1:
@@ -270,12 +256,10 @@ class ModelJson(QObjectListModel):
         params.append(self.m_orderTryton)
         params.append(self.m_fields)
         params.append(self.m_preferences)
-        #params=[self.m_domain,self._count(),self.m_maxLimit,self.m_orderTryton,self.m_fields,{}]
-#        //sendOrder("pid2","model.account.move.search", [[],{'domain': [['state', '=', 'draft']]}]);
         self.m_qjsonnetwork.call("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
     
-    @Slot(QJsonArray)
-    def updateRecords(self, ids):
+    @Slot(QJsonArray)# metodo asincronico
+    def updateRecords(self, ids):#update record with tryton, 
         self.openBusy()
         params = QJsonArray()
         params.append(ids)
@@ -284,7 +268,7 @@ class ModelJson(QObjectListModel):
         self.m_qjsonnetwork.call("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
     
     @Slot(int)
-    def removeItem(self, mid):
+    def removeItem(self, mid):# elimina solo en memory, no afecta a base datos
         index = self.indexisOfId(mid)
         if index!=-1:
             self.m_hasIndexOfId.pop(mid)
@@ -292,6 +276,7 @@ class ModelJson(QObjectListModel):
     
     @Slot(QJsonArray)
     def addFieldFormatDecimal(self, fields):
+        #ModelArticulo.addFieldFormatDecimal(['total_amount']);
         self.m_fieldsFormatDecimal = []
         for v in fields.toVariantList():
             if v.__class__() == '':
@@ -299,6 +284,7 @@ class ModelJson(QObjectListModel):
 
     @Slot(QJsonArray)
     def addFieldFormatDateTime(self, fields):
+        #ModelArticulo.addFieldFormatDateTime([['invoice_date','dd/MM/yy'],['create_date','dd/MM/yy hh:mm:ss']]);
         self.m_fieldsFormatDateTime = []
         for v in fields.toVariantList():
             if v.__len__()==2:
@@ -338,8 +324,10 @@ class ModelJson(QObjectListModel):
                     self.signalResponseData.emit("updateRecords", 5, data)#puede ser un error 403 timeout
             else:
                 self.signalResponseData.emit("nextSearch", option, data)#dejo cruzar los datos
-    def setProxy(self, proxp):#=None):#(ProxyModelJson *proxp=nullptr);
+                
+    def setProxy(self, proxp):
         self.m_proxy = proxp
+        
     def setJsonConnect(self, jchac):#=None):#(QJsonNetwork *jchac=nullptr);
         self.m_qjsonnetwork = jchac;
         self.m_qjsonnetwork.signalResponse.connect(self.slotJsonConnect)
@@ -391,7 +379,6 @@ class ProxyModelJson(QSortFilterProxyModel):
 #        char* m_sortData;
         self.m_sortData = ""
         self.m_typeSort=0
-        self.numa = QObject()
         self.m_boolSignalReset= False
         self.m_reguexp = QRegularExpression()
         self.m_strexp=""
