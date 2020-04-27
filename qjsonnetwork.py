@@ -53,7 +53,7 @@ class QJsonNetwork(QObject):
         
         self.m_engine = QQmlApplicationEngine()
         
-        
+        self.reply=""
 #        connect(managerAccess, SIGNAL(finished(QNetworkReply*)),
 #            this, SLOT(replyFinishedOrder(QNetworkReply*)));
         self.managerAccess = QNetworkAccessManager(self)
@@ -144,7 +144,8 @@ class QJsonNetwork(QObject):
     @Slot("QNetworkReply*")
     def replyFinishedOrder(self, reply):
         if self.boolDirect==False:
-            self.processingData(reply.readAll(), reply)
+            data = reply.readAll()
+            self.processingData(data, reply)
             reply.deleteLater()
             
     @Slot("QNetworkReply*", "const QList<QSslError> &")        
@@ -153,9 +154,7 @@ class QJsonNetwork(QObject):
             print("ssl error", error.errorString())
 #        foreach (const QSslError &error, errors)
 #            fprintf(stderr, "SSL error: %s\n", qPrintable(error.errorString()));
-#    @Signal(str, int, "QJsonObject")
-#    def signalResponse(self, pid, option, data):
-#        pass
+
     signalResponse = Signal(str, int, "QJsonObject")
     
     def getId(self):
@@ -195,7 +194,6 @@ class QJsonNetwork(QObject):
     
     @Slot(str, str, QJsonArray)
     def call(self, pid, method, par):
-        #print("222",pid, method ,par)
         if self.boolRun==False:
             self.boolRun=True
             self.boolDirect=False
@@ -212,7 +210,7 @@ class QJsonNetwork(QObject):
     def initOrderConnect(self):
         bparams = self.prepareParams()
         request = self.prepareRequest()
-        reply = self.managerAccess.post(request, bparams)
+        self.reply = self.managerAccess.post(request, bparams)
 #        reply.readyRead.connect(self.slotReadyRead)
 #        reply.error[QNetworkReply.NetworkError].connect(self..slotError)
 #        reply.sslErrors.connect(self.slotSslErrors)
@@ -235,11 +233,9 @@ class QJsonNetwork(QObject):
             else:
                 self.tempCallFunctionArgs = QJsonArray()
         
-    
-    #    
             bparams = self.prepareParams()
             request = self.prepareRequest()
-    #    
+    
             reply = self.data_request(request, bparams)
             data = reply.readAll()##        QByteArray 
             parseError = QJsonParseError()
@@ -269,11 +265,7 @@ class QJsonNetwork(QObject):
             return resultObject
         
     def data_request(self, request, bparams):
-#        QNetworkReply* reply;
-        #reply = QNetworkReply()
-#        QEventLoop connection_loop;
         connection_loop = QEventLoop()
-#        connect(managerAccess, SIGNAL( finished( QNetworkReply* ) ), &connection_loop, SLOT( quit() ) );
         QObject.connect(self.managerAccess, SIGNAL("finished( QNetworkReply* )"), connection_loop, SLOT( "quit()" ))
         reply = self.managerAccess.post(request, bparams)
         connection_loop.exec_()#sleep
@@ -282,15 +274,12 @@ class QJsonNetwork(QObject):
         return reply
     
     def processingData(self, data, reply):
-        #print("hombeeee", data, reply)
         parseError = QJsonParseError()
         error = reply.error()
         
         errorString = reply.errorString()
         statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
         fraseStatusCode = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
-#        print("\n\t\they",reply,QNetworkRequest.RedirectionTargetAttribute,"\n\n")
-#        print("\n",dir(reply),"\n")
         redirectUrl = QUrl(reply.attribute(QNetworkRequest.RedirectionTargetAttribute))
         redirectUrlFix = self.redirectUrlComp(redirectUrl, self.urlServer)
         print(errorString, statusCode)
@@ -303,7 +292,6 @@ class QJsonNetwork(QObject):
     #    QJsonValue result=false; Bug QJsonValue(True)
         if self.mpid=="open@":
             resultObject["credentials"]=False
-        mboo=True
         if QNetworkReply.NoError==error:
                 if redirectUrlFix.isEmpty() == False:
                     if self.boolDirect==False:
@@ -330,10 +318,12 @@ class QJsonNetwork(QObject):
                                             resultObject["credentials"] = True
                             #print("3333", document.object())
                             result = document.object()
-  
                     resultObject["data"] = result
+#                    print(resultObject)
                     if self.boolDirect==False:
                         self.signalResponse.emit(self.mpid, 2, resultObject)#ok
+#                        reply.deleteLater()
+#                        del reply
                     else:
                         #and report
                         if document.isObject() and result.__contains__("error")==True:
@@ -395,7 +385,6 @@ class QJsonNetwork(QObject):
                     self.signalResponse.emit(self.mpid,7,{})
         self.processingData(data, reply)
         
-#    Q_INVOKABLE void runReport(const QString order, const QString method, const QJsonArray par);
     def prepareRequest(self):
         request = QNetworkRequest()
         request.setUrl(self.urlServer)

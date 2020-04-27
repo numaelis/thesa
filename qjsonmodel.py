@@ -104,9 +104,11 @@ class ModelJson(QObjectListModel):
         self.m_hasIndexOfId={}
         self.m_engine=None#QQmlApplicationEngine()
         self.autoBusy=True
+        self.boolSynchro=True# add synchronous call (calldirect), best performance!
         
     def prepareDeletion(self):
-        self.m_qjsonnetwork.signalResponse.disconnect(self.slotJsonConnect)
+        if self.boolSynchro == False:
+            self.m_qjsonnetwork.signalResponse.disconnect(self.slotJsonConnect)
         self.setFields(QJsonArray())
         self.clear()
         
@@ -256,7 +258,17 @@ class ModelJson(QObjectListModel):
         params.append(self.m_orderTryton)
         params.append(self.m_fields)
         params.append(self.m_preferences)
-        self.m_qjsonnetwork.call("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
+        if self.boolSynchro:
+            result = self.m_qjsonnetwork.callDirect("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
+            reValue = result["data"]
+            if reValue.__class__() == {}:
+               if reValue.__contains__("result"):
+                   if reValue["result"].__class__() == []:
+                       self.addResult(reValue["result"])
+                       self.closeBusy()
+            
+        else:
+            self.m_qjsonnetwork.call("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
     
     @Slot(QJsonArray)# metodo asincronico
     def updateRecords(self, ids):#update record with tryton, 
@@ -265,7 +277,17 @@ class ModelJson(QObjectListModel):
         params.append(ids)
         params.append(self.m_fields)
         params.append(self.m_preferences)
-        self.m_qjsonnetwork.call("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
+        if self.boolSynchro:
+            result = self.m_qjsonnetwork.callDirect("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
+            reValue = result["data"]
+            if reValue.__class__() == {}:
+               if reValue.__contains__("result"):
+                   if reValue["result"].__class__() == []:
+                       self.addResult(reValue["result"], True)
+                       self.closeBusy()
+            
+        else:
+            self.m_qjsonnetwork.call("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
     
     @Slot(int)
     def removeItem(self, mid):# elimina solo en memory, no afecta a base datos
@@ -291,23 +313,18 @@ class ModelJson(QObjectListModel):
                 self.m_fieldsFormatDateTime.append(v)
     
     signalResponse = Signal(str, int)
-#    @Signal(str, int)
-#    def signalResponse(self, pid, option):
-#        pass
-    
     signalResponseData = Signal(str, int, "QJsonObject")#QJsonObject = dict
-#    @Signal(str, int, dict)#QJsonObject = dict
-#    def signalResponseData(self, pid, option, jobj):
-#        pass
+
     
-    @Slot(str, int, dict)
+    @Slot(str, int, dict)# obsoleto mejor usar calldirect!
     def slotJsonConnect(self, pid, option, data):#cath datos de call, 
         if pid=="nextSearch"+self.objectName():
             if option==2:#result
                 dataObject = data["data"]
-                if dataObject.__contains__("result") and dataObject["result"].__class__() ==[]:
-                    self.addResult(dataObject["result"])
-                    self.signalResponseData.emit("nextSearch", option, {})# ok envio emit de confirmacion
+                if dataObject.__contains__("result"):
+                    if dataObject["result"].__class__() ==[]:
+                        self.addResult(dataObject["result"])
+                        self.signalResponseData.emit("nextSearch", option, {})# ok envio emit de confirmacion
                 else:
                     #print("la data",data)
                     self.signalResponseData.emit("nextSearch", 5, data)#puede ser un error 403 timeout
@@ -316,9 +333,10 @@ class ModelJson(QObjectListModel):
         if pid=="updateRecords"+self.objectName():
             if option==2:#result
                 dataObject = data["data"]
-                if dataObject.__contains__("result") and dataObject["result"].__class__() ==[]:
-                    self.addResult(dataObject["result"], True)
-                    self.signalResponseData.emit("updateRecords", option, {})# ok envio emit de confirmacion
+                if dataObject.__contains__("result"):
+                    if dataObject["result"].__class__() ==[]:
+                        self.addResult(dataObject["result"], True)
+                        self.signalResponseData.emit("updateRecords", option, {})# ok envio emit de confirmacion
                 else:
                     #print("la data",data)
                     self.signalResponseData.emit("updateRecords", 5, data)#puede ser un error 403 timeout
@@ -330,7 +348,11 @@ class ModelJson(QObjectListModel):
         
     def setJsonConnect(self, jchac):#=None):#(QJsonNetwork *jchac=nullptr);
         self.m_qjsonnetwork = jchac;
-        self.m_qjsonnetwork.signalResponse.connect(self.slotJsonConnect)
+        self.connectSlotJC()
+            
+    def connectSlotJC(self):
+        if self.boolSynchro==False:
+            self.m_qjsonnetwork.signalResponse.connect(self.slotJsonConnect)
 #        self.connect(self.m_qjsonnetwork, SIGNAL(signalResponse(QString,int,QJsonObject)),
 #                     self, SLOT(slotJsonConnect(QString,int,QJsonObject)));
     
@@ -343,9 +365,20 @@ class ModelJson(QObjectListModel):
                 root = self.m_engine.rootObjects()[0]
                 QMetaObject.invokeMethod(root, "openBusy")
     
-    @Slot(str)
+    def closeBusy(self):
+        if self.autoBusy:
+            if self.m_engine!=None:
+                root = self.m_engine.rootObjects()[0]
+                QMetaObject.invokeMethod(root, "closeBusy")
+    
+    @Slot(bool)
     def setAutoBusy(self, busy):
         self.autoBusy=busy
+    
+    @Slot(bool)
+    def setSynchro(self, syn):
+        self.boolSynchro=syn
+        self.connectSlotJC()
         
     def initProxy(self):
         if self.m_order!="":

@@ -784,6 +784,7 @@ ApplicationWindow {
         }
     }
     function openBusy(){
+        timerBlockingFalse.stop();
         boolBlocking=true;
     }
     function closeBusy(){
