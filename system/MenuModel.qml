@@ -11,4 +11,8 @@ ListModel {
         name: qsTr("test Party Call")
         icon: "\uf554"
     }
+    ListElement {
+        name: qsTr("test Formats")
+        icon: "\uf0c3"
+    }
 }

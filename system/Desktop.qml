@@ -33,4 +33,14 @@ StackDesktop {
 
     }
 
+    StackSubDesktop{
+
+        tabs: [{name: "", icon: ""}]
+
+        InvoicesTestFormats {
+
+        }
+
+    }
+
 }
