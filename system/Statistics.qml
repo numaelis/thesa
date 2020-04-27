@@ -114,7 +114,7 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelProduct2.find([["name","ilike","%"+ffind.text+"%"]]);//method asyncron
+            ModelProduct2.find([["name","ilike","%"+ffind.text+"%"]]);
         }else{
             ModelProduct2.find([[]]);
         }
@@ -206,9 +206,14 @@ TabDesktop {
                             cacheBuffer: 0
                             //onYChanged: {}
                             onContentYChanged: {
-                                if (contentY === contentHeight - height) {
-                                    ModelProduct2.nextSearch();//asyncron
+                                if (atYEnd){
+                                    if(parseFloat(contentY).toFixed(5) == contentHeight - height){
+                                       ModelProduct2.nextSearch();//syncron apartir de ahora
+                                    }
                                 }
+//                                if (contentY === contentHeight - height) {
+//                                    ModelProduct2.nextSearch();
+//                                }
                             }
                             delegate: ItemDelegate {
                                 id:idelepro
@@ -282,6 +287,7 @@ TabDesktop {
             }
         }
     }
+
     Dialog {
         id: dialog_stat_movil
         anchors.centerIn: parent

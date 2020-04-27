@@ -16,7 +16,7 @@ import thesatools 1.0
 TabDesktop {
     id:articulos
     onFirstTimeTab:{
-        ModelProduct.find([[]])
+        ModelProduct.find([[]]);//synchro apartir de ahora
     }
 
     Component.onCompleted: {
@@ -27,7 +27,7 @@ TabDesktop {
         ModelProduct.setDomain([]);
         ModelProduct.setMaxLimit(1000);
         ModelProduct.setOrder([['name', 'ASC']])
-        ModelProduct.setFields(["rec_name", "name"]);
+        ModelProduct.setFields([]);//["rec_name", "name"]);
         ModelProduct.setPreferences(preferences);
 
 //        ModelProduct.setSearch("model.product.template",
@@ -79,7 +79,7 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelProduct.find([["name","ilike","%"+ffind.text+"%"]]);//method asyncron
+            ModelProduct.find([["name","ilike","%"+ffind.text+"%"]]);
         }else{
             ModelProduct.find([[]]);
         }
@@ -162,9 +162,14 @@ TabDesktop {
                         model: ProxyModelProduct
                         cacheBuffer: 0
                         onContentYChanged: {
-                            if (contentY === contentHeight - height) {
-                                ModelProduct.nextSearch();
+                            if (atYEnd){
+                                if(parseFloat(contentY).toFixed(5) == contentHeight - height){
+                                   ModelProduct.nextSearch();
+                                }
                             }
+//                            if (contentY === contentHeight - height) {
+//                                ModelProduct.nextSearch();
+//                            }
                         }
                         delegate: ItemDelegate {
                             id:idelepro

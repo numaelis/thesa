@@ -27,7 +27,7 @@ TabDesktop {
         ModelPerson.setLanguage(planguage);
         ModelPerson.setModelMethod("model.party.party");
         ModelPerson.setDomain([]);
-        ModelPerson.setMaxLimit(1000);
+        ModelPerson.setMaxLimit(20);
         ModelPerson.setOrder([['name', 'ASC']])
         ModelPerson.setFields(["rec_name", "name"]);
         ModelPerson.setPreferences(preferences);
@@ -82,7 +82,7 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelPerson.find([["name","ilike","%"+ffind.text+"%"]]);//method asyncron
+            ModelPerson.find([["name","ilike","%"+ffind.text+"%"]]);// synchro apartir de ahora
         }else{
             ModelPerson.find([[]]);
         }
@@ -161,9 +161,14 @@ TabDesktop {
                             cacheBuffer: 0
                             //onYChanged: {}
                             onContentYChanged: {
-                                if (contentY === contentHeight - height) {
-                                    ModelPerson.nextSearch();//asyncron
+                                if (atYEnd){
+                                    if(parseFloat(contentY).toFixed(5) == contentHeight - height){
+                                        ModelPerson.nextSearch();
+                                    }
                                 }
+//                                if (contentY === contentHeight - height) {
+//                                    ModelPerson.nextSearch();
+//                                }
                             }
                             delegate: ItemDelegate {
                                 id:idelepro
