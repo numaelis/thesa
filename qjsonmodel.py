@@ -207,7 +207,12 @@ class ModelJson(QObjectListModel):
             for v in self.m_fieldsFormatDecimal:
                 if mapJsonDoc.__contains__(v):
                     if mapJsonDoc[v]!= None:
-                        jsonobj[v+"_format"] = self.m_locale.toString(float(mapJsonDoc[v]["decimal"]),'f',2)
+                        if mapJsonDoc[v].__contains__("decimal"):
+                            jsonobj[v+"_format"] = self.m_locale.toString(float(mapJsonDoc[v]["decimal"]),'f',2)
+                        else:
+                            jsonobj[v+"_format"] = ""
+                    else:
+                        jsonobj[v+"_format"] = ""
             for v in self.m_fieldsFormatDateTime:
                 mfield = v[0]
                 mformat = v[1]
@@ -229,7 +234,10 @@ class ModelJson(QObjectListModel):
                                                             mapJsonDoc[mfield]["second"]))
             
                             jsonobj[mfield+"_format"] =  mdateTime.toString(mformat)
-                   
+                        else:
+                            jsonobj[mfield+"_format"] = ""
+                    else:
+                        jsonobj[mfield+"_format"] = ""
             
             if update==False:
                 dataJson = DataJson(mid, order, jsonobj, metadata, self)
