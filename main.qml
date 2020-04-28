@@ -949,6 +949,15 @@ ApplicationWindow {
     function updateSystemNet(){
         SystemNet.rechargeNet(preferences);
     }
+    function _messageWarningPySide(){
+            //last call 403 function with arguments
+            //for PySide2 12, by bug no macro Q_ARG
+            messageWarning(argsFucntionLastCall[0]);
+            argsFucntionLastCall=[];//clear
+        }
+    function messageWarning(msg){
+        MessageLib.showMessageLog(msg,mainroot);
+    }
 
     Settings {
         id: setting
