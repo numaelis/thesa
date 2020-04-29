@@ -20,7 +20,7 @@ from systemnet import SystemNet
 
 import sys
 
-from PySide2.QtCore import Property, QUrl, QDir, QCoreApplication, Qt, QGenericArgument, QObject, QMetaObject, QJsonValue, QGenericReturnArgument, QSettings, QLocale
+from PySide2.QtCore import Property, QUrl, QDir, QCoreApplication, Qt, QGenericArgument, QObject, QMetaObject, QJsonValue, QGenericReturnArgument, QSettings, QLocale, Slot
 from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine#, QQuickStyle
@@ -29,11 +29,22 @@ from PySide2.QtWidgets import QMessageBox
 ThesaVersion = "1.0"
 
 engine_point=None
-last_message=""
+
+class ObjectMessaje(QObject):
+    def __init__(self, parent=None):
+        QObject.__init__(self, parent)
+        self.message = ""
+    @Slot(str)
+    def setMessage(self, msg):
+        self.message=msg
+    @Slot(result=str)
+    def getMessage(self):
+        return self.message
+mObjMsg = ObjectMessaje()
 
 def qt_message_handler(mode, context, message):
     global engine_point
-    global last_message
+    global mObjMsg
     if mode == QtCore.QtInfoMsg:
         mode = 'Info'
     elif mode == QtCore.QtWarningMsg:
@@ -41,7 +52,7 @@ def qt_message_handler(mode, context, message):
         if message.find(".qml")!=-1:
             root = engine_point.rootObjects()[0]
             QMetaObject.invokeMethod(root, "closeBusy")
-            if last_message!=message:
+            if mObjMsg.getMessage()!=message:
                 root.setProperty("argsFucntionLastCall",["warning:\n"+message])
                 QMetaObject.invokeMethod(root, "_messageWarningPySide")
     elif mode == QtCore.QtCriticalMsg:
@@ -50,7 +61,7 @@ def qt_message_handler(mode, context, message):
         mode = 'fatal'
     else:
         mode = 'Debug'
-    last_message=message
+    mObjMsg.setMessage(message)
     print("%s: %s (%s:%d, %s)" % (mode, message, context.file, context.line, context.file))
     
 if __name__ == '__main__':
@@ -80,6 +91,7 @@ if __name__ == '__main__':
 
     mDir=QDir.currentPath()
     
+    
     engine.rootContext().setContextProperty("QJsonNetworkQml", jchc)
     engine.rootContext().setContextProperty("ModelManagerQml", modelmanager)
     engine.rootContext().setContextProperty("SystemNet", systemnet)
@@ -90,7 +102,7 @@ if __name__ == '__main__':
     
     engine.rootContext().setContextProperty("DirParent", mDir)
     
-    engine.rootContext().setContextProperty("Last_message", last_message)
+    engine.rootContext().setContextProperty("ObjectMessageLast", mObjMsg)
 
     settings = QSettings()
     defaultLocale = settings.value("translate", "")

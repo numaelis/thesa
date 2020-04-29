@@ -784,7 +784,7 @@ ApplicationWindow {
         }
     }
     function openBusy(){
-        Last_message="";
+        ObjectMessageLast.setMessage("");
         timerBlockingFalse.stop();
         boolBlocking=true;
     }
