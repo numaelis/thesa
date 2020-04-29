@@ -15,8 +15,6 @@ __version__ = "1.0"
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
-
-
 from PySide2.QtCore import QObject, QJsonValue, Signal, Slot, Property, QLocale, QJsonArray, QJsonDocument, Qt, QDateTime, QDate, QTime
 from PySide2.QtCore import QSortFilterProxyModel, QModelIndex, QRegularExpression, QRegExp, QMetaObject
 from qobjectlistmodel import QObjectListModel
@@ -93,6 +91,7 @@ class ModelJson(QObjectListModel):
         self.m_order=""
         self.boolMetadata=False
         self.m_fields=QJsonArray()#[]#QJsonArray
+        self.m_fieldsPoint=[]#5.2up
         self.m_maxLimit=100
         self.m_domain=QJsonArray()#[]#QJsonArray
         self.m_orderTryton=QJsonArray()#[]#QJsonArray
@@ -138,7 +137,7 @@ class ModelJson(QObjectListModel):
         self.m_maxLimit = maxlimit
         self.m_domain=domain#.toVariantList()
         self.m_orderTryton=ordertryton#.toVariantList()
-        self.m_fields=fields#.toVariantList()
+        self.setFields(fields)
         self.m_model_method_search=model_method_search
         
     @Slot(str)  
@@ -160,6 +159,11 @@ class ModelJson(QObjectListModel):
     @Slot(QJsonArray)  
     def setFields(self, fields):# si es [], son todos
         self.m_fields=fields
+        self.m_fieldsPoint=[]
+        for f in self.m_fields.toVariantList():
+            if f.find(".")!=-1:
+                print("yes po")
+                self.m_fieldsPoint.append(f)
         
     @Slot(str)
     def setLanguage(self, language):
@@ -186,23 +190,30 @@ class ModelJson(QObjectListModel):
         for res in result:
             mid = int(res["id"])
             mapJsonDoc = res
+            print(res)
             jsonobj = {}
             order = "" if self.m_order=="" else mapJsonDoc[self.m_order].strip()
             metadata=""
             #import locale
             #locale.setlocale(locale.LC_ALL, '')
             #locale.currency(value,grouping=True)
-            if self.m_fields!= QJsonArray():
-                for v in self.m_fields.toVariantList():
-                    jsonobj[v] = mapJsonDoc[v]
-                if self.boolMetadata:
-                    doct = QJsonDocument(jsonobj)
-                    metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
-            else:
-                jsonobj=mapJsonDoc
-                if self.boolMetadata:
-                    doct = QJsonDocument(mapJsonDoc)
-                    metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
+            jsonobj=mapJsonDoc
+            if self.boolMetadata:
+                doct = QJsonDocument(mapJsonDoc)
+                metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
+                
+#            if self.m_fields!= QJsonArray():
+            if len(self.m_fieldsPoint)>0:
+                fieldsdoc = list(mapJsonDoc)
+                for fp in self.m_fieldsPoint:
+                    if fp not in fieldsdoc:
+                        lfp = fp.split(".")
+                        for li in range(len(lfp)-1):
+                            lfp[li]=lfp[li]+"."
+                        temp=jsonobj[lfp[0]]
+                        for c in lfp[1:]:
+                           temp = temp[c]
+                        jsonobj[fp] = temp
                 
             for v in self.m_fieldsFormatDecimal:
                 if mapJsonDoc.__contains__(v):
@@ -448,16 +459,6 @@ class ProxyModelJson(QSortFilterProxyModel):
         for item in lista:
             tem2+= "(?=.*"+item.strip()+")"
         return tem2
-#        QList<QString> lista = text.split(QRegularExpression("\\s+"));
-#        QString tem2="";
-#        //    for(int i=0,len=lista.length();i<len;++i){
-#        //        tem2+="(?=.*("+lista[i].trimmed()+"\\w*"+"))";
-#        //    }
-#        for(int i=0,len=lista.length();i<len;++i){
-#            tem2+="(?=.*"+lista[i].trimmed()+")";
-#        }
-#        //qDebug()<<"reNumaelis:"<<tem2;
-#        return tem2;
     
     @Slot(bool)
     def setAscendingOrder(self, bao):
@@ -484,11 +485,7 @@ class ProxyModelJson(QSortFilterProxyModel):
         #if l.__class__() == '':
 #        if self.isSortLocaleAware():
         return (l.property(self.m_sortData) < (r.property(self.m_sortData))) < 0
-#        else:
-#            return l.property(self.m_sortData).compare(r.property(self.m_sortData), self.sortCaseSensitivity()) < 0        
-#          int x = QString::compare("aUtO", "AuTo", Qt::CaseInsensitive);  // x == 0
-#          int y = QString::compare("auto", "Car", Qt::CaseSensitive);     // y > 0
-#          int z = QString::compare("auto", "Car", Qt::CaseInsensitive);   // z < 0
+
     def filterAcceptsRow(self, source_row, source_parent):
         if self.m_boolVacio:
             return True;
