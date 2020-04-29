@@ -162,7 +162,6 @@ class ModelJson(QObjectListModel):
         self.m_fieldsPoint=[]
         for f in self.m_fields.toVariantList():
             if f.find(".")!=-1:
-                print("yes po")
                 self.m_fieldsPoint.append(f)
         
     @Slot(str)
@@ -190,18 +189,13 @@ class ModelJson(QObjectListModel):
         for res in result:
             mid = int(res["id"])
             mapJsonDoc = res
-            print(res)
             jsonobj = {}
             order = "" if self.m_order=="" else mapJsonDoc[self.m_order].strip()
             metadata=""
-            #import locale
-            #locale.setlocale(locale.LC_ALL, '')
-            #locale.currency(value,grouping=True)
             jsonobj=mapJsonDoc
             if self.boolMetadata:
                 doct = QJsonDocument(mapJsonDoc)
                 metadata = doct.toJson(QJsonDocument.Compact).data().decode("utf-8")
-                
 #            if self.m_fields!= QJsonArray():
             if len(self.m_fieldsPoint)>0:
                 fieldsdoc = list(mapJsonDoc)
