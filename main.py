@@ -12,7 +12,6 @@ __maintainer__ = "Numael Garay"
 __email__ = "mantrixsoft@gmail.com"
 
 
-#from qobjectlistmodel import QObjectListModel
 from qjsonmodel import ProxyModelJson, ModelJson, DataJson
 from qjsonnetwork import QJsonNetwork
 from modelmanager import ModelManager
@@ -23,21 +22,18 @@ import sys
 
 from PySide2.QtCore import Property, QUrl, QDir, QCoreApplication, Qt, QGenericArgument, QObject, QMetaObject, QJsonValue, QGenericReturnArgument, QSettings, QLocale
 from PySide2 import QtCore
-#from PySide2.QtGui import QGuiApplication
 from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine#, QQuickStyle
 from PySide2.QtWidgets import QMessageBox
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QMessageBox>
-#include <QQuickStyle>
-#ThesaModule = False
+
 ThesaVersion = "1.0"
-#TrytonVersion = "4"
 
 engine_point=None
+last_message=""
+
 def qt_message_handler(mode, context, message):
     global engine_point
+    global last_message
     if mode == QtCore.QtInfoMsg:
         mode = 'Info'
     elif mode == QtCore.QtWarningMsg:
@@ -45,14 +41,16 @@ def qt_message_handler(mode, context, message):
         if message.find(".qml")!=-1:
             root = engine_point.rootObjects()[0]
             QMetaObject.invokeMethod(root, "closeBusy")
-            root.setProperty("argsFucntionLastCall",["warning:\n"+message])
-            QMetaObject.invokeMethod(root, "_messageWarningPySide")
+            if last_message!=message:
+                root.setProperty("argsFucntionLastCall",["warning:\n"+message])
+                QMetaObject.invokeMethod(root, "_messageWarningPySide")
     elif mode == QtCore.QtCriticalMsg:
         mode = 'critical'
     elif mode == QtCore.QtFatalMsg:
         mode = 'fatal'
     else:
         mode = 'Debug'
+    last_message=message
     print("%s: %s (%s:%d, %s)" % (mode, message, context.file, context.line, context.file))
     
 if __name__ == '__main__':
@@ -63,7 +61,6 @@ if __name__ == '__main__':
     sys_argv = sys.argv
     sys_argv += ['--style', 'material']
     app = QApplication(sys_argv)
-    #app = QGuiApplication(sys_argv)
     
     app.setOrganizationName("MantrixSoft")
     app.setApplicationName("thesa")
@@ -75,15 +72,12 @@ if __name__ == '__main__':
     
     jchc = QJsonNetwork(app)
     jchc.setEngine(engine)
-    #jchc.setVersionTryton(TrytonVersion)
     
     systemnet = SystemNet(jchc)
     modelmanager = ModelManager(jchc, engine, app)
     
     mtools = Tools(app)
-#    nameDays = mtools.calendarNamesDays()
-#    nameMonths= mtools.calendarNamesMonths()
-#
+
     mDir=QDir.currentPath()
     
     engine.rootContext().setContextProperty("QJsonNetworkQml", jchc)
@@ -93,10 +87,10 @@ if __name__ == '__main__':
     engine.rootContext().setContextProperty("ThesaVersion", ThesaVersion)
     
     engine.rootContext().setContextProperty("Tools", mtools)
-#    engine.rootContext().setContextProperty("NameDays", nameDays)
-#    engine.rootContext().setContextProperty("NameMonths", nameMonths)
     
     engine.rootContext().setContextProperty("DirParent", mDir)
+    
+    engine.rootContext().setContextProperty("Last_message", last_message)
 
     settings = QSettings()
     defaultLocale = settings.value("translate", "")
