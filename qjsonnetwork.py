@@ -53,7 +53,6 @@ class QJsonNetwork(QObject):
         
         self.m_engine = QQmlApplicationEngine()
         
-        self.reply=""
 #        connect(managerAccess, SIGNAL(finished(QNetworkReply*)),
 #            this, SLOT(replyFinishedOrder(QNetworkReply*)));
         self.managerAccess = QNetworkAccessManager(self)
@@ -81,20 +80,15 @@ class QJsonNetwork(QObject):
     @Slot()
     def runLastCall(self):
         if not self.tempCallData.isEmpty():
-        #qDebug()<<"entro last call";
             if self.tempCallData.count()==5:
-    #            qDebug()<<"entro + last call";
                 if str(self.tempCallData.at(1).toString())=="order":
                     if self.tempCallData.at(0).toBool()==True: #// call direct
-                        if not self.tempCallFunctionArgs.isEmpty():# // objectqml functionname args[a1,a2,a3]
-    #                        qDebug()<<"entro + + last call";
+                        if not self.tempCallFunctionArgs.isEmpty():
                             nameObject = self.tempCallFunctionArgs.at(0).toString()
                             nameFunction = self.tempCallFunctionArgs.at(1).toString()
-    #                        QObject* root =  m_engine->rootObjects()[0];
                             root =  self.m_engine.rootObjects()[0]
                             object_qml = root.findChild(QObject, nameObject)
                             if self.tempCallFunctionArgs.at(2).isArray():
-    #                            qDebug()<<"entro + + + last call";
                                 args = self.tempCallFunctionArgs.at(2).toArray()#.toVariantList()
                                 if args.count()==0:
                                     QMetaObject.invokeMethod(object_qml, nameFunction)
@@ -210,14 +204,20 @@ class QJsonNetwork(QObject):
     def initOrderConnect(self):
         bparams = self.prepareParams()
         request = self.prepareRequest()
-        self.reply = self.managerAccess.post(request, bparams)
+        self.managerAccess.post(request, bparams)
 #        reply.readyRead.connect(self.slotReadyRead)
 #        reply.error[QNetworkReply.NetworkError].connect(self..slotError)
 #        reply.sslErrors.connect(self.slotSslErrors)
-        
+
+    @Slot(QJsonArray)
+    def saveFunction(self, by403):
+        if by403.count()==3:#objectqml functon args
+            self.tempCallFunctionArgs = by403        
+        else:
+            self.tempCallFunctionArgs = QJsonArray()
+                
     @Slot(str, str, QJsonArray, result = "QJsonObject")    
-    @Slot(str, str, QJsonArray, QJsonArray, result = "QJsonObject")
-    def callDirect(self, pid, method, par, by403=QJsonArray()):
+    def callDirect(self, pid, method, par):
         resultObject={}
         if self.boolRun==False:
             self.boolRun=True
@@ -226,12 +226,6 @@ class QJsonNetwork(QObject):
             self.mpid=pid
             self.mmethod=method
             self.mparams=par
-            
-            if not by403.isEmpty():
-                if by403.count()==3:
-                    self.tempCallFunctionArgs=by403        
-            else:
-                self.tempCallFunctionArgs = QJsonArray()
         
             bparams = self.prepareParams()
             request = self.prepareRequest()
@@ -249,7 +243,6 @@ class QJsonNetwork(QObject):
                     jv=document.object()
                     if jv.__contains__("result"):
                         resultObject["data"] = jv
-                        #print("yes",jv)
                 else:
                     if document.isArray()==True:
                         resultObject["data"] = document.array()
@@ -269,7 +262,7 @@ class QJsonNetwork(QObject):
         QObject.connect(self.managerAccess, SIGNAL("finished( QNetworkReply* )"), connection_loop, SLOT( "quit()" ))
         reply = self.managerAccess.post(request, bparams)
         connection_loop.exec_()#sleep
-#        //qDebug() << "post -> " << ", done, size: " << reply->bytesAvailable();
+        #reply->bytesAvailable();
         reply.deleteLater()
         return reply
     
@@ -282,7 +275,7 @@ class QJsonNetwork(QObject):
         fraseStatusCode = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
         redirectUrl = QUrl(reply.attribute(QNetworkRequest.RedirectionTargetAttribute))
         redirectUrlFix = self.redirectUrlComp(redirectUrl, self.urlServer)
-        print(errorString, statusCode)
+#        print(errorString, statusCode)
         resultObject = {
                 "status": statusCode,
                 "fraseStatus": fraseStatusCode,
@@ -316,14 +309,11 @@ class QJsonNetwork(QObject):
                                             self.boolConnect = True
                                             self.intCountConnect+=1
                                             resultObject["credentials"] = True
-                            #print("3333", document.object())
                             result = document.object()
                     resultObject["data"] = result
-#                    print(resultObject)
                     if self.boolDirect==False:
                         self.signalResponse.emit(self.mpid, 2, resultObject)#ok
-#                        reply.deleteLater()
-#                        del reply
+
                     else:
                         #and report
                         if document.isObject() and result.__contains__("error")==True:
@@ -398,7 +388,6 @@ class QJsonNetwork(QObject):
 
         return  request
         
-#    QNetworkRequest prepareRequest();
     def prepareParams(self):
         objParams={
                 "method": self.mmethod,
@@ -407,4 +396,3 @@ class QJsonNetwork(QObject):
                 }
     
         return QJsonDocument(objParams).toJson(QJsonDocument.Compact)
-#    QByteArray prepareParams();
