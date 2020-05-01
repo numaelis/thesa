@@ -1,5 +1,5 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
-// test example Products Price
+// test example formats
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
@@ -14,14 +14,14 @@ import QtQuick.Layouts 1.3
 import thesatools 1.0
 
 TabDesktop {
-    id:articulos
+    id:testformat
+
     onFirstTimeTab:{
-        ModelInvoices.find([['type','=','out']])//synchro
+        ModelInvoices.find(['type','=','out'])//synchro
     }
 
     Component.onCompleted: {
         ModelManagerQml.addModel("ModelInvoices","ProxyModelInvoices");
-        //ModelInvoices.signalResponseData.connect(onsignalResponseData);
         ModelInvoices.setLanguage(planguage);
         ModelInvoices.setModelMethod("model.account.invoice");
         ModelInvoices.setDomain([['type','=','out']]);//
@@ -42,6 +42,14 @@ TabDesktop {
 //                                );
 
 
+    }
+
+    function findbyname(){
+        if(ffind.text!=""){
+            ModelInvoices.find(['AND',["party.name","ilike","%"+ffind.text+"%"],['type','=','out']]);
+        }else{
+            ModelInvoices.find(['type','=','out'])
+        }
     }
 
     Frame{
@@ -97,7 +105,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                               ModelInvoices.find([['type','=','out']])
+                               ModelInvoices.find(['type','=','out'])
                             }
 
                         }

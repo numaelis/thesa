@@ -18,16 +18,15 @@ TabDesktop {
     id:partys
 
     onFirstTimeTab:{
-        ModelPerson.find([[]])
+        ModelPerson.find([])
     }
 
     Component.onCompleted: {
         ModelManagerQml.addModel("ModelPerson","ProxyModelPerson");
-        //ModelPerson.signalResponseData.connect(onsignalResponseData);
         ModelPerson.setLanguage(planguage);
         ModelPerson.setModelMethod("model.party.party");
         ModelPerson.setDomain([]);
-        ModelPerson.setMaxLimit(20);
+        ModelPerson.setMaxLimit(1000);
         ModelPerson.setOrder([['name', 'ASC']])
         ModelPerson.setFields(["rec_name", "name"]);
         ModelPerson.setPreferences(preferences);
@@ -46,7 +45,7 @@ TabDesktop {
         myModelPhone.clear();
         var data= QJsonNetworkQml.callDirect("my_pid_1","model.party.contact_mechanism.search_read",
                                              [
-                                                 [['party', '=', mid]],0,null,
+                                                 ['party', '=', mid],0,null,
                                                  [],
                                                  ["type","value"],
                                                  preferences
@@ -82,9 +81,9 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelPerson.find([["name","ilike","%"+ffind.text+"%"]]);// synchro apartir de ahora
+            ModelPerson.find(["name","ilike","%"+ffind.text+"%"]);
         }else{
-            ModelPerson.find([[]]);
+            ModelPerson.find([]);
         }
     }
 
@@ -141,7 +140,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelPerson.find([[]])
+                                ModelPerson.find([]);
                             }
 
                         }

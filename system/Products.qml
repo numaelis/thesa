@@ -16,18 +16,17 @@ import thesatools 1.0
 TabDesktop {
     id:articulos
     onFirstTimeTab:{
-        ModelProduct.find([[]]);//synchro apartir de ahora
+        ModelProduct.find([]);//synchro apartir de ahora
     }
 
     Component.onCompleted: {
         ModelManagerQml.addModel("ModelProduct","ProxyModelProduct");
-        //ModelProduct.signalResponseData.connect(onsignalResponseData);
         ModelProduct.setLanguage(planguage);
         ModelProduct.setModelMethod("model.product.template");
         ModelProduct.setDomain([]);
         ModelProduct.setMaxLimit(1000);
         ModelProduct.setOrder([['name', 'ASC']])
-        ModelProduct.setFields([]);//["rec_name", "name"]);
+        ModelProduct.setFields(["rec_name", "name"]);//[]);
         ModelProduct.setPreferences(preferences);
 
 //        ModelProduct.setSearch("model.product.template",
@@ -79,9 +78,9 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelProduct.find([["name","ilike","%"+ffind.text+"%"]]);
+            ModelProduct.find(["name","ilike","%"+ffind.text+"%"]);
         }else{
-            ModelProduct.find([[]]);
+            ModelProduct.find([]);
         }
     }
     Item {
@@ -144,7 +143,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelProduct.find([[]])
+                                ModelProduct.find([]);
                             }
 
                         }

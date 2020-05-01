@@ -20,12 +20,11 @@ TabDesktop {
     property  var  listShortNamesMonths: Tools.calendarShortNamesMonths(planguage);
 
     onFirstTimeTab:{
-        ModelProduct2.find([[]])
+        ModelProduct2.find([])
     }
 
     Component.onCompleted: {
         ModelManagerQml.addModel("ModelProduct2","ProxyModelProduct2");
-        //ModelProduct2.signalResponseData.connect(onsignalResponseData);
         ModelProduct2.setLanguage(planguage);
         ModelProduct2.setModelMethod("model.product.template");
         ModelProduct2.setDomain([]);
@@ -44,13 +43,12 @@ TabDesktop {
 
     function selectProduct(mid){
         openBusy();
-//        console.log("mid",mid)
         var data= QJsonNetworkQml.callDirect("my_pid_1","model.sale.line.search_read",
                                              [
                                                  ['AND',
-                                                  [['sale.sale_date','>=', tfyear.text+'-01-01']],
-                                                  [['sale.sale_date','<=', tfyear.text+'-12-31']],
-                                                  [['product', '=', mid]]],0,null,
+                                                  ['sale.sale_date','>=', tfyear.text+'-01-01'],
+                                                  ['sale.sale_date','<=', tfyear.text+'-12-31'],
+                                                  ['product', '=', mid]],0,null,
                                                  [['sale.sale_date', 'ASC']],
                                                  ["sale.sale_date","product","quantity","product.name"],
                                                  preferences
@@ -114,9 +112,9 @@ TabDesktop {
 
     function findbyname(){
         if(ffind.text!=""){
-            ModelProduct2.find([["name","ilike","%"+ffind.text+"%"]]);
+            ModelProduct2.find(["name","ilike","%"+ffind.text+"%"]);
         }else{
-            ModelProduct2.find([[]]);
+            ModelProduct2.find([]);
         }
     }
 
@@ -186,7 +184,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelProduct2.find([[]])
+                                ModelProduct2.find([])
                             }
 
                         }
