@@ -172,8 +172,8 @@ class ModelJson(QObjectListModel):
     @Slot(QJsonArray)
     @Slot(QJsonArray, int)
     def find(self, domain=QJsonArray(), maxlimit=-1):# metodo asincronico
-        if domain!=QJsonArray():
-            self.m_domain=domain#.toVariantList()
+#        if domain!=QJsonArray():
+        self.m_domain=domain#.toVariantList()
         self.initSearch(maxlimit)
 
     @Slot()
