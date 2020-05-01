@@ -210,10 +210,10 @@ class ModelJson(QObjectListModel):
                         jsonobj[fp] = temp
                 
             for v in self.m_fieldsFormatDecimal:
-                if mapJsonDoc.__contains__(v):
-                    if mapJsonDoc[v]!= None:
-                        if mapJsonDoc[v].__contains__("decimal"):
-                            jsonobj[v+"_format"] = self.m_locale.toString(float(mapJsonDoc[v]["decimal"]),'f',2)
+                if jsonobj.__contains__(v):
+                    if jsonobj[v]!= None:
+                        if jsonobj[v].__contains__("decimal"):
+                            jsonobj[v+"_format"] = self.m_locale.toString(float(jsonobj[v]["decimal"]),'f',2)#add suport
                         else:
                             jsonobj[v+"_format"] = ""
                     else:
@@ -221,22 +221,22 @@ class ModelJson(QObjectListModel):
             for v in self.m_fieldsFormatDateTime:
                 mfield = v[0]
                 mformat = v[1]
-                if mapJsonDoc.__contains__(mfield):
+                if jsonobj.__contains__(mfield):
                     mdateTime = QDateTime()
-                    if mapJsonDoc[mfield] != None:
-                        if mapJsonDoc[mfield].__contains__("__class__"):
-                            if mapJsonDoc[mfield]["__class__"]=="date":
-                                mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
-                                                            mapJsonDoc[mfield]["month"],
-                                                            mapJsonDoc[mfield]["day"]),
+                    if jsonobj[mfield] != None:
+                        if jsonobj[mfield].__contains__("__class__"):
+                            if jsonobj[mfield]["__class__"]=="date":
+                                mdateTime = QDateTime(QDate(jsonobj[mfield]["year"],
+                                                            jsonobj[mfield]["month"],
+                                                            jsonobj[mfield]["day"]),
                                                       QTime())
-                            if mapJsonDoc[mfield]["__class__"]=="datetime":
-                                mdateTime = QDateTime(QDate(mapJsonDoc[mfield]["year"],
-                                                            mapJsonDoc[mfield]["month"],
-                                                            mapJsonDoc[mfield]["day"]),
-                                                      QTime(mapJsonDoc[mfield]["hour"],
-                                                            mapJsonDoc[mfield]["minute"],
-                                                            mapJsonDoc[mfield]["second"]))
+                            if jsonobj[mfield]["__class__"]=="datetime":
+                                mdateTime = QDateTime(QDate(jsonobj[mfield]["year"],
+                                                            jsonobj[mfield]["month"],
+                                                            jsonobj[mfield]["day"]),
+                                                      QTime(jsonobj[mfield]["hour"],
+                                                            jsonobj[mfield]["minute"],
+                                                            jsonobj[mfield]["second"]))
             
                             jsonobj[mfield+"_format"] =  mdateTime.toString(mformat)
                         else:

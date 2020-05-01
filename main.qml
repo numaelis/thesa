@@ -570,7 +570,6 @@ ApplicationWindow {
                             MessageLib.showMessageLog("error: "+JSON.stringify(jsonData.error),mainroot);
                         }
                     }
-                    console.log("errores 2",errores2);
                 }
 
             }
@@ -711,8 +710,8 @@ ApplicationWindow {
                 // Error Handling
                 MessageLib.showMessageLog(qsTr("error loading desktop: ")+component2.errorString(), mainroot);
             }
-        }
 
+        }
         Drawer{
             id:menudrawer
             width: boolDrawer?80:0
