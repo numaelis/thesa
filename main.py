@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Jan  3 23:34:27 2020
-
+this file is part the thesa: tryton client based PySide2(qml2)
+main
 """
+
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
@@ -55,14 +57,17 @@ def qt_message_handler(mode, context, message):
             if mObjMsg.getMessage()!=message:
                 root.setProperty("argsFucntionLastCall",["warning:\n"+message])
                 QMetaObject.invokeMethod(root, "_messageWarningPySide")
+        mObjMsg.setMessage(message)
     elif mode == QtCore.QtCriticalMsg:
         mode = 'critical'
     elif mode == QtCore.QtFatalMsg:
         mode = 'fatal'
     else:
         mode = 'Debug'
-    mObjMsg.setMessage(message)
-    print("%s: %s (%s:%d, %s)" % (mode, message, context.file, context.line, context.file))
+    if mode=='Debug':
+        print("%s: %s" % (mode, message))
+    else:
+        print("%s: %s (%s:%d, %s)" % (mode, message, context.file, context.line, context.file))
     
 if __name__ == '__main__':
     
