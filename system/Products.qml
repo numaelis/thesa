@@ -16,7 +16,7 @@ import thesatools 1.0
 TabDesktop {
     id:articulos
     onFirstTimeTab:{
-        ModelProduct.find([]);//synchro apartir de ahora
+        ModelProduct.find();//synchro apartir de ahora
     }
 
     Component.onCompleted: {
@@ -80,7 +80,7 @@ TabDesktop {
         if(ffind.text!=""){
             ModelProduct.find(["name","ilike","%"+ffind.text+"%"]);
         }else{
-            ModelProduct.find([]);
+            ModelProduct.find();
         }
     }
     Item {
@@ -143,7 +143,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelProduct.find([]);
+                                ModelProduct.find();
                             }
 
                         }

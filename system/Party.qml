@@ -18,7 +18,7 @@ TabDesktop {
     id:partys
 
     onFirstTimeTab:{
-        ModelPerson.find([])
+        ModelPerson.find();
     }
 
     Component.onCompleted: {
@@ -83,7 +83,7 @@ TabDesktop {
         if(ffind.text!=""){
             ModelPerson.find(["name","ilike","%"+ffind.text+"%"]);
         }else{
-            ModelPerson.find([]);
+            ModelPerson.find();
         }
     }
 
@@ -140,7 +140,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelPerson.find([]);
+                                ModelPerson.find();
                             }
 
                         }

@@ -43,4 +43,21 @@ StackDesktop {
 
     }
 
+    StackSubDesktop{
+
+        tabs: [
+            {name: "Picker Image", icon: "\uf1c5"},
+            {name: "File", icon: "\uf56f"}
+        ]
+
+        TestGetFile {
+
+        }
+
+        TestGetFile2 {
+
+        }
+
+    }
+
 }

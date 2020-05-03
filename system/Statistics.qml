@@ -20,7 +20,7 @@ TabDesktop {
     property  var  listShortNamesMonths: Tools.calendarShortNamesMonths(planguage);
 
     onFirstTimeTab:{
-        ModelProduct2.find([])
+        ModelProduct2.find([]);
     }
 
     Component.onCompleted: {

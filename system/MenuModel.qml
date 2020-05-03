@@ -15,4 +15,8 @@ ListModel {
         name: qsTr("test Formats")
         icon: "\uf0c3"
     }
+    ListElement {
+        name: qsTr("test Files")
+        icon: "\uf302"
+    }
 }
