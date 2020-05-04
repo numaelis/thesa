@@ -31,6 +31,7 @@ TabDesktop {
             var newImagePath = Tools.scaleImage(100,path);//reduce to 100 pixels
             var t64=Tools.getFileBase64(newImagePath)
             labelBase64.text = t64.substring(0,16) + "  ...";
+            myimage.source = "data:image/png;base64,"+t64;
             closeBusy();
         }
     }
@@ -43,6 +44,15 @@ TabDesktop {
             text:"picker"
             Layout.alignment: Label.AlignHCenter
         }
+
+        Image{
+            id:myimage
+            width: 200
+            height: 200
+            fillMode: Image.PreserveAspectCrop
+            Layout.alignment: Qt.AlignHCenter
+        }
+
 
         InputLabelCube{
             id: inputFile

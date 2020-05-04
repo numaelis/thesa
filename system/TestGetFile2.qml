@@ -1,5 +1,5 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
-// test example files images
+// test example files
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
@@ -30,11 +30,10 @@ TabDesktop {
 
         ButtonAwesone{
             text: "\uf052"
-            textToolTip: "select file image"
-
+            textToolTip: "select file"
             onClicked: {
-
-                var result = Tools.getFilePath("Select File","Image (*.png *.xpm *.jpg *.gif *.jpeg *.bmp *ppm)");
+                var result = Tools.getFilePath("Select File","All (*.*)");
+//                var result = Tools.getFilePath("Select File","Image (*.png *.xpm *.jpg *.gif *.jpeg *.bmp *ppm)");
                 if(result.error===false){
                     //console.log(result.fullname, result.name);
                     inputFile.text=result.fullname;
