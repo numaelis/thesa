@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.0"
+//__version__ = "1.2"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -293,7 +293,7 @@ Dialog {
                         }
                         InputComboBoxCube{
                             id:itypelogin
-                            enabled: !mainroot.boolSession
+                            enabled:!mainroot.boolSession
                             width: parent.width
                             label: qsTr("Type Login:")
                             model: ["tryton 4","tryton 5"]
@@ -301,11 +301,16 @@ Dialog {
                         }
                         InputComboBoxCube{
                             id:itypesystem
-                            enabled: !mainroot.boolSession
+                            enabled: boolMovil?false:!mainroot.boolSession
                             width: parent.width
                             label: qsTr("Type System:")
                             model: ["Local","Module"]
                             boolOnDesk: boolBackLogin
+                            Component.onCompleted: {
+                                if(boolMovil){
+                                    index=1;//movil only module
+                                }
+                            }
                         }
                     }
 
