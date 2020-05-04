@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.0"
+//__version__ = "1.2"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -36,7 +36,7 @@ ApplicationWindow {
     property int maxWidthDialog: Screen.desktopAvailableWidth<600?Screen.desktopAvailableWidth:600
     property int maxHeightDialog: 500
 
-    property bool boolMovil: false //textArea textfield for android = true
+    property bool boolMovil: false //textArea textfield for android movil = true, only module
     property bool boolqrclocal: false //for android = true and drawer=true
 
     property real miradius: 2
