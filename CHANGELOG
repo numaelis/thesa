@@ -3,7 +3,8 @@ Version 1.0 - 2020-04-16
 
 Version 1.2
 * add calldirect to models
-* add handle qt messages and skip repeat
-* close busy in warning
+* add handle qt messages and skip repeat and close busy in warning
 * data model fix fields format and new field
-
+* add test Format and test get File 
+* fix get string base64
+* platform movil only system module thesamodule 
