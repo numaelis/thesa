@@ -112,14 +112,22 @@ properties created in native code and can be called from qml:
 javascript functions and variables:
 
     function formatDecimal(value): -> string format locale
+    
     function formatNumeric(value): -> string format locale
+    
     function formatCentUp(value): -> string format locale
 
     bool boolShortWidth135 -> true if the width of the screen is less than 13.5 cms
+    
     bool boolShortWidth -> true if the width of the screen is less than 9 cms
     
     object preferences -> user preferences tryton
+    
     object preferencesAll -> user preferences tryton
+    
     string planguage user -> user language tryton
+    
     string thousands_sep -> user thousands_se tryton
+    
     string decimal_point -> user decimal_point tryton
+    
