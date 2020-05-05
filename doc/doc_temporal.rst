@@ -127,7 +127,13 @@ javascript functions and variables:
     
     string planguage user -> user language tryton
     
-    string thousands_sep -> user thousands_se tryton
+    string thousands_sep -> user thousands_sep tryton
     
     string decimal_point -> user decimal_point tryton
+    
+
+thesatools:
+    thesa has added some custom widgets (qt quick controls 2).  Are imported with: import thesatools 1.0
+    some are buttons, inputs, calendar, messages, etc.
+    <...>
     
