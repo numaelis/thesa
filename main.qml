@@ -847,25 +847,19 @@ ApplicationWindow {
 
     //}
     function formatDecimal(numero){
-        var number = parseFloat(numero);
-        if (isNaN(number)){
-            number = 0;
-        }
-        var places = 2;
-        var symbol = ""; //$
-        var thousand =  thousands_sep;
-        var decimal = decimal_point;
-        var negative = number < 0 ? "-" : "",
-        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-        j = (j = i.length) > 3 ? j % 3 : 0;
-        return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+        return formatDecimalPlaces(numero,2);
     }
+
     function formatNumeric(numero){
-        var number = parseFloat(numero);
+        return formatDecimalPlaces(numero,0);
+    }
+
+    function formatDecimalPlaces(value, mplaces){
+        var number = parseFloat(value);
         if (isNaN(number)){
             number = 0;
         }
-        var places = 0;
+        var places = mplaces;
         var symbol = ""; //$
         var thousand =  thousands_sep;
         var decimal = decimal_point;
@@ -875,9 +869,13 @@ ApplicationWindow {
         return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
     }
     function formatCentUp(numero){
+        return formatCentUpPlaces(numero,2);
+    }
+
+    function formatCentUpPlaces(numero, mplaces){
         var boolUpCentavos = true;
         var sizeUpcentavos = 1;
-        var listt = formatDecimal(numero).split(decimal_point)
+        var listt = formatDecimalPlaces(numero, mplaces).split(decimal_point);
         return listt[0] + decimal_point + "<font size=" + "'" + sizeUpcentavos + "'" + ">" + listt[1] + "</font>";
     }
 

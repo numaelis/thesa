@@ -116,6 +116,10 @@ javascript functions and variables:
     function formatNumeric(value): -> string format locale
     
     function formatCentUp(value): -> string format locale
+    
+    function formatDecimalPlaces(value, places) -> string format locale
+    
+    function formatCentUpPlaces(value, places) -> string format locale
 
     bool boolShortWidth135 -> true if the width of the screen is less than 13.5 cms
     
