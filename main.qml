@@ -481,7 +481,7 @@ ApplicationWindow {
             "name":"",
             "icon":""
         };
-        QJsonNetworkQml.call("desconect","common.db.logout",
+        QJsonNetworkQml.callDirect("desconect","common.db.logout",
                              []);
         closeBusy();
     }
