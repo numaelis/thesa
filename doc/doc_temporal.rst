@@ -111,11 +111,11 @@ properties created in native code and can be called from qml:
 
 javascript functions and variables:
 
-    function formatDecimal(value): -> string format locale
+    function formatDecimal(value): -> string format locale, with 2 places
     
-    function formatNumeric(value): -> string format locale
+    function formatNumeric(value): -> string format locale, with 0 places
     
-    function formatCentUp(value): -> string format locale
+    function formatCentUp(value): -> string format locale, with 2 places
     
     function formatDecimalPlaces(value, places) -> string format locale
     

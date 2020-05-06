@@ -209,11 +209,12 @@ class ModelJson(QObjectListModel):
                            temp = temp[c]
                         jsonobj[fp] = temp
                 
-            for v in self.m_fieldsFormatDecimal:
+            for vp in self.m_fieldsFormatDecimal:
+                v = vp[0]
                 if jsonobj.__contains__(v):
                     if jsonobj[v]!= None:
                         if jsonobj[v].__contains__("decimal"):
-                            jsonobj[v+"_format"] = self.m_locale.toString(float(jsonobj[v]["decimal"]),'f',2)#add suport
+                            jsonobj[v+"_format"] = self.m_locale.toString(float(jsonobj[v]["decimal"]),'f',vp[1])#add suport
                         else:
                             jsonobj[v+"_format"] = ""
                     else:
@@ -315,15 +316,21 @@ class ModelJson(QObjectListModel):
         self.m_fieldsFormatDecimal = []
         for v in fields.toVariantList():
             if v.__class__() == '':
-                self.m_fieldsFormatDecimal.append(v)
+                self.m_fieldsFormatDecimal.append([v,2])
+            elif v.__class__() == []:
+                if v.__len__()==2:
+                    if v[0].__class__() == '' and v[1].__class__() == 0:
+                        self.m_fieldsFormatDecimal.append(v)
 
     @Slot(QJsonArray)
     def addFieldFormatDateTime(self, fields):
         #ModelArticulo.addFieldFormatDateTime([['invoice_date','dd/MM/yy'],['create_date','dd/MM/yy hh:mm:ss']]);
         self.m_fieldsFormatDateTime = []
         for v in fields.toVariantList():
-            if v.__len__()==2:
-                self.m_fieldsFormatDateTime.append(v)
+            if v.__class__() == []:
+                if v.__len__()==2:
+                    if v[0].__class__() == '' and v[1].__class__() == '':
+                        self.m_fieldsFormatDateTime.append(v)
     
     signalResponse = Signal(str, int)
     signalResponseData = Signal(str, int, "QJsonObject")#QJsonObject = dict
