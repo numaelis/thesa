@@ -44,7 +44,8 @@ properties created in native code and can be called from qml:
                 the "planguage" variable is generated at login
             
             function addFieldFormatDecimal(array fields):
-                add fields in decimal format. Then from the view delegate call it <the field> _format.
+                add fields in decimal format. ['name field'...] or [['name field', n places]...]
+                Then from the view delegate call it <the field> _format.
 
             function addFieldFormatDateTime(array fields):
                 add fields in date or datetime format.
@@ -137,7 +138,31 @@ javascript functions and variables:
     
 
 thesatools:
-    thesa has added some custom widgets (qt quick controls 2).  Are imported with: import thesatools 1.0
-    some are buttons, inputs, calendar, messages, etc.
+
+    thesa has added some custom widgets (qt quick controls 2). 
+    
+    Are imported with: import thesatools 1.0
+    
+    some are buttons, inputs, inputs with format and method, calendar, messages, etc.
     <...>
     
+    If using qtcreator(qt framework) to edit or create the qml files, it is recommended to create a link to thesatools folder and copy this link into the qt framework qml libraries example: /Qt5.12.3/5.12.3/gcc_64/qml/
+    
+
+translation:
+
+    Create the .qm files with lupdate, linguist and lrelease. <https://doc.qt.io/qt-5/qtquick-internationalization.html>
+    The base language is English. use qsTr() to set the text to translate.
+    
+    example:
+    
+        in folder qml files (tabs)
+    
+        create or update:
+            ~/Qt5.12.3/5.12.3/gcc_64/bin/lupdate * -ts es.ts
+
+        edit:
+            ~/Qt5.12.3/5.12.3/gcc_64/bin/linguist es.ts
+        
+        release:
+            ~/Qt5.12.3/5.12.3/gcc_64/bin/lrelease es.ts

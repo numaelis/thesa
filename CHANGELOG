@@ -8,3 +8,4 @@ Version 1.2
 * add test Format and test get File 
 * fix get string base64
 * platform movil only system module thesamodule 
+* add support n places format Decimal

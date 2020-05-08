@@ -132,6 +132,8 @@ class Tools(QObject):
     def getFilePath(self, caption="find", filters=""):
         result={}
         result["error"]=True
+        result["name"]=""
+        result["fullname"]=""
         #"Buscar Imagen Nueva",
         #tr("Imagenes (*.png *.xpm *.jpg *.gif *.jpeg *.bmp *ppm)")
         namefile = QFileDialog.getOpenFileName(None, caption,

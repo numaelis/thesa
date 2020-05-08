@@ -16,8 +16,6 @@ import Qt.labs.settings 1.0
 import QtQuick.Dialogs 1.1
 import QtQml 2.2
 import thesatools 1.0
-//import "tools/messages.js" as MessageLib
-//import "system"
 
 ApplicationWindow {
     id:mainroot
@@ -248,7 +246,6 @@ ApplicationWindow {
                             text: ms1.text
                             font: ms1.font
                             color: ms1.down ? Material.hintTextColor:Material.primaryTextColor
-                            //"green" : Qt.darker("green")
                             horizontalAlignment: Text.AlignLeft
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
