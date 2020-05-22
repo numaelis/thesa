@@ -19,3 +19,6 @@ MessageLib 1.0 messages.js
 Messages 1.0 Messages.qml
 MessagesLog 1.0 MessagesLog.qml
 MiniButton 1.0 MiniButton.qml
+ScanQZXing 1.0 ScanQZXing.qml
+ThesaScanQZXing 1.0 ThesaScanQZXing.qml
+InputQZXing 1.0 InputQZXing.qml

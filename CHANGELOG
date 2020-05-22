@@ -9,3 +9,7 @@ Version 1.2
 * fix get string base64
 * platform movil only system module thesamodule 
 * add support n places format Decimal
+
+Version 1.4
+* add support QZXing: Qt/QML wrapper library for the ZXing (zebras crossing) barcode image processing library.(https://github.com/ftylitak/qzxing)
+    
