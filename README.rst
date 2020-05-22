@@ -10,6 +10,8 @@ Thesa's goal is to be able to combine tryton with Qt / Qml, for special cases su
 
 Requirements:
   pyside2 5.12 or higher: https://download.qt.io/official_releases/QtForPython/pyside2/
+
+  * for QZXing (efficient barcode scanning), https://github.com/ftylitak/qzxing, build as a plugin for qml. More info: https://www.kdab.com/efficient-barcode-scanning-qzxing/
   
 Run:
  python3 main.py

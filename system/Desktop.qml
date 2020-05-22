@@ -60,4 +60,14 @@ StackDesktop {
 
     }
 
+    StackSubDesktop{
+
+        tabs: [{name: "", icon: ""}]
+
+        TestQZXing {
+
+        }
+
+    }
+
 }

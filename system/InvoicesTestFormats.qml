@@ -17,7 +17,7 @@ TabDesktop {
     id:testformat
 
     onFirstTimeTab:{
-        ModelInvoices.find(['type','=','out'])//synchro
+        ModelInvoices.find(['type','=','in'])//synchro
     }
 
     Component.onCompleted: {
@@ -35,12 +35,11 @@ TabDesktop {
         ModelInvoices.addFieldFormatDateTime([['invoice_date','dd/MM/yy'],['create_date','dd/MM/yy hh:mm:ss']]);//:
 
         //        ModelInvoices.setSearch("model.account.invoice",
-//                                [['type','=','in']],
-//                                10,
-//                                [['number', 'DESC'],['invoice_date', 'DESC']],
-//                                []//['reference','invoice_date','total_amount','create_date']
-//                                );
-
+        //                                [['type','=','in']],
+        //                                10,
+        //                                [['number', 'DESC'],['invoice_date', 'DESC']],
+        //                                []//['reference','invoice_date','total_amount','create_date']
+        //                                );
 
     }
 
@@ -105,7 +104,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                               ModelInvoices.find(['type','=','out'])
+                                ModelInvoices.find(['type','=','out'])
                             }
 
                         }
@@ -130,9 +129,9 @@ TabDesktop {
                                         ModelInvoices.nextSearch();
                                     }
                                 }
-//                                if (contentY === contentHeight - height) {
-//                                    ModelInvoices.nextSearch();//asyncron
-//                                }
+                                //                                if (contentY === contentHeight - height) {
+                                //                                    ModelInvoices.nextSearch();//asyncron
+                                //                                }
                             }
                             delegate: ItemDelegate {
                                 id:idelepro

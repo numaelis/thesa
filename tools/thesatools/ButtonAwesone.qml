@@ -8,6 +8,7 @@ Button{
     font.family:fawesome.name
     font.italic: false
     font.pixelSize: 20
+
     hoverEnabled: true
 
     ToolTip.delay: 1000

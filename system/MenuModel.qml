@@ -19,4 +19,8 @@ ListModel {
         name: qsTr("test Files")
         icon: "\uf302"
     }
+    ListElement {
+        name: qsTr("test Scan Code")
+        icon: "\uf030"
+    }
 }
