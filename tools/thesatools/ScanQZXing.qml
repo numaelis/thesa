@@ -28,6 +28,7 @@ Dialog {
     standardButtons: Dialog.Cancel
     closePolicy: Dialog.NoAutoClose
     onRejected: {closing()}
+    padding: 10
     // onAccepted: console.log("Ok clicked")
     property var listCameras:[]
     property var listCamerasNames:[]
@@ -80,7 +81,7 @@ Dialog {
             border.width: 1
             radius: miradius
         }
-
+        padding: 10
         Item {
             anchors.fill: parent
             Camera {
@@ -96,12 +97,33 @@ Dialog {
                 //anchors.fill: parent
                 width: parent.width<parent.height?parent.width:parent.height
                 height: width
-                anchors{right:parent.right;bottom:parent.bottom}
+               // anchors{right:parent.right;bottom:parent.bottom}
+                anchors{horizontalCenter: parent.horizontalCenter;bottom:parent.bottom}
                 //anchors.centerIn: parent
                 autoOrientation: true
                 source: camera
                 //orientation: camera.orientation
                 fillMode: VideoOutput.PreserveAspectCrop
+                Component.onCompleted: {
+                    videoOutput.hoff();
+                }
+
+                onHeightChanged: {
+                    videoOutput.hoff();
+                }
+
+                function hoff(){
+                    if(height<(dpisReal*40)){
+                        if(parent.width>width){
+                            anchors.horizontalCenterOffset=(parent.width - width)/2;
+                        }else{
+                            anchors.horizontalCenterOffset=0;
+                        }
+                    }else{
+                        anchors.horizontalCenterOffset=0;
+                    }
+
+                }
 
                 filters: [ zxingFilter ]
                 Rectangle {
@@ -112,6 +134,26 @@ Dialog {
                     height: (parent.height / 5)*3
                     anchors.centerIn: parent
                     radius: 4
+                }
+                Repeater {
+                    model: camera.focus.focusZones
+
+                    Rectangle {
+                        border {
+                            width: 2
+                            color: status == Camera.FocusAreaFocused ? "green" : "white"
+                        }
+                        color: "transparent"
+                        opacity: 0.5
+
+                        // Map from the relative, normalized frame coordinates
+                        property variant mappedRect: videoOutput.mapNormalizedRectToItem(area);
+
+                        x: mappedRect.x
+                        y: mappedRect.y
+                        width: mappedRect.width
+                        height: mappedRect.height
+                    }
                 }
                 Text {
                     text: "QZXing v2.3"
