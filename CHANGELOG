@@ -12,4 +12,5 @@ Version 1.2
 
 Version 1.4
 * add support QZXing: Qt/QML wrapper library for the ZXing (zebras crossing) barcode image processing library.(https://github.com/ftylitak/qzxing)
+* fix clear component cache in close session when error in desktop
     

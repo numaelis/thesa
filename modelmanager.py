@@ -86,5 +86,8 @@ class ModelManager(QObject):
         
         self.m_listModel=[]
         self.m_listProxy=[]
-        
+    
+    @Slot()    
+    def clearComponentCache(self):
         self.m_engine.clearComponentCache()
+        
