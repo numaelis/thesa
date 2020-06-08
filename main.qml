@@ -54,7 +54,7 @@ ApplicationWindow {
     property var argsFucntionLastCall
     property bool boolShortWidth135: width<(dpisReal*135)?true:false//13.5 cm
     property bool boolShortWidth: width<(dpisReal*90)?true:false//9 cm
-    property string dirSystem: setting.typesysmodule?"systemnet":"systemlu"
+    property string dirSystem: setting.typesysmodule?"systemnet":"system"
     property bool boolDrawer: setting.boolDrawer
     property var listTranslations
     property var nameShortDays: Tools.calendarShortNamesDays();
