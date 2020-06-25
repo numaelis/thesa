@@ -17,7 +17,7 @@ TabDesktop {
     id:testformat
 
     onFirstTimeTab:{
-        ModelInvoices.find(['type','=','in'])//synchro
+        ModelInvoices.find(['type','=','out'])//synchro
     }
 
     Component.onCompleted: {

@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.2"
+//__version__ = "1.4"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -59,6 +59,7 @@ ApplicationWindow {
     property var listTranslations
     property var nameShortDays: Tools.calendarShortNamesDays();
     property var nameLongMonths: Tools.calendarLongNamesMonths();
+    property int maxIntervalBusy: 30000 //milisecunds
 
     visibility:  Window.Maximized
     title: qsTr("thesa [tryton client]")
@@ -773,7 +774,7 @@ ApplicationWindow {
     }
     Timer{//timer en caso de que no haya respuestas, por error de codigo o por servidor demorado
         id:tblockingStop
-        interval: 30000// 30 seconds MODIFICAR EN CASO DE DEMASIADA ESPERA EN ALGUN CALCULO
+        interval: maxIntervalBusy// 30000 = 30 seconds MODIFICAR EN CASO DE DEMASIADA ESPERA EN ALGUN CALCULO
         onTriggered: {
             boolBlocking=false;
             //Ocurrió algún Error, el tiempo de espera se Agotó, No Hay Comunicación o Respuestas.
@@ -834,16 +835,6 @@ ApplicationWindow {
         return Number(texto).toLocaleString(Qt.locale(planguage));
     }
 
-    // function formatDecimalBack(numero){
-    //        var number = parseFloat(numero);
-    //        if (isNaN(number)){
-    //            number = 0;
-    //        }
-    //        //parseInt(number);//
-    //        var i = parseInt(number = Math.abs(+number || 0).toFixed(2), 10) + "";
-    //        return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1"+thousands_sep)+decimal_point+(number-i).toFixed(2).slice(2);
-
-    //}
     function formatDecimal(numero){
         return formatDecimalPlaces(numero,2);
     }
@@ -874,8 +865,28 @@ ApplicationWindow {
         var boolUpCentavos = true;
         var sizeUpcentavos = 1;
         var listt = formatDecimalPlaces(numero, mplaces).split(decimal_point);
-        return listt[0] + decimal_point + "<font size=" + "'" + sizeUpcentavos + "'" + ">" + listt[1] + "</font>";
+        if(listt.length>1){
+            return listt[0] + decimal_point + "<font size=" + "'" + sizeUpcentavos + "'" + ">" + listt[1] + "</font>";
+        }else{
+            return formatDecimalPlaces(numero, mplaces);
+        }
     }
+
+    function dateTimeFromSchema(dateSchema){
+        if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("year")){
+            if(dateSchema.__class__==="date"){
+                return new Date(dateSchema.year, dateSchema.month-1, dateSchema.day);
+            }else{
+                return new Date(dateSchema.year, dateSchema.month-1, dateSchema.day, dateSchema.hour, dateSchema.minute, dateSchema.second);
+            }
+        }
+        return "";
+    }
+
+    function formatDateTime(date, format){
+        return Qt.formatDateTime(date, format);
+    }
+
 
     Timer{
         id:timerLastCall
