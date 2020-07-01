@@ -33,7 +33,7 @@ TabDesktop {
         }
 
         InputQZXing{
-            enabledDecoders: format_EAN_13 | format_EAN_8 | format_CODE_39 | format_QR_CODE
+            enabledDecoders: format_EAN_13 | format_EAN_8 | format_CODE_39 | format_QR_CODE | format_CODE_128 | format_CODE_128_GS1
             onSignalTagFound:{
                 labelcode.text=tag;
             }

@@ -41,7 +41,7 @@ TabDesktop {
 
     function selectProduct(mid){
         openBusy();
-        var data= QJsonNetworkQml.callDirect("mpidproduct","model.product.template.read",
+        var data= QJsonNetworkQml.recursiveCall("mpidproduct","model.product.template.read",
                                                      [
                                                          [mid],["cost_price","list_price"],preferences
                                                      ]);

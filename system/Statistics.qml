@@ -43,7 +43,7 @@ TabDesktop {
 
     function selectProduct(mid){
         openBusy();
-        var data= QJsonNetworkQml.callDirect("my_pid_1","model.sale.line.search_read",
+        var data= QJsonNetworkQml.recursiveCall("my_pid_1","model.sale.line.search_read",
                                              [
                                                  ['AND',
                                                   ['sale.sale_date','>=', tfyear.text+'-01-01'],

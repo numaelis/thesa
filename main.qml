@@ -450,6 +450,10 @@ ApplicationWindow {
             }
         }
     }
+    function backLogin(){
+        boolLogin=false;
+        MessageLib.showMessage("Warning!\nthe last order could not be made", mainroot);
+    }
 
     function closeSession(){
 
@@ -505,12 +509,12 @@ ApplicationWindow {
                         myLogin.saveSettings();
                         boolLogin=true;
                         if (bool403){
-                            timerLastCall.start();
+                            timerLastCall.start();//deprecate
                         }else{
                             if(bool401){
                                 bool401=false;
                                 if(boolSession){
-                                    timerLastCall.start();
+                                    timerLastCall.start();//deprecate
                                 }else{
                                     luser=setting.user
                                     timerLoadSession.start();
@@ -931,6 +935,7 @@ ApplicationWindow {
                 thousands_sep=preferences.locale.thousands_sep;
                 decimal_point=preferences.locale.decimal_point;
             }
+            QJsonNetworkQml.setPreferences(preferences);
             if(preferences.language!==null){
                 planguage=preferences.language;
                 nameShortDays= Tools.calendarShortNamesDays(planguage);

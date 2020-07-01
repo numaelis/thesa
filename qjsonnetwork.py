@@ -10,7 +10,7 @@ qjsonnetwork is basic connector json-rpc async or sync
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.0" 
+__version__ = "1.4" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -22,11 +22,12 @@ from PySide2.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkRe
 from PySide2.QtGui import QDesktopServices
 
 from PySide2.QtQml import QQmlApplicationEngine
+from PySide2.QtWidgets import QMessageBox, QCheckBox, QInputDialog, QLineEdit
 
 class QJsonNetwork(QObject):
     def __init__(self, parent = None):
         QObject.__init__(self, parent)
-        
+        self.parent = parent
         self.usuario=""
         self.password=""
         self.token=[]
@@ -43,8 +44,10 @@ class QJsonNetwork(QObject):
         self.mhost=""
         self.mdbase=""
         self.mport=""
+        self.preferences = {}
         self.boolRun=False
         self.boolDirect=False
+        self.boolRecursive = False
         self.mtypeCall="order"
         self.mDir=QDir.currentPath()
         
@@ -82,7 +85,7 @@ class QJsonNetwork(QObject):
         if not self.tempCallData.isEmpty():
             if self.tempCallData.count()==5:
                 if str(self.tempCallData.at(1).toString())=="order":
-                    if self.tempCallData.at(0).toBool()==True: #// call direct
+                    if self.tempCallData.at(0).toBool()==True: #// call direct obsolete, betterbetter to use recursivecall
                         if not self.tempCallFunctionArgs.isEmpty():
                             nameObject = self.tempCallFunctionArgs.at(0).toString()
                             nameFunction = self.tempCallFunctionArgs.at(1).toString()
@@ -95,7 +98,8 @@ class QJsonNetwork(QObject):
                                 else:
                                     root.setProperty("argsFucntionLastCall",args)
                                     QMetaObject.invokeMethod(object_qml, nameFunction)
-                                        
+#                                    https://bugreports.qt.io/browse/PYSIDE-1262
+#                                    Q_ARG missing, invokeMethod doesn't work currently with arguments in PySide2.
 #                                if args.count()==1:
 #                                    print("\nnnn",args.at(0),"\nnnnn")
 #                                    QMetaObject.invokeMethod(object_qml, nameFunction,
@@ -163,7 +167,8 @@ class QJsonNetwork(QObject):
         return redirectUrl
     
     @Slot(str, str, str, str, str)
-    def openConect(self, usu, passw, host, port, dbase):
+    @Slot(str, str, str, str, str, bool)
+    def openConect(self, usu, passw, host, port, dbase, direct  = False):
         self.usuario=usu
         self.password=passw
         self.mhost=host
@@ -178,13 +183,19 @@ class QJsonNetwork(QObject):
         if self.versionct == "4":
             marray.append(self.usuario)
             marray.append(self.password)
-            self.call("open@","common.db.login", marray)
+            if direct:
+                return self.callDirect("open@","common.db.login", marray)
+            else:
+                self.call("open@","common.db.login", marray)
         else:
             marray.append(self.usuario)
             marray.append({"password":self.password})
 #            mapass = QJsonValue({"password",self.password})
 #            marray.append(mapass.toObject())
-            self.call("open@","common.db.login", marray)
+            if direct:
+                return self.callDirect("open@","common.db.login", marray)
+            else:
+                self.call("open@","common.db.login", marray)
     
     @Slot(str, str, QJsonArray)
     def call(self, pid, method, par):
@@ -243,6 +254,13 @@ class QJsonNetwork(QObject):
                     jv=document.object()
                     if jv.__contains__("result"):
                         resultObject["data"] = jv
+                    else:
+                        if self.boolRecursive and jv.__contains__("error"):
+                            if jv["error"].__class__() == []:
+                                if jv["error"].__contains__("UserWarning") or jv["error"][0].__contains__("403") or jv["error"][0].__contains__("401"):
+                                    resultObject["data"] = jv
+                                elif self.mpid == "open@":
+                                    resultObject["data"] = jv
                 else:
                     if document.isArray()==True:
                         resultObject["data"] = document.array()
@@ -315,9 +333,18 @@ class QJsonNetwork(QObject):
                         self.signalResponse.emit(self.mpid, 2, resultObject)#ok
 
                     else:
-                        #and report
-                        if document.isObject() and result.__contains__("error")==True:
-                            self.signalResponse.emit(self.mpid, 2, resultObject)#ok
+                        #and report                                    
+                        if self.mpid=="open@" and result.__contains__("error")==False and self.boolRecursive == False:
+                            resultObject["extra"] = "direct"
+                            self.signalResponse.emit(self.mpid, 2, resultObject)
+#                        elif self.mpid=="open@" and result.__contains__("error")==False and resultObject["credentials"] == False and self.boolRecursive == True:
+#                            self.signalResponse.emit(self.mpid, 2, resultObject)
+                        elif result.__contains__("error")==True:
+                            if self.boolRecursive==True:
+                                if result["error"].__class__() == [] and result["error"].__contains__("UserWarning") == False and result["error"][0].__contains__("403") == False and result["error"][0].__contains__("401") == False:
+                                    self.signalResponse.emit(self.mpid, 2, resultObject)
+                            elif document.isObject():
+                                self.signalResponse.emit(self.mpid, 2, resultObject)
         else:
             print(error, statusCode, errorString)
             self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
@@ -396,3 +423,77 @@ class QJsonNetwork(QObject):
                 }
     
         return QJsonDocument(objParams).toJson(QJsonDocument.Compact)
+    
+    @Slot("QJsonObject")
+    def setPreferences(self, preferences):
+        self.preferences = preferences
+    
+    @Slot(str, str, QJsonArray, result = "QJsonObject")   
+    def recursiveCall(self, pid, method, par):
+        self.boolRecursive = True
+        not_complete = True
+        result = self.callDirect(pid, method, par)
+        while not_complete:
+            reValue = result["data"]
+            if reValue.__class__() == {}:
+                if reValue.__contains__("result"):
+                    if self.mpid != "open@":
+                        not_complete = False
+                    else:
+                        if self.boolConnect:
+                            result = self.callDirect(pid, method, par)
+                        else:
+                            mok = False
+                            inputPass, mok = QInputDialog.getText(None, "Incorrect Password", "Incorrect Password\nRe-enter Password:", QLineEdit.Password)
+                            if mok:
+                                result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
+                            else:
+                                not_complete = False
+                                self.boolRecursive = False    
+                                result['data']='error'
+                                root = self.m_engine.rootObjects()[0]
+                                QMetaObject.invokeMethod(root, "backLogin")
+                elif reValue.__contains__("error"):
+                    if reValue["error"].__class__() == []:
+                        if 'UserWarning' in reValue["error"]:
+                            cb = QCheckBox("Always ignore this warning.")
+                            msgBox = QMessageBox()
+                            msgBox.setText(reValue["error"][1][0])
+                            msgBox.setInformativeText(reValue["error"][1][1])
+                            msgBox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+                            msgBox.setDefaultButton(QMessageBox.Yes)
+                            msgBox.setCheckBox(cb)
+                            rbox = msgBox.exec_()
+                            if rbox == QMessageBox.Yes:
+                                result = self.callDirect(pid, 'model.res.user.warning.create', [
+                                        [{'always': cb.isChecked(), 'user': self.token[0], 'name': reValue["error"][1][0]}], self.preferences
+                                        ])
+                                if result["data"].__contains__("result"):
+                                    result = self.callDirect(pid, method, par)
+                            else:
+                                not_complete = False
+                                result['data']='error'
+                        elif reValue["error"][0].__contains__("403") or reValue["error"][0].__contains__("401"):
+                            mok = False
+                            textinput = "Re-enter Password:"
+                            if reValue["error"][0].__contains__("401"):
+                                textinput = "Authorization Required \nRe-enter Password:"
+                            inputPass, mok = QInputDialog.getText(None, "Password", textinput, QLineEdit.Password)
+                            if mok:
+                                result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
+                            else:
+                                not_complete = False
+                                result['data']='error'
+                                self.boolRecursive = False    
+                                root = self.m_engine.rootObjects()[0]
+                                QMetaObject.invokeMethod(root, "backLogin")
+                        else:
+                            not_complete = False
+                    else:
+                        not_complete = False
+            else:
+                not_complete = False
+        self.boolRecursive = False    
+        return result
+    
+       

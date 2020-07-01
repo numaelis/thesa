@@ -11,7 +11,7 @@ qjsonmodel, basic model data list connect json-rpc
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.0" 
+__version__ = "1.4" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -273,7 +273,8 @@ class ModelJson(QObjectListModel):
         params.append(self.m_fields)
         params.append(self.m_preferences)
         if self.boolSynchro:
-            result = self.m_qjsonnetwork.callDirect("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
+#            result = self.m_qjsonnetwork.callDirect("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
+            result = self.m_qjsonnetwork.recursiveCall("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
             reValue = result["data"]
             if reValue.__class__() == {}:
                if reValue.__contains__("result"):
@@ -292,7 +293,8 @@ class ModelJson(QObjectListModel):
         params.append(self.m_fields)
         params.append(self.m_preferences)
         if self.boolSynchro:
-            result = self.m_qjsonnetwork.callDirect("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
+#            result = self.m_qjsonnetwork.callDirect("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
+            result = self.m_qjsonnetwork.recursiveCall("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
             reValue = result["data"]
             if reValue.__class__() == {}:
                if reValue.__contains__("result"):

@@ -43,7 +43,7 @@ TabDesktop {
     function selectParty(mid){
         openBusy();
         myModelPhone.clear();
-        var data= QJsonNetworkQml.callDirect("my_pid_1","model.party.contact_mechanism.search_read",
+        var data= QJsonNetworkQml.recursiveCall("my_pid_1","model.party.contact_mechanism.search_read",
                                              [
                                                  ['party', '=', mid],0,null,
                                                  [],
