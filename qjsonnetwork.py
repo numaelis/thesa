@@ -250,22 +250,30 @@ class QJsonNetwork(QObject):
             if parseError.error==True:
                 resultObject["data"] = "error"
             else:
-                if document.isObject():
-                    jv=document.object()
-                    if jv.__contains__("result"):
-                        resultObject["data"] = jv
+                error = reply.error()
+#                                errorString = reply.errorString()
+                statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+                if QNetworkReply.NoError==error:
+                    if document.isObject():
+                        jv=document.object()
+                        if jv.__contains__("result"):
+                            resultObject["data"] = jv
+                        else:
+                            if self.boolRecursive:
+                                if jv.__contains__("error"):
+                                    if jv["error"].__class__() == []:
+                                        if jv["error"].__contains__("UserWarning") or jv["error"][0].__contains__("403") or jv["error"][0].__contains__("401"):
+                                            resultObject["data"] = jv
+                                        elif self.mpid == "open@":
+                                            resultObject["data"] = jv                                                
                     else:
-                        if self.boolRecursive and jv.__contains__("error"):
-                            if jv["error"].__class__() == []:
-                                if jv["error"].__contains__("UserWarning") or jv["error"][0].__contains__("403") or jv["error"][0].__contains__("401"):
-                                    resultObject["data"] = jv
-                                elif self.mpid == "open@":
-                                    resultObject["data"] = jv
+                        if document.isArray()==True:
+                            resultObject["data"] = document.array()
+                        else:
+                            resultObject["data"] = "error"
                 else:
-                    if document.isArray()==True:
-                        resultObject["data"] = document.array()
-                    else:
-                        resultObject["data"] = "error"
+                    if statusCode==401 or statusCode==403:
+                        resultObject["data"] = statusCode
     
             self.processingData(data, reply)# cath 
             return resultObject
@@ -346,8 +354,12 @@ class QJsonNetwork(QObject):
                             elif document.isObject():
                                 self.signalResponse.emit(self.mpid, 2, resultObject)
         else:
-            print(error, statusCode, errorString)
-            self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
+            print(error, statusCode, errorString)#, resultObject)
+            if self.boolRecursive==True:
+                if resultObject['status']!=401 and resultObject['status']!=403:
+                    self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
+            else:
+                self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
         
         self.boolRun=False
 #    void processingData(const QByteArray &data, QNetworkReply *reply);
@@ -435,7 +447,21 @@ class QJsonNetwork(QObject):
         result = self.callDirect(pid, method, par)
         while not_complete:
             reValue = result["data"]
-            if reValue.__class__() == {}:
+            if reValue.__class__()==0 and (reValue==401 or reValue==403):
+                mok = False
+                textinput = "Re-enter Password:"
+#                            if reValue["error"][0].__contains__("401"):
+#                                textinput = "Authorization Required \nRe-enter Password:"
+                inputPass, mok = QInputDialog.getText(None, "Password", textinput, QLineEdit.Password)
+                if mok:
+                    result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
+                else:
+                    not_complete = False
+                    result['data']='error'
+                    self.boolRecursive = False    
+                    root = self.m_engine.rootObjects()[0]
+                    QMetaObject.invokeMethod(root, "backLogin")
+            elif reValue.__class__() == {}:
                 if reValue.__contains__("result"):
                     if self.mpid != "open@":
                         not_complete = False
@@ -489,6 +515,7 @@ class QJsonNetwork(QObject):
                                 QMetaObject.invokeMethod(root, "backLogin")
                         else:
                             not_complete = False
+                    
                     else:
                         not_complete = False
             else:
