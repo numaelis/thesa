@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es_ES">
 <context>
+    <name>InputQZXing</name>
+    <message>
+        <source>Scan Code</source>
+        <translation>Escanear Código</translation>
+    </message>
+</context>
+<context>
     <name>Login</name>
     <message>
         <source>Re-Sign in Tryton</source>
@@ -64,6 +71,35 @@
     <message>
         <source>Message</source>
         <translation>Mensaje</translation>
+    </message>
+</context>
+<context>
+    <name>QJsonNetwork</name>
+    <message>
+        <source>Re-enter Password:</source>
+        <translation>Reingresar Contraseña:</translation>
+    </message>
+    <message>
+        <source>Incorrect, Re-enter Password:</source>
+        <translation>Incorrecto, Reingresar Contraseña:</translation>
+    </message>
+</context>
+<context>
+    <name>ScanQZXing</name>
+    <message>
+        <source>Scan</source>
+        <translation>Escanear</translation>
+    </message>
+    <message>
+        <source>Available Cameras:</source>
+        <translation>Cámaras Disponibles</translation>
+    </message>
+</context>
+<context>
+    <name>ThesaScanQZXing</name>
+    <message>
+        <source>error loading componet Thesa QZXing: </source>
+        <translation>error al cargar el componente Thesa QZXing</translation>
     </message>
 </context>
 <context>
@@ -171,6 +207,11 @@
     <message>
         <source>License</source>
         <translation>Licencia</translation>
+    </message>
+    <message>
+        <source>Warning!
+the last order could not be made</source>
+        <translation>la última orden no pudo ser realizada</translation>
     </message>
 </context>
 </TS>
