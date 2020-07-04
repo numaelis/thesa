@@ -247,13 +247,13 @@ class QJsonNetwork(QObject):
             
             resultObject["data"] = "error"
             document = QJsonDocument.fromJson(data, parseError)
-            if parseError.error==True:
-                resultObject["data"] = "error"
-            else:
-                error = reply.error()
-#                                errorString = reply.errorString()
-                statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-                if QNetworkReply.NoError==error:
+            
+            error = reply.error()
+            statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+            if QNetworkReply.NoError==error:
+                if parseError.error==True:
+                    resultObject["data"] = "error"
+                else:
                     if document.isObject():
                         jv=document.object()
                         if jv.__contains__("result"):
@@ -271,10 +271,10 @@ class QJsonNetwork(QObject):
                             resultObject["data"] = document.array()
                         else:
                             resultObject["data"] = "error"
-                else:
-                    if statusCode==401 or statusCode==403:
-                        resultObject["data"] = statusCode
-    
+            else:
+                if statusCode==401 or statusCode==403:
+                    resultObject["data"] = statusCode
+                
             self.processingData(data, reply)# cath 
             return resultObject
         else:
@@ -443,15 +443,17 @@ class QJsonNetwork(QObject):
     @Slot(str, str, QJsonArray, result = "QJsonObject")   
     def recursiveCall(self, pid, method, par):
         self.boolRecursive = True
-        not_complete = True
         result = self.callDirect(pid, method, par)
+        if result["data"].__contains__("result"):
+            if self.mpid != "open@":
+                self.boolRecursive = False    
+                return result
+        not_complete = True
         while not_complete:
             reValue = result["data"]
             if reValue.__class__()==0 and (reValue==401 or reValue==403):
                 mok = False
-                textinput = "Re-enter Password:"
-#                            if reValue["error"][0].__contains__("401"):
-#                                textinput = "Authorization Required \nRe-enter Password:"
+                textinput = self.tr("Re-enter Password:")
                 inputPass, mok = QInputDialog.getText(None, "Password", textinput, QLineEdit.Password)
                 if mok:
                     result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
@@ -470,7 +472,8 @@ class QJsonNetwork(QObject):
                             result = self.callDirect(pid, method, par)
                         else:
                             mok = False
-                            inputPass, mok = QInputDialog.getText(None, "Incorrect Password", "Incorrect Password\nRe-enter Password:", QLineEdit.Password)
+                            textinput = self.tr("Incorrect, Re-enter Password:")
+                            inputPass, mok = QInputDialog.getText(None, "Incorrect Password", textinput, QLineEdit.Password)
                             if mok:
                                 result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
                             else:
@@ -501,9 +504,9 @@ class QJsonNetwork(QObject):
                                 result['data']='error'
                         elif reValue["error"][0].__contains__("403") or reValue["error"][0].__contains__("401"):
                             mok = False
-                            textinput = "Re-enter Password:"
+                            textinput = self.tr("Re-enter Password:")
                             if reValue["error"][0].__contains__("401"):
-                                textinput = "Authorization Required \nRe-enter Password:"
+                                textinput = "Authorization Required \n"+textinput
                             inputPass, mok = QInputDialog.getText(None, "Password", textinput, QLineEdit.Password)
                             if mok:
                                 result = self.openConect(self.usuario, inputPass, self.mhost, self.mport, self.mdbase, True)
