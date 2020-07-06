@@ -3,13 +3,13 @@
 """
 Created on Fri Jan 17 23:31:52 2020
 this file is part the thesa: tryton client based PySide2(qml2)
-tools functions help
+systemnet
 """
 
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.0" 
+__version__ = "1.4" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -33,6 +33,23 @@ class SystemNet(QObject):
 #                                       "model.thesamodule.config.search_read", 
 #                                       [[],0,1,[],["internal_version"],preferences])
         
+        sysdir = QDir(self.mDir + QDir.separator() + "systemnet")
+        DIR_QML_SYS = sysdir.path()
+        DIR_QML_SYS_LOST = DIR_QML_SYS + QDir.separator() +"lost"
+        sysdirlost = QDir(DIR_QML_SYS_LOST)
+         #revisar folder systemnet
+        if sysdir.exists()==False:
+            s=QDir(self.mDir)
+            s.mkdir("systemnet")
+        #revisar folder systemnet lost
+        if sysdirlost.exists()==False:
+            sl=QDir(DIR_QML_SYS)
+            sl.mkdir("lost")
+        #find all files en folder net
+        listSysFiles = os.listdir(DIR_QML_SYS)
+        if "lost" in listSysFiles:
+            listSysFiles.remove("lost")
+            
         data = self.m_qjsonnetwork.callDirect("rechargeNetStep1",
                                        "model.thesamodule.thesamodule.search_read", 
                                        [[],0,1000,[],["checksum","filename"],preferences])
@@ -45,20 +62,8 @@ class SystemNet(QObject):
                 mapnet[file["filename"]] = file["checksum"]
                 mapids[file["filename"]] = file["id"]
                 listNetFiles.append(file["filename"])
-                
-            #revisar folder systemnet
-            sysdir = QDir(self.mDir + QDir.separator() + "systemnet")
-            if sysdir.exists()==False:
-                s=QDir(self.mDir)
-                s.mkdir("systemnet")
-            DIR_QML_SYS = sysdir.path()
-            listSysFiles = os.listdir(DIR_QML_SYS)
-            if "lost" in listSysFiles:
-                listSysFiles.remove("lost")
             #buscar faltantes en system y los updates
-            
             #buscar los que ya no deben estar
-            
             mapsysnet={}
             listToUpdate=set()#new or update
             listToErase=[]
@@ -107,13 +112,14 @@ class SystemNet(QObject):
                 self.m_qjsonnetwork.signalResponse.emit("systemnet",33,{"error":errors})    
             
             #erase
-            DIR_QML_SYS_LOST = DIR_QML_SYS + QDir.separator() +"lost"
-            sysdirlost = QDir(DIR_QML_SYS_LOST)
-            if sysdirlost.exists()==False:
-                sl=QDir(DIR_QML_SYS)
-                sl.mkdir("lost")
             for file in listToErase:
                 print("moviendo", file)
                 shutil.move(DIR_QML_SYS + QDir.separator() +file, DIR_QML_SYS_LOST + QDir.separator()+file)
             
-            
+        else:
+            #erase all files, no conexion con thesa module
+            for file in listSysFiles:
+                print("moviendo", file)
+                shutil.move(DIR_QML_SYS + QDir.separator() +file, DIR_QML_SYS_LOST + QDir.separator()+file)
+            self.m_qjsonnetwork.signalResponse.emit("systemnet",34,{"error":""})    
+        

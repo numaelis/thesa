@@ -213,5 +213,9 @@
 the last order could not be made</source>
         <translation>la última orden no pudo ser realizada</translation>
     </message>
+    <message>
+        <source>error get files from thesamodule, is thesamodule installed on the server?</source>
+        <translation type="unfinished">error al descargar archivos desde thesamodule, ¿thesamodule esta instalado en el servidor?</translation>
+    </message>
 </context>
 </TS>

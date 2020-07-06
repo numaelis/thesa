@@ -452,7 +452,7 @@ ApplicationWindow {
     }
     function backLogin(){
         boolLogin=false;
-        MessageLib.showMessage("Warning!\nthe last order could not be made", mainroot);
+        MessageLib.showMessage(qsTr("Warning!\nthe last order could not be made"), mainroot);
     }
 
     function closeSession(){
@@ -544,6 +544,10 @@ ApplicationWindow {
             if(option===33){
                 MessageLib.showMessageLog(qsTr("error update files qml: ")+JSON.stringify(data),mainroot);
                 boolBlocking=false;
+            }
+            if(option===34){
+                MessageLib.showMessageLog(qsTr("error get files from thesamodule, is thesamodule installed on the server?"),mainroot);
+                //boolBlocking=false;
             }
         }
 
