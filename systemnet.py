@@ -26,7 +26,7 @@ class SystemNet(QObject):
         
     signalRespuestaData = Signal(str, int, "QJsonObject")#QJsonObject = dict
     
-    @Slot("QJsonObject")    
+    @Slot("QJsonObject", result=bool)    
     def rechargeNet(self, preferences):
         #[[],0,200,[],["checksum","filename"],{}])
 #        data = self.m_qjsonnetwork.callDirect("version internal",
@@ -109,17 +109,19 @@ class SystemNet(QObject):
                         qfile.write(bafile)
                         qfile.close()
             if len(errors)>0:
-                self.m_qjsonnetwork.signalResponse.emit("systemnet",33,{"error":errors})    
+                self.m_qjsonnetwork.signalResponse.emit("systemnet",33,{"error":errors})  
+                return False
             
             #erase
             for file in listToErase:
                 print("moviendo", file)
                 shutil.move(DIR_QML_SYS + QDir.separator() +file, DIR_QML_SYS_LOST + QDir.separator()+file)
-            
+            return True
         else:
             #erase all files, no conexion con thesa module
             for file in listSysFiles:
                 print("moviendo", file)
                 shutil.move(DIR_QML_SYS + QDir.separator() +file, DIR_QML_SYS_LOST + QDir.separator()+file)
             self.m_qjsonnetwork.signalResponse.emit("systemnet",34,{"error":""})    
+            return False
         

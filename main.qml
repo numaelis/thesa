@@ -667,6 +667,9 @@ ApplicationWindow {
     function errorBackg(){
         MessageLib.showMessage(qsTr("Background Image Is Damaged"), mainroot);
     }
+    ListModel{
+        id:blankModel
+    }
 
     RowLayout {
         id: container
@@ -677,6 +680,11 @@ ApplicationWindow {
         property QtObject component1
         property QtObject component2
         property QtObject menumodel
+        function modelblank(){
+            menulistdrawer.aliasmodel=blankModel;
+            menulist.aliasmodel=blankModel;
+        }
+
         function createMenuComponents(){
 
             if(setting.typesysmodule){
@@ -694,13 +702,14 @@ ApplicationWindow {
             if (menumodel == null) {
                 // Error Handling
                 MessageLib.showMessage(qsTr("error loading side menu: ")+component1.errorString(), mainroot);
-            }
-            if(boolDrawer){
-                menulistdrawer.aliasmodel=menumodel
+                container.modelblank();
             }else{
-                menulist.aliasmodel=menumodel
+                if(boolDrawer){
+                    menulistdrawer.aliasmodel=menumodel
+                }else{
+                    menulist.aliasmodel=menumodel
+                }
             }
-
             if(setting.typesysmodule){
                 component2 = Qt.createComponent("file:///"+DirParent+"/"+dirSystem+"/Desktop.qml");
             }else{
@@ -914,12 +923,21 @@ ApplicationWindow {
         onTriggered: {
             boolBlocking=true;
             getPreferences();
+            var boolUpdateSystemNet = false;
             if(setting.typesysmodule){
-                updateSystemNet();
+                boolUpdateSystemNet = updateSystemNet();
             }
             tbackground.start();
             Tools.selectSystemTranslation(setting.translate, setting.typesysmodule);
-            createMenuDesktop();
+            if(setting.typesysmodule){
+                if(boolUpdateSystemNet){
+                    createMenuDesktop();
+                }else{
+                    container.modelblank();
+                }
+            }else{
+                createMenuDesktop();
+            }
             boolSession=true;
             //add model generic
             ModelManagerQml.addModel("ModelGeneric","ProxyModelGeneric");
@@ -963,7 +981,7 @@ ApplicationWindow {
     }
 
     function updateSystemNet(){
-        SystemNet.rechargeNet(preferences);
+        return SystemNet.rechargeNet(preferences);
     }
     function _messageWarningPySide(){
             //last call 403 function with arguments
