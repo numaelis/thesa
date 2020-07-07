@@ -1,7 +1,7 @@
 Version 1.0 - 2020-04-16
 * Initial release
 
-Version 1.2
+Version 1.2 - 2020-05-09
 * add calldirect to models
 * add handle qt messages and skip repeat and close busy in warning
 * data model fix fields format and new field
@@ -10,10 +10,11 @@ Version 1.2
 * platform movil only system module thesamodule 
 * add support n places format Decimal
 
-Version 1.4
+Version 1.4 - 2020-07-06
 * add support QZXing: Qt/QML wrapper library for the ZXing (zebras crossing) barcode image processing library.(https://github.com/ftylitak/qzxing)
 * fix clear component cache in close session when error in desktop
 * add functions format datetime
 * add variable maxIntervalBusy
 * add recursiveCall method. recurrence in callDirect, for session timeout, userwarning. use this instead of callDirect.
+* systemnet: emit error thesamodule, delete cache, skip warning
      
