@@ -1,0 +1,5 @@
+module TrytonControls
+
+ControlOne2Many 1.0 ControlOne2Many.qml
+ControlMany2One 1.0 ControlMany2One.qml
+

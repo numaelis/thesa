@@ -23,7 +23,7 @@ Development:
         The menu and tabs are dynamically loaded at the moment of starting the session. they are destroyed at the time of closing session
         if you need to translate into several languages you can use the lupdate, linguist and lrelease tools. and after generating the .qm files they are placed in the same folder (system). In order for you to use a certain language in the tabs you must have already generated one in the corelocale folder
 
-        If using qtcreator(qt framework) to edit or create the qml files, it is recommended to create a link to thesatools folder and copy this link into the qt framework qml libraries example: /Qt5.12.3/5.12.3/gcc_64/qml/
+        If using qtcreator(qt framework) to edit or create the qml files, it is recommended to create a link to thesatools, TrytonControls and QZXing folders and copy this links into the qt framework qml libraries, example: /Qt5.12.3/5.12.3/gcc_64/qml/
         
     icons:
         tesha uses font awesome for icons in interface, see cheatsheet: https://fontawesome.com/cheatsheet/free/solid
@@ -31,6 +31,9 @@ Development:
 
     thesatools:
         has added some custom widgets (qt quick controls 2).  Are imported with: import thesatools 1.0
+    
+    TrytonControls:
+        has added some custom widgets for facilitate interaction with tryton. Are imported with: import TrytonControls 1.0
     
     properties created in native code and can be called from qml:
     <see doc...>

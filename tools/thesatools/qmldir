@@ -14,6 +14,7 @@ InputDocumentCube 1.0 InputDocumentCube.qml
 InputDocumentHorizontal 1.0 InputDocumentHorizontal.qml
 InputLabelCube 1.0 InputLabelCube.qml
 InputLabelHorizontal 1.0 InputLabelHorizontal.qml
+InputSearchPopupList 1.0 InputSearchPopupList.qml
 ListViewEditable 1.0 ListViewEditable.qml
 MessageLib 1.0 messages.js
 Messages 1.0 Messages.qml

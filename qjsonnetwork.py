@@ -166,6 +166,10 @@ class QJsonNetwork(QObject):
             redirectUrl = possibleRedirectUrl
         return redirectUrl
     
+    @Slot(result = bool)    
+    def isRunning(self):
+        return self.boolRun
+    
     @Slot(str, str, str, str, str)
     @Slot(str, str, str, str, str, bool)
     def openConect(self, usu, passw, host, port, dbase, direct  = False):

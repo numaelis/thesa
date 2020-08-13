@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.2
 
 Button{
-    id:brecarga
+    id:bawe
     property string textToolTip: ""
     font.family:fawesome.name
     font.italic: false
