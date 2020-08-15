@@ -21,6 +21,7 @@ Item{
     property int maximumLineCount: 1
     property var value: {"id":-1,"name":""}
     property bool boolSearch: true
+    property alias textSearch: tfsearch.text
     signal textChanged(string text)
     signal clear()
 
@@ -176,6 +177,9 @@ Item{
         padding: 1
         // modal: true
         //focus: true
+        onClosed: {
+            pmodel.clear();
+        }
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         contentItem: ListView {
             id:popuplist
@@ -185,7 +189,6 @@ Item{
             delegate: pdelegate
             //currentIndex: control.highlightedIndex
             ScrollIndicator.vertical: ScrollIndicator { }
-
         }
     }
 }

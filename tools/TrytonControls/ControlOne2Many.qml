@@ -56,6 +56,8 @@ InputSearchPopupList{
                         execTimerDelaySearch();// textChanged last
                     }
                 }
+            }else{
+                textSearch="";
             }
         }else{
             boolLastCall = true;
