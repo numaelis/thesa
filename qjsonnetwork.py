@@ -168,6 +168,8 @@ class QJsonNetwork(QObject):
     
     @Slot(result = bool)    
     def isRunning(self):
+        if self.boolRecursive==True:
+            return True
         return self.boolRun
     
     @Slot(str, str, str, str, str)
