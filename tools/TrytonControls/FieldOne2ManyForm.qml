@@ -28,12 +28,11 @@ InputSearchPopupList{
     property int limit: 500
     property bool boolLastCall: false
     onTextChanged: {
-        var dataList=[];
         var domainplus = [];
         domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
         domainplus.push(domain);
         if(!QJsonNetworkQml.isRunning()){
-            var result= QJsonNetworkQml.recursiveCall("@co2m",
+            var result= QJsonNetworkQml.recursiveCall("@co2m"+countSearch,
                                                       "model."+modelName+".search_read",
                                                       [
                                                           domainplus,
@@ -45,6 +44,7 @@ InputSearchPopupList{
                                                       ]
                                                       );
             if(result.data!=="error"){
+                var dataList=[];
                 var resultArray = result.data.result;
                 for(var i=0,len=resultArray.length;i<len;i++){
                     dataList.push({"id":resultArray[i].id, "name":resultArray[i].rec_name});

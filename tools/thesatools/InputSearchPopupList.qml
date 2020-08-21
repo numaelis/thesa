@@ -11,7 +11,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 
-Item{
+Control{
     id:control
     width: 120
     height: 40
@@ -19,6 +19,7 @@ Item{
     property int maxItemListHeight: 5
     property bool boolValueAssigned: false
     property int maximumLineCount: 1
+    property int countSearch: 0
     property var value: {"id":-1,"name":""}
     property bool boolSearch: true
     property alias textSearch: tfsearch.text
@@ -60,9 +61,10 @@ Item{
         interval: 300
         onTriggered: {
             if(tfsearch.text==""){
-                popup.close()
+                popup.close();
             }else{
-                popup.open()
+                popup.open();
+                countSearch = countSearch>100?0:countSearch+1;
                 control.textChanged(tfsearch.text);
             }
         }
@@ -95,14 +97,16 @@ Item{
             font.family:fawesome.name
             font.bold: false
             font.italic: false
-            font.pixelSize:14// height-2
+            font.pixelSize:16// height-2
             verticalAlignment: Text.AlignVCenter
+            color: marea.pressed?mainroot.Material.accent:mainroot.Material.foreground
             MouseArea{
+                id:marea
                 anchors.fill: parent
                 visible: boolValueAssigned
                 onClicked: {
                     value = {"id":-1,"name":""}
-                    boolValueAssigned=false;
+                    boolValueAssigned = false;
                     tfsearch.forceActiveFocus();
                     clear(); //emit signal clear
                 }
