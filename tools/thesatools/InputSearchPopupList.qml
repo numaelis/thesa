@@ -20,10 +20,14 @@ Control{
     property bool boolValueAssigned: false
     property int maximumLineCount: 1
     property int countSearch: 0
-    property var value: {"id":-1,"name":""}
+    property bool textFit: true
+//    property var value//:({})
+    property int valueId: -1
+    property string valueName: null
     property bool boolSearch: true
     property alias textSearch: tfsearch.text
-    signal textChanged(string text)
+    signal textChanged(string text)//search
+    signal valueChanged(int id, string name);
     signal clear()
 
     function updateModel(dataList){
@@ -42,14 +46,22 @@ Control{
         setValue(data);
     }
 
-    function setValue(data){// format -> {"id":-1,"name":""}
-        value = data; //valueChanged(); // emit signal new value
+    function initValue(values){// format -> {"id":-1,"name":""}
+        valueId=values.id;
+        valueName=values.name;
+        //no emit signal
+    }
+
+    function setValue(values){// format -> {"id":-1,"name":""}
+        valueId=values.id;
+        valueName=values.name;
         boolValueAssigned=true;
-        lname.text = data.name;
+        lname.text = values.name;
         popup.close();
         boolSearch=false;
         tfsearch.text="";
         ttruesearch.start();
+        valueChanged(values.id, values.name);//emit signal onValueChanged(id,name)
     }
     Timer{
         id:ttruesearch
@@ -84,7 +96,7 @@ Control{
             anchors{fill:parent;rightMargin: iconq.width+4}
             maximumLineCount: control.maximumLineCount
             elide: Label.ElideRight
-            fontSizeMode: Text.Fit
+            fontSizeMode: textFit?Text.Fit:Text.FixedSize
             minimumPixelSize: 10
             verticalAlignment: Text.AlignVCenter
         }
@@ -105,10 +117,12 @@ Control{
                 anchors.fill: parent
                 visible: boolValueAssigned
                 onClicked: {
-                    value = {"id":-1,"name":""}
+                    valueId=-1;
+                    valueName=null;
                     boolValueAssigned = false;
                     tfsearch.forceActiveFocus();
                     clear(); //emit signal clear
+                    valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
                 }
             }
         }
@@ -151,7 +165,7 @@ Control{
                         elide: Text.ElideRight
                         maximumLineCount: control.maximumLineCount
                         verticalAlignment: Text.AlignVCenter
-                        fontSizeMode: Text.Fit
+                        fontSizeMode: textFit?Text.Fit:Text.FixedSize
                         minimumPixelSize: 10
                     }
                 }
@@ -183,6 +197,7 @@ Control{
         //focus: true
         onClosed: {
             pmodel.clear();
+            implicitHeight = control.implicitHeight
         }
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         contentItem: ListView {
