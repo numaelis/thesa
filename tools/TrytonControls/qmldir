@@ -1,5 +1,6 @@
 module TrytonControls
 
-FieldOne2ManyForm 1.0 FieldOne2ManyForm.qml
-FieldMany2OneForm 1.0 FieldMany2OneForm.qml
+FieldOne2Many 1.0 FieldOne2Many.qml
+FieldMany2One 1.0 FieldMany2One.qml
+TreeView 1.0 TreeView.qml
 

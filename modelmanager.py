@@ -30,7 +30,7 @@ class ModelManager(QObject):
         self.m_listProxyLast=[]
         self.m_listProperty=[] #QStringList 
         
-    @Slot(str, str)    
+    @Slot(str, str, result="QVariantMap")    
     def addModel(self, model, proxy):
         modeljson = ModelJson(model.lower(),self.parent())
         proxyjson = ProxyModelJson(self.parent())
@@ -73,7 +73,8 @@ class ModelManager(QObject):
             self.m_listModelLast.pop(idel)
             del obj
 
-        print("iniciando model...")
+        print("init model...")
+        return {"model":modeljson, "proxy":proxyjson}
     
     @Slot()    
     def deleteModels(self):

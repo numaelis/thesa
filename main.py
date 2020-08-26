@@ -28,7 +28,7 @@ from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine#, QQuickStyle
 from PySide2.QtWidgets import QMessageBox
 
-ThesaVersion = "1.4"
+ThesaVersion = "1.6"
 
 engine_point=None
 
