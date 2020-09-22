@@ -60,6 +60,7 @@ ApplicationWindow {
     property var nameShortDays: Tools.calendarShortNamesDays();
     property var nameLongMonths: Tools.calendarLongNamesMonths();
     property int maxIntervalBusy: 30000 //milisecunds
+    property int _intCountModels: 0
 
     visibility:  Window.Maximized
     title: qsTr("thesa [tryton client]")
@@ -671,6 +672,12 @@ ApplicationWindow {
         id:blankModel
     }
 
+    Timer{
+        id:tactionCacheOnCompleted
+        interval:200
+        onTriggered: {SystemNet.actionCacheOnCompleted();}
+    }
+
     RowLayout {
         id: container
         anchors.fill: parent
@@ -725,6 +732,11 @@ ApplicationWindow {
             if (desktop == null) {
                 // Error Handling
                 MessageLib.showMessageLog(qsTr("error loading desktop: ")+component2.errorString(), mainroot);
+            }else{
+                if(setting.typesysmodule){
+                    tactionCacheOnCompleted.start();
+                }
+
             }
 
         }
@@ -991,6 +1003,10 @@ ApplicationWindow {
         }
     function messageWarning(msg){
         MessageLib.showMessageLog(msg,mainroot);
+    }
+    function _getNewNumber(){
+        _intCountModels+=1;
+        return _intCountModels;
     }
 
     Settings {

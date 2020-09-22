@@ -9,7 +9,7 @@ systemnet
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.4" 
+__version__ = "1.6" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -18,22 +18,53 @@ import os
 import hashlib
 import shutil
 
+_dirSystem = 'systemnet'
+
 class SystemNet(QObject):
     def __init__(self, jsonnet, parent = None):
         QObject.__init__(self, parent)
         self.m_qjsonnetwork = jsonnet
         self.mDir=QDir.currentPath()
+        self.actionCache_="notDelete"#"deleteOnCompleted" version 1.1 up thesamodule
         
     signalRespuestaData = Signal(str, int, "QJsonObject")#QJsonObject = dict
     
+    @Slot(result=bool)    
+    def actionCacheOnCompleted(self):#version 1.1 up thesamodule
+        boolAction=False
+        if self.actionCache_ == "deleteOnCompleted":
+            sysdir = QDir(self.mDir + QDir.separator() + _dirSystem)
+            DIR_QML_SYS = sysdir.path()
+            for the_file in os.listdir(DIR_QML_SYS):
+               file_path = os.path.join(DIR_QML_SYS, the_file)
+               try:
+                   if os.path.isfile(file_path):
+                       if ".qml" in file_path:
+                           os.unlink(file_path)
+                   elif os.path.isdir(file_path): shutil.rmtree(file_path)
+                   boolAction=True
+               except Exception as e:
+                   boolAction=False
+                   print(e)
+        else:
+            boolAction = True
+        return boolAction
+    
     @Slot("QJsonObject", result=bool)    
     def rechargeNet(self, preferences):
-        #[[],0,200,[],["checksum","filename"],{}])
-#        data = self.m_qjsonnetwork.callDirect("version internal",
-#                                       "model.thesamodule.config.search_read", 
-#                                       [[],0,1,[],["internal_version"],preferences])
-        
-        sysdir = QDir(self.mDir + QDir.separator() + "systemnet")
+        #version 1.1 up thesamodule
+        data = self.m_qjsonnetwork.callDirect("version internal",
+                                       "model.thesamodule.config.search_read", 
+                                       [[],0,1,[],["internal_version"],preferences])
+        if not data["data"]=="error":
+            if float(data["data"]["result"][0]["internal_version"]) > 1.0:
+                data = self.m_qjsonnetwork.callDirect("cachedel",
+                                       "model.thesamodule.config.search_read", 
+                                       [[],0,1,[],["deletecache"],preferences])
+                if not data["data"]=="error":
+                    if data["data"]["result"][0]["deletecache"]==True:
+                        self.actionCache_ = "deleteOnCompleted"
+        sysdir = QDir(self.mDir + QDir.separator() + _dirSystem)
         DIR_QML_SYS = sysdir.path()
         DIR_QML_SYS_LOST = DIR_QML_SYS + QDir.separator() +"lost"
         sysdirlost = QDir(DIR_QML_SYS_LOST)
