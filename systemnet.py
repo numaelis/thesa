@@ -64,6 +64,8 @@ class SystemNet(QObject):
                 if not data["data"]=="error":
                     if data["data"]["result"][0]["deletecache"]==True:
                         self.actionCache_ = "deleteOnCompleted"
+                    else:
+                        self.actionCache_ = "notDelete"
         sysdir = QDir(self.mDir + QDir.separator() + _dirSystem)
         DIR_QML_SYS = sysdir.path()
         DIR_QML_SYS_LOST = DIR_QML_SYS + QDir.separator() +"lost"
