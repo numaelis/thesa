@@ -12,6 +12,8 @@ StackDesktop {
         tabs: [
             {name: qsTr("Products and Price"), icon: "\uf58d"},
             {name: qsTr("Statistics"), icon: "\uf080"},
+            {name: qsTr("Party Call"), icon: "\uf554"},
+            {name: qsTr("Formats"), icon: "\uf0c3"},
         ]
 
         Products{
@@ -21,33 +23,23 @@ StackDesktop {
         Statistics{
 
         }
-    }
-
-    StackSubDesktop{
-
-        tabs: [{name: "", icon: ""}]
 
         Party {
 
         }
 
-    }
-
-    StackSubDesktop{
-
-        tabs: [{name: "", icon: ""}]
-
         InvoicesTestFormats {
 
         }
-
     }
+
 
     StackSubDesktop{
 
         tabs: [
             {name: "Picker Image", icon: "\uf1c5"},
-            {name: "File", icon: "\uf56f"}
+            {name: "File", icon: "\uf56f"},
+            {name: "QZXing Scan Code", icon: "\uf030"}
         ]
 
         TestGetFile {
@@ -58,13 +50,22 @@ StackDesktop {
 
         }
 
+        TestQZXing {
+
+        }
+
     }
 
     StackSubDesktop{
 
-        tabs: [{name: "", icon: ""}]
+        tabs: [{name: "Fields", icon: ""},
+            {name: "Tree View", icon: ""}]
 
-        TestQZXing {
+        TestFields {
+
+        }
+
+        TestTreeView {
 
         }
 

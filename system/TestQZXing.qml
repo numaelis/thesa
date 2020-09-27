@@ -12,6 +12,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import thesatools 1.0
+import TrytonControls 1.0
 
 TabDesktop {
     id:testQZXing
@@ -38,6 +39,7 @@ TabDesktop {
                 labelcode.text=tag;
             }
         }
+
     }
 
 }

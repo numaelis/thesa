@@ -4,23 +4,17 @@ ListModel {
     id: panelModel
 
     ListElement {
-        name: qsTr("test Products")
+        name: qsTr("test Basic")
         icon: "\uf187"
     }
+
     ListElement {
-        name: qsTr("test Party Call")
-        icon: "\uf554"
-    }
-    ListElement {
-        name: qsTr("test Formats")
-        icon: "\uf0c3"
-    }
-    ListElement {
-        name: qsTr("test Files")
+        name: qsTr("test Other")
         icon: "\uf302"
     }
+
     ListElement {
-        name: qsTr("test Scan Code")
-        icon: "\uf030"
+        name: qsTr("Tryton Controls")
+        icon: "\uf0f4"
     }
 }

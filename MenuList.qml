@@ -56,7 +56,7 @@ FocusScope {
                 contentItem: Item{
                     anchors.fill: parent
 
-                    Text {
+                    Label {
                         id:images
                         width: 30
                         height: 30
@@ -68,14 +68,15 @@ FocusScope {
                         color: idele.Material.accent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        anchors{horizontalCenter: parent.horizontalCenter;top:parent.top;topMargin: 10}
+                        anchors{horizontalCenter: parent.horizontalCenter;top:parent.top;topMargin: 8}
                         //wrapMode: Text.Wrap
                     }
-                    Text {
+                    Label {
                         id:texto
                         width: idele.width
+                        height: 20
                         fontSizeMode: Text.Fit
-                        minimumPixelSize: 3
+                        minimumPixelSize: 8
                         text: idele.text
                         font: idele.font
                         color: idele.enabled ? idele.Material.primaryTextColor
@@ -83,7 +84,7 @@ FocusScope {
                         elide: Text.ElideRight
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom;bottomMargin: 5}
+                        anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom;bottomMargin: 2}
                         //wrapMode: Text.Wrap
                     }
                 }
