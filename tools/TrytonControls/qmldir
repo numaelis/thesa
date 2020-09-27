@@ -3,4 +3,5 @@ module TrytonControls
 FieldOne2Many 1.0 FieldOne2Many.qml
 FieldMany2One 1.0 FieldMany2One.qml
 TreeView 1.0 TreeView.qml
+FiltersInput 1.0 FiltersInput.qml
 
