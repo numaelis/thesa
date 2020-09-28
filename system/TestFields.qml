@@ -20,7 +20,7 @@ TabDesktop {
     onFirstTimeTab:{
     }
 
-    ColumnLayout{
+    Column{
         anchors.fill: parent
         //Layout.fillWidth: true
         Label{
@@ -30,20 +30,26 @@ TabDesktop {
 
         RowLayout{
             //Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter
+           // Layout.alignment: Qt.AlignHCenter
             spacing: 6
+
             Label{
                 text:"Party:"
                 font.pixelSize:20
+                height: myparty.height
+                verticalAlignment: Qt.AlignVCenter
             }
+
             FieldMany2One{
                 id:myparty
                 enabled: true
-                width: 250
+                width: 400
                 modelName: "party.party"
                 domain: []
                 order: []
                 limit: 500
+                maxItemListHeight:15
+                //textFit:false
                 font.pixelSize:20
                 onClear:{
                     console.log("clear value");
