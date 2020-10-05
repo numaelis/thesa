@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.4"
+//__version__ = "1.6"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -82,7 +82,10 @@ ApplicationWindow {
 
     onClosing:{
         close.accepted = false;
-        thesaClosing();
+        questionClose();
+    }
+    function questionClose(){
+        dquestionclose.open();
     }
 
     function thesaClosing(){
@@ -314,6 +317,15 @@ ApplicationWindow {
                                         }
                                     }
                                     MenuItem {
+                                        text: "Black Silver"
+                                        onTriggered: {
+                                            setting.theme = Material.Dark;
+                                            setting.accent = "silver";//Qt.lighter("orange");
+                                            setting.primary = "silver";
+                                            MessageLib.showMessage(qsTr("maybe you have to restart the application"), mainroot);
+                                        }
+                                    }
+                                    MenuItem {
                                         text: "Light Blue"
                                         onTriggered: {
                                             setting.theme = Material.Light;
@@ -328,6 +340,15 @@ ApplicationWindow {
                                             setting.theme = Material.Light;
                                             setting.accent = "#41cd52";
                                             setting.primary = "#41cd52";
+                                            MessageLib.showMessage(qsTr("maybe you have to restart the application"), mainroot);
+                                        }
+                                    }
+                                    MenuItem {
+                                        text: "Light Silver"
+                                        onTriggered: {
+                                            setting.theme = Material.Light;
+                                            setting.accent = "silver";
+                                            setting.primary = "silver";
                                             MessageLib.showMessage(qsTr("maybe you have to restart the application"), mainroot);
                                         }
                                     }
@@ -811,10 +832,13 @@ ApplicationWindow {
         }
     }
     function openBusy(){
-        ObjectMessageLast.setMessage("");
         timerBlockingFalse.stop();
         boolBlocking=true;
     }
+    function clearMessages(){
+        ObjectMessageLast.clearMessages();//prevent repetitions of warnings
+    }
+
     function closeBusy(){
         timerBlockingFalse.restart();
     }
@@ -1119,6 +1143,25 @@ ApplicationWindow {
             }
         }
 
+    }
+    Dialog {
+        id:dquestionclose
+        standardButtons: Dialog.Ok|Dialog.Cancel
+        width: 250
+        height: 200
+        //title: "close"
+        closePolicy: Dialog.NoAutoClose
+        anchors.centerIn: parent
+        onAccepted: thesaClosing();
+        modal: true
+        Label {
+            anchors.centerIn: parent
+            textFormat: Label.RichText
+            font.pixelSize: 20
+            font.bold: true
+            color: mainroot.Material.accent
+            text: qsTr("¿Close thesa?")
+        }
     }
     Dialog {
         id:dcredits

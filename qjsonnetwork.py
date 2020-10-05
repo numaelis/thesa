@@ -10,7 +10,7 @@ qjsonnetwork is basic connector json-rpc async or sync
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.4" 
+__version__ = "1.6" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -71,6 +71,10 @@ class QJsonNetwork(QObject):
         
     def setEngine(self, engine):#QQmlApplicationEngine *engine=nullptr);
         self.m_engine = engine
+    
+    def clearMessagesWarning(self):
+        root = self.m_engine.rootObjects()[0]
+        QMetaObject.invokeMethod(root, "clearMessages")
         
     @Slot()
     def saveLastCall(self):
@@ -205,6 +209,7 @@ class QJsonNetwork(QObject):
     
     @Slot(str, str, QJsonArray)
     def call(self, pid, method, par):
+        self.clearMessagesWarning()
         if self.boolRun==False:
             self.boolRun=True
             self.boolDirect=False
@@ -235,6 +240,8 @@ class QJsonNetwork(QObject):
                 
     @Slot(str, str, QJsonArray, result = "QJsonObject")    
     def callDirect(self, pid, method, par):
+        if self.boolRecursive == False:
+            self.clearMessagesWarning()
         resultObject={}
         if self.boolRun==False:
             self.boolRun=True
@@ -448,6 +455,7 @@ class QJsonNetwork(QObject):
     
     @Slot(str, str, QJsonArray, result = "QJsonObject")   
     def recursiveCall(self, pid, method, par):
+        self.clearMessagesWarning()
         self.boolRecursive = True
         result = self.callDirect(pid, method, par)
         if result["data"].__contains__("result"):

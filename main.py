@@ -22,7 +22,7 @@ from systemnet import SystemNet
 
 import sys
 
-from PySide2.QtCore import Property, QUrl, QDir, QCoreApplication, Qt, QGenericArgument, QObject, QMetaObject, QJsonValue, QGenericReturnArgument, QSettings, QLocale, Slot
+from PySide2.QtCore import Property, QUrl, QDir, QCoreApplication, Qt, QGenericArgument, QObject, QMetaObject, QJsonValue, QGenericReturnArgument, QSettings, QLocale, Slot, QJsonArray
 from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine#, QQuickStyle
@@ -35,13 +35,19 @@ engine_point=None
 class ObjectMessaje(QObject):
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
-        self.message = ""
+        self.messages = []
+    @Slot()
+    def clearMessages(self):
+        self.messages=[]
+#    @Slot(QJsonArray)
+#    def setMessage(self, msgs):
+#        self.messages=msgs
     @Slot(str)
-    def setMessage(self, msg):
-        self.message=msg
-    @Slot(result=str)
-    def getMessage(self):
-        return self.message
+    def addMessage(self, msg):
+        self.messages.append(msg)
+    @Slot(result=QJsonArray)
+    def getMessages(self):
+        return self.messages
 mObjMsg = ObjectMessaje()
 
 def qt_message_handler(mode, context, message):
@@ -54,10 +60,10 @@ def qt_message_handler(mode, context, message):
         if message.find(".qml")!=-1:
             root = engine_point.rootObjects()[0]
             QMetaObject.invokeMethod(root, "closeBusy")
-            if mObjMsg.getMessage()!=message:
+            if not message in mObjMsg.getMessages():
                 root.setProperty("argsFucntionLastCall",["warning:\n"+message])
                 QMetaObject.invokeMethod(root, "_messageWarningPySide")
-        mObjMsg.setMessage(message)
+        mObjMsg.addMessage(message)
     elif mode == QtCore.QtCriticalMsg:
         mode = 'critical'
     elif mode == QtCore.QtFatalMsg:
