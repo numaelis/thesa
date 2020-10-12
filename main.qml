@@ -571,6 +571,15 @@ ApplicationWindow {
                 MessageLib.showMessageLog(qsTr("error get files from thesamodule, is thesamodule installed on the server?"),mainroot);
                 //boolBlocking=false;
             }
+            if(option===12){
+                MessageLib.showMessageLog(qsTr("this user has no assigned tabs - qml files"),mainroot);
+            }
+            if(option===13){
+                MessageLib.showMessageLog(qsTr("error trying to request qml files"),mainroot);
+            }
+            if(option===15){
+                MessageLib.showMessageLog(qsTr("the folder assigned to this user is empty"),mainroot);
+            }
         }
 
         if(option===2){
@@ -1004,6 +1013,7 @@ ApplicationWindow {
             if(data.data!=="error"){
                 preferencesAll = data.data.result;
                 psignature=preferencesAll.name;
+                //console.log(JSON.stringify(preferencesAll))
             }
         }
     }
@@ -1017,7 +1027,7 @@ ApplicationWindow {
     }
 
     function updateSystemNet(){
-        return SystemNet.rechargeNet(preferences);
+        return SystemNet.rechargeNet(preferences, preferencesAll.name);
     }
     function _messageWarningPySide(){
             //last call 403 function with arguments

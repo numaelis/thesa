@@ -23,8 +23,8 @@ Control{
         var text = tffilters.text
         //si texto no tiene : usar rec_name si hay espacios varios rec_name
         var listData=[];
-        listData.push(["name","ilike","%"+text+"%"])
-        return [listData];
+        listData.push(["rec_name","ilike","%"+text+"%"])
+        return listData;
     }
     RowLayout{
         anchors.fill: parent

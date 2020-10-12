@@ -11,7 +11,7 @@ qjsonmodel, basic model data list connect json-rpc
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.4" 
+__version__ = "1.6" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 

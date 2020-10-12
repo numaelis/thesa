@@ -89,7 +89,7 @@ Control{
     Item {
         id: tas
         width: control.width
-        height: control.height-10
+        height: control.height//-10
         visible: boolValueAssigned
         Label{
             id:lname
@@ -207,7 +207,8 @@ Control{
             model: popup.visible ? pmodel : null
             delegate: pdelegate
             //currentIndex: control.highlightedIndex
-            ScrollIndicator.vertical: ScrollIndicator { }
+            //ScrollIndicator.vertical: ScrollIndicator { }
+            ScrollBar.vertical: ScrollBar {policy: popuplist.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
         }
     }
 }

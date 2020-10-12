@@ -21,7 +21,7 @@ import "../thesatools"
 // signal clear()
 
 InputSearchPopupList{
-    id:controlo2m
+    id:controlm2o
     property string modelName: ""
     property var domain:[]
     property var order:[]
@@ -32,7 +32,7 @@ InputSearchPopupList{
         domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
         domainplus.push(domain);
         if(!QJsonNetworkQml.isRunning()){
-            var result= QJsonNetworkQml.recursiveCall("@co2m"+countSearch,
+            var result= QJsonNetworkQml.recursiveCall("@cm2o"+countSearch,
                                                       "model."+modelName+".search_read",
                                                       [
                                                           domainplus,

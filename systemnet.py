@@ -26,6 +26,7 @@ class SystemNet(QObject):
         self.m_qjsonnetwork = jsonnet
         self.mDir=QDir.currentPath()
         self.actionCache_="notDelete"#"deleteOnCompleted" version 1.1 up thesamodule
+        self.internal_version="1.0"
         
     signalRespuestaData = Signal(str, int, "QJsonObject")#QJsonObject = dict
     
@@ -50,14 +51,15 @@ class SystemNet(QObject):
             boolAction = True
         return boolAction
     
-    @Slot("QJsonObject", result=bool)    
-    def rechargeNet(self, preferences):
+    @Slot("QJsonObject", str, result=bool)    
+    def rechargeNet(self, preferences, username):
         #version 1.1 up thesamodule
         data = self.m_qjsonnetwork.callDirect("version internal",
                                        "model.thesamodule.config.search_read", 
                                        [[],0,1,[],["internal_version"],preferences])
         if not data["data"]=="error":
-            if float(data["data"]["result"][0]["internal_version"]) > 1.0:
+            self.internal_version=data["data"]["result"][0]["internal_version"]
+            if float(self.internal_version) > 1.0:
                 data = self.m_qjsonnetwork.callDirect("cachedel",
                                        "model.thesamodule.config.search_read", 
                                        [[],0,1,[],["deletecache"],preferences])
@@ -73,7 +75,7 @@ class SystemNet(QObject):
          #revisar folder systemnet
         if sysdir.exists()==False:
             s=QDir(self.mDir)
-            s.mkdir("systemnet")
+            s.mkdir(_dirSystem)
         #revisar folder systemnet lost
         if sysdirlost.exists()==False:
             sl=QDir(DIR_QML_SYS)
@@ -82,8 +84,42 @@ class SystemNet(QObject):
         listSysFiles = os.listdir(DIR_QML_SYS)
         if "lost" in listSysFiles:
             listSysFiles.remove("lost")
-            
-        data = self.m_qjsonnetwork.callDirect("rechargeNetStep1",
+        #
+        if float(self.internal_version) > 1.1:
+            data = self.m_qjsonnetwork.callDirect("findforuser",
+                                       "model.thesamodule.usersfolder.search_read", 
+                                       [["AND",["users.user.name","=",username],["activefolder","=",True]],0,1,[],["qmlfiles"],preferences])
+            if not data["data"]=="error":
+                result = data["data"]["result"]
+                if len(result)>0:
+                    idfiles=result[0]["qmlfiles"]
+                    data = self.m_qjsonnetwork.callDirect("rechargeNetStep1",
+                                           "model.thesamodule.thesamodule.read", 
+                                           [idfiles,["checksum","filename",],preferences])
+                    if len(idfiles) == 0:
+                        self.m_qjsonnetwork.signalResponse.emit("systemnet",15,{"noqmlfiles":""})    
+                else:#buscar default
+                    data = self.m_qjsonnetwork.callDirect("findforuser",
+                                       "model.thesamodule.usersfolder.search_read", 
+                                       [["AND",["type","=","default"],["activefolder","=",True]],0,1,[],["qmlfiles"],preferences])
+                    if not data["data"]=="error":
+                        result = data["data"]["result"]
+                        if len(result)>0:
+                            idfiles=result[0]["qmlfiles"]
+                            data = self.m_qjsonnetwork.callDirect("rechargeNetStep1",
+                                                                  "model.thesamodule.thesamodule.read", 
+                                                                  [idfiles,["checksum","filename",],preferences])
+                            if len(idfiles) == 0:
+                                self.m_qjsonnetwork.signalResponse.emit("systemnet",15,{"noqmlfiles":""})    
+                        else:
+                            self.m_qjsonnetwork.signalResponse.emit("systemnet",12,{"noqmlfiles":""})    
+                    else:
+                       self.m_qjsonnetwork.signalResponse.emit("systemnet",13,{"error":""})    
+            else:
+                self.m_qjsonnetwork.signalResponse.emit("systemnet",13,{"error":""})  
+                                       
+        else:
+            data = self.m_qjsonnetwork.callDirect("rechargeNetStep1",
                                        "model.thesamodule.thesamodule.search_read", 
                                        [[],0,1000,[],["checksum","filename"],preferences])
         if not data["data"]=="error":

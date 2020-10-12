@@ -19,6 +19,8 @@ Version 1.4 - 2020-07-06
 * systemnet: emit error thesamodule, delete cache, skip warning
 
 Version 1.6 
-* add tools TrytonControls: ControlOne2Many
+* add tools TrytonControls: ControlMany2One ...construction
 * add function remove cache of qml files for systemnet (option since thesamodule 1.1)
+* add ask to exit the application and avoid repeated messages 
+* add support for thesamodule 1.2, multiple folders are allowed for users selection.
      
