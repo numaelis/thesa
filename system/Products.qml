@@ -177,6 +177,7 @@ TabDesktop {
                             //text: model.name
                             font.bold: true
                             font.pixelSize: 20
+                            property var myobject: JSON.parse(JSON.stringify(object.json))// performance PySide
                             function getObjectId(){
                                 return object.id;
                             }
@@ -190,7 +191,7 @@ TabDesktop {
 
                                     fontSizeMode: Text.Fit
                                     minimumPixelSize: 8
-                                    text: object.id +" "+ object.json.name
+                                    text: myobject.id +" "+ myobject.name
                                     //text: object.json.reference+" "+object.json.invoice_date.day+"/"+object.json.invoice_date.month+"/"+object.json.invoice_date.year +" "+ object.json.total_amount_format
                                     // {'__class__': 'date', 'year': 2019, 'day': 18, 'month': 11}
                                     font: idelepro.font
