@@ -53,6 +53,7 @@ ApplicationWindow {
     property bool bool401: false
     property var argsFucntionLastCall
     property bool boolShortWidth135: width<(dpisReal*135)?true:false//13.5 cm
+    property bool boolShortWidth16: width<(dpisReal*160)?true:false//16 cm
     property bool boolShortWidth: width<(dpisReal*90)?true:false//9 cm
     property string dirSystem: setting.typesysmodule?"systemnet":"system"
     property bool boolDrawer: setting.boolDrawer
@@ -121,10 +122,11 @@ ApplicationWindow {
                 text: "\uf061"//    f057
                 font.pixelSize: 20
                 onClicked: menudrawer.open()
+                Layout.preferredWidth:boolShortWidth16?30:implicitWidth
 
             }
             Label {
-                text: boolDrawer?"Thesa":" Thesa"
+                text: boolShortWidth135?boolDrawer?"T":" Th":boolDrawer?"Thesa":" Thesa"
                 elide: Label.ElideRight
                 font.pixelSize: 22
                 font.italic: false
@@ -133,12 +135,14 @@ ApplicationWindow {
                 verticalAlignment: Qt.AlignVCenter
             }
             Label{
-                text:"  "
+                text:boolShortWidth?"":"  "
                 Layout.fillWidth: true
+                visible:!boolShortWidth16
             }
             RowLayout {
                  id:lTitleBarra
                  property var objtitle: {"name":"","icon":""}
+                 Layout.preferredWidth:boolShortWidth16?30:implicitWidth
                  Label {
                      id: t1
                      width: paintedWidth
@@ -153,19 +157,22 @@ ApplicationWindow {
                      width: boolShortWidth?0:paintedWidth
                      font.pixelSize: 22
                      font.italic: false
-                     text: boolShortWidth?"":lTitleBarra.objtitle.name
+                     text: boolShortWidth16?"":lTitleBarra.objtitle.name
+                     visible:!boolShortWidth16
                      verticalAlignment: Label.AlignVCenter
                  }
             }
             Label{
-                text:"  "
+                text:boolShortWidth?"":"  "
                 Layout.fillWidth: true
+                visible:!boolShortWidth16
             }
             TabBar {
                 id: barroot
+                implicitWidth:parent.width/2
                 visible: tabModel.count>1
                 Layout.fillWidth: true
-                Layout.preferredWidth: parent.width / 4
+                Layout.preferredWidth: parent.width//boolShortWidth16?parent.width/2:parent.width / 2
                 property var idStackUse
                 onCurrentIndexChanged: {
                     if(idStackUse!=null){
@@ -230,12 +237,13 @@ ApplicationWindow {
 
             ToolButton {
                 id:toolbsession
-                text: boolShortWidth?"\uf007":luser+" ["+psignature+"]"//nombre usuario
+                text: boolShortWidth16?"\uf007":luser+" ["+psignature+"]"//nombre usuario
                 //onClicked: menu.open()
                 onClicked: optionsMenu.open()
-                font.family: boolShortWidth?fawesome.name:"default"
+                font.family: boolShortWidth16?fawesome.name:"default"
                 font.italic: false
-                font.pixelSize: boolShortWidth?20:14
+                font.pixelSize: boolShortWidth16?20:14
+                Layout.preferredWidth:boolShortWidth16?30:implicitWidth
                 Menu {
                     id: optionsMenu
                     x: parent.width - width
@@ -271,7 +279,7 @@ ApplicationWindow {
                 font.pixelSize: 20
                 text: "\uf0c9"//"\uf085"
                 onClicked: configmenu.open()
-
+                Layout.preferredWidth:boolShortWidth135?30:implicitWidth
                 Menu {
                     id: configmenu
                     x: parent.width - width
