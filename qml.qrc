@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MenuList.qml</file>
+        <file>fonts/inglobali.ttf</file>
+        <file>Login.qml</file>
+        <file>images/back.jpg</file>
+        <file>images/login.png</file>
+        <file>images/login64.png</file>
+        <file>fonts/Font Awesome 5 Free-Solid-900.otf</file>
+        <file>corelocale/es.qm</file>
+        <file>corelocale/de.qm</file>
+        <file>corelocale/fr.qm</file>
+        <file>corelocale/it.qm</file>
+    </qresource>
+</RCC>

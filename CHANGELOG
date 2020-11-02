@@ -18,9 +18,9 @@ Version 1.4 - 2020-07-06
 * add recursiveCall method. recurrence in callDirect, for session timeout, userwarning. use this instead of callDirect.
 * systemnet: emit error thesamodule, delete cache, skip warning
 
-Version 1.6 
-* add tools TrytonControls: ControlMany2One ...construction
+Version 1.6 - 2020-10-30
+* add tools TrytonControls(preview): FieldMany2One and TreeView
 * add function remove cache of qml files for systemnet (option since thesamodule 1.1)
 * add ask to exit the application and avoid repeated messages 
 * add support for thesamodule 1.2, multiple folders are allowed for users selection.
-     
+* fix menu tabs, small screen

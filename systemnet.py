@@ -85,6 +85,8 @@ class SystemNet(QObject):
         if "lost" in listSysFiles:
             listSysFiles.remove("lost")
         #
+        data={}
+        data["data"]="error"
         if float(self.internal_version) > 1.1:
             data = self.m_qjsonnetwork.callDirect("findforuser",
                                        "model.thesamodule.usersfolder.search_read", 

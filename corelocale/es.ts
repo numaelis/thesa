@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es_ES">
 <context>
+    <name>FiltersInput</name>
+    <message>
+        <source>Filters</source>
+        <translation>Filtros</translation>
+    </message>
+</context>
+<context>
     <name>InputQZXing</name>
     <message>
         <source>Scan Code</source>
@@ -215,7 +222,23 @@ the last order could not be made</source>
     </message>
     <message>
         <source>error get files from thesamodule, is thesamodule installed on the server?</source>
-        <translation type="unfinished">error al descargar archivos desde thesamodule, ¿thesamodule esta instalado en el servidor?</translation>
+        <translation>error al descargar archivos desde thesamodule, ¿thesamodule esta instalado en el servidor?</translation>
+    </message>
+    <message>
+        <source>this user has no assigned tabs - qml files</source>
+        <translation>Este usuario no tiene asignado tabs (archivos qml)</translation>
+    </message>
+    <message>
+        <source>error trying to request qml files</source>
+        <translation>error al solicitar los archivo qml&apos;s</translation>
+    </message>
+    <message>
+        <source>the folder assigned to this user is empty</source>
+        <translation>El Directorio de tabs asignado a este usuario esta vacio</translation>
+    </message>
+    <message>
+        <source>¿Close thesa?</source>
+        <translation>¿Cerrar thesa?</translation>
     </message>
 </context>
 </TS>

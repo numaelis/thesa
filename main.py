@@ -121,8 +121,8 @@ if __name__ == '__main__':
         defaultLocale = QLocale.system().name()
     mtools.selectCoreTranslation(defaultLocale, settings)
     
-    #engine.load(QUrl(QStringLiteral("qrc:/main.qml")))
     engine.addImportPath(mDir + QDir.separator() + "tools")
+	#engine.load(QUrl("qrc:/main.qml"))
     engine.load(QUrl.fromLocalFile('main.qml'))
     
     if not engine.rootObjects():

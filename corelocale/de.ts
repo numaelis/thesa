@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>FiltersInput</name>
+    <message>
+        <location filename="../tools/TrytonControls/FiltersInput.qml" line="37"/>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InputQZXing</name>
     <message>
         <location filename="../tools/thesatools/InputQZXing.qml" line="44"/>
@@ -123,144 +131,166 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.qml" line="65"/>
+        <location filename="../main.qml" line="66"/>
         <source>thesa [tryton client]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="242"/>
+        <location filename="../main.qml" line="246"/>
         <source>Close Session</source>
         <translation type="unfinished">Sitzung schließen</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="277"/>
+        <location filename="../main.qml" line="281"/>
         <source>Screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="288"/>
+        <location filename="../main.qml" line="292"/>
         <source>Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="303"/>
-        <location filename="../main.qml" line="312"/>
-        <location filename="../main.qml" line="321"/>
-        <location filename="../main.qml" line="330"/>
+        <location filename="../main.qml" line="307"/>
+        <location filename="../main.qml" line="316"/>
+        <location filename="../main.qml" line="325"/>
+        <location filename="../main.qml" line="334"/>
+        <location filename="../main.qml" line="343"/>
+        <location filename="../main.qml" line="352"/>
         <source>maybe you have to restart the application</source>
         <translation>Möglicherweise müssen Sie die Anwendung neu starten</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="337"/>
-        <location filename="../main.qml" line="350"/>
+        <location filename="../main.qml" line="359"/>
+        <location filename="../main.qml" line="372"/>
         <source>Background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="366"/>
-        <location filename="../main.qml" line="379"/>
+        <location filename="../main.qml" line="388"/>
+        <location filename="../main.qml" line="401"/>
         <source>Drawer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="401"/>
+        <location filename="../main.qml" line="423"/>
         <source>Translation</source>
         <translation>Übersetzung</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="424"/>
+        <location filename="../main.qml" line="446"/>
         <source>you must restart the application</source>
         <translation>Sie müssen die Anwendung neu starten</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="440"/>
+        <location filename="../main.qml" line="462"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="455"/>
+        <location filename="../main.qml" line="477"/>
         <source>Warning!
 the last order could not be made</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="533"/>
+        <location filename="../main.qml" line="555"/>
         <source>please verify your information</source>
         <translation>Bitte überprüfen Sie Ihre Angaben</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="535"/>
+        <location filename="../main.qml" line="557"/>
         <source>failed connection</source>
         <translation>Verbindung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="545"/>
+        <location filename="../main.qml" line="567"/>
         <source>error update files qml: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="549"/>
+        <location filename="../main.qml" line="571"/>
         <source>error get files from thesamodule, is thesamodule installed on the server?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="570"/>
+        <location filename="../main.qml" line="575"/>
+        <source>this user has no assigned tabs - qml files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.qml" line="578"/>
+        <source>error trying to request qml files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.qml" line="581"/>
+        <source>the folder assigned to this user is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.qml" line="601"/>
         <source>Authorization Required</source>
         <translation>Autorisierung erforderlich</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="591"/>
+        <location filename="../main.qml" line="622"/>
         <source>No connection to server</source>
         <translation>Keine Verbindung zum Server</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="599"/>
+        <location filename="../main.qml" line="630"/>
         <source>Failed to connect</source>
         <translation>Verbindung nicht möglich</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="609"/>
+        <location filename="../main.qml" line="640"/>
         <source>Error generating report</source>
         <translation>Fehler beim Generieren des Berichts</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="668"/>
+        <location filename="../main.qml" line="699"/>
         <source>Background Image Is Damaged</source>
         <translation>Background, Bild ist beschädigt</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="696"/>
+        <location filename="../main.qml" line="741"/>
         <source>error loading side menu: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="718"/>
+        <location filename="../main.qml" line="764"/>
         <source>error loading desktop: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="770"/>
+        <location filename="../main.qml" line="821"/>
         <source>Wait...</source>
         <translation>Warten...</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="789"/>
+        <location filename="../main.qml" line="840"/>
         <source>Timeout, maybe an error occurred.</source>
         <translation>Zeitüberschreitung, möglicherweise ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="../main.qml" line="1036"/>
+        <location filename="../main.qml" line="1104"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="1053"/>
+        <location filename="../main.qml" line="1121"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.qml" line="1070"/>
+        <location filename="../main.qml" line="1138"/>
         <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.qml" line="1173"/>
+        <source>¿Close thesa?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
