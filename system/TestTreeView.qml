@@ -1,5 +1,5 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
-// test example tryton controls
+// test example tree view tryton controls
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
@@ -15,21 +15,90 @@ import thesatools 1.0
 import TrytonControls 1.0
 
 TabDesktop {
-    id:testViewTree
+    id:testTreeView
 
     onFirstTimeTab:{
-        
+        myvt.find([]);
     }
-            Label{
-                text:" in Construction..."
 
-                font.pixelSize:23
+    TreeView{
+        id:myvt
+        anchors.fill: parent
+        modelName:"account.invoice"
+        limit: 300//step, step
+        multiSelectItems:true
+        activeFilters: true
+        domain:[['type', '=', 'out']]
+        verticalLine:false
+        activeStates: true
+        modelStates:[
+            {"name":"draft","alias":"Borrador"},
+            {"name":"validated","alias":qsTr("Validado")},
+            {"name":"posted","alias":qsTr("Confirmado")},
+            {"name":"","alias":qsTr("Todo")}
+        ]
+        listHead: [//manual ...
+
+            {
+                "name":"number",
+                "alias":"Número",
+                "type":"text",
+                "width":100,
+                "align":Label.AlignLeft
+            },
+
+            {
+                "name":"reference",
+                "alias":"Ref",
+                "type":"text",
+                "width":150,
+                "align":Label.AlignLeft
+            },
+
+            {
+                "name":"invoice_date",
+                "alias":"Fecha",
+                "type":"datetime",
+                "format":"dd/MM/yyyy",
+                "width":120,
+                "align":Label.AlignHCenter
+            },
+
+            {
+                "name":"party.name",
+                "alias":"Entidad",
+                "type":"text",
+                "width":200,
+                "align":Label.AlignLeft
+            },
+
+            {
+                "name":"total_amount",
+                "alias":"Total",
+                "type":"numeric",
+                "width":200,
+                "align":Label.AlignRight
+            },
+
+//            {
+//                "name":"state",
+//                "alias":qsTr("Estado"),
+//                "type":"text",
+//                "width":100,
+//                "align":Label.AlignLeft
+//            },
+
+            {
+                "name":"description",
+                "alias":"Descripción",
+                "type":"text",
+                "width":200,
+                "align":Label.AlignHCenter
             }
-            TreeView{
-                id:mytv
-                anchors{fill: parent;topMargin:30}
-                
 
-            }
-
+        ]
+        onDoubleClick: {
+            console.log("double click", getId())
+        }
+    }
 }

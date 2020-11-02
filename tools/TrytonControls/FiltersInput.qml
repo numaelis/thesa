@@ -12,7 +12,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import "../thesatools"
-//TODO add filter dialog
+//TODO add filter dialog and parser
 //
 Control{
     id:control
@@ -23,7 +23,12 @@ Control{
         var text = tffilters.text
         //si texto no tiene : usar rec_name si hay espacios varios rec_name
         var listData=[];
-        listData.push(["rec_name","ilike","%"+text+"%"])
+        if(text===""){
+            //listData.push([]);
+        }else{
+            listData.push(["rec_name","ilike","%"+text+"%"]);
+        }
+
         return listData;
     }
     RowLayout{
