@@ -24,3 +24,5 @@ Version 1.6 - 2020-10-30
 * add ask to exit the application and avoid repeated messages 
 * add support for thesamodule 1.2, multiple folders are allowed for users selection.
 * fix menu tabs, small screen
+
+Version 1.8
