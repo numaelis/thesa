@@ -26,3 +26,6 @@ Version 1.6 - 2020-10-30
 * fix menu tabs, small screen
 
 Version 1.8
+* TrytonControls/TreeView: add expandable columns
+* TrytonControls/TreeView: add sortable columns None, ASC DESC
+* TrytonControls/TreeView: add type field Image (Binary field)

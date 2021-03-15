@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.0.0"
+//__version__ = "1.8.0"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -12,9 +12,9 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import "../thesatools"
-//TODO  add type image, button,
-//
-//
+
+//TODO  add type button
+
 Control{
     id:control
     //    implicitWidth: 100
@@ -46,6 +46,7 @@ Control{
     property int maximunItemView: 10000//config
     property int _cacheBuffer: maximunItemView*heightField
     property var order: []
+    property var initOrder: []
     property var domain: []
     property var _models//: [null,null]
     property var _manager: null
@@ -53,6 +54,9 @@ Control{
     property string defaultFormatDate: "dd/MM/yy"
     property real defaultColWidth: 100
     property string viewName: ""//name tryton model="ir.ui.view", type tree
+    property bool isPresedExpand: false
+    property var _repeaterHead: null
+    property bool buttonRestart: true
     signal doubleClick(int id)
     Component.onCompleted: {
         for(var i=0,len=listHead.length;i<len;i++){
@@ -75,15 +79,51 @@ Control{
         }
         _initModel();
         if(activeStates==true && modelStates.length>0){
-            domainState = modelStates[0].name===""?[]:["state","=",modelStates[0].name]
+            domainState = modelStates[0].name===""?[]:["state","=",modelStates[0].name];
         }
+        initOrder = JSON.parse(JSON.stringify(order));
+        initTextOrderHead();
 
+    }
 
+    function initTextOrderHead(){
+        var mapOrder={};
+        for (var i=0, len=order.length;i<len;i++){
+            mapOrder[order[i][0]]=order[i][1];
+        }
+        _repeaterHead.setTextInitOrder(mapOrder);
+    }
+
+    function setOrder(headOrder){//{"head":"","type": none, asc, desc
+        var mapOrder={};
+        for (var i=0, len=order.length;i<len;i++){
+            mapOrder[order[i][0]]=order[i][1];
+        }
+        if (mapOrder.hasOwnProperty(headOrder.head)===false){
+            if(headOrder.type !== null){
+                order.unshift([headOrder.head, headOrder.type])
+            }
+        }else{
+            var _norder=[];
+            for (i=0, len=order.length;i<len;i++){ //[['invoice_date','DESC']]
+                if (headOrder.head === order[i][0]){
+                    if (headOrder.type !== null){
+                        _norder.unshift([headOrder.head, headOrder.type]);
+                    }
+                }else{
+                    _norder.push(order[i]);
+                }
+            }
+            order = _norder;
+        }
+        _models.model.setOrder(order)
+        find(filterin._getData());
     }
 
     function loadFieldsFromModel(){
 
     }
+
     function find(data){
         var domainplus = ['AND'];
         domainplus.push(domain);
@@ -151,14 +191,26 @@ Control{
             width: parent.width
             height: activeFilters?heightFilter:0
             z:12
-            FiltersInput{
-                id:filterin
+            RowLayout{
                 anchors.fill: parent
-                onExecuteFind:{
-                    find(domain)
-                }
-                onDown:{
-                    listview.forceActiveFocus();
+                FiltersInput{
+                    id:filterin
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    buttonRestart:control.buttonRestart
+                    onExecuteFind:{
+                        find(domain)
+                    }
+                    onDown:{
+                        listview.forceActiveFocus();
+                    }
+                    onExecuteRestart:{
+                        filterin.clear();
+                        order = JSON.parse(JSON.stringify(initOrder));
+                        initTextOrderHead();
+                        _models.model.setOrder(order);
+                        find([]);
+                    }
                 }
             }
         }
@@ -180,7 +232,6 @@ Control{
                             booldife=true;
                         }
                     }
-
                     onClicked: {
                        if(booldife){
                            domainState = modelData.name===""?[]:["state","=",modelData.name];
@@ -199,6 +250,14 @@ Control{
                     }
                 }
             }
+        }
+    }
+
+    Repeater {
+        id: rep_column
+        model: listHead
+        Item {
+            property real value: modelData.width
         }
     }
     ListView{
@@ -221,7 +280,8 @@ Control{
             spacing: 1
             function itemAt(index) { return repeater.itemAt(index) }
             Label{
-                width: multiSelectItems?heightField:-1
+                width: multiSelectItems?heightField+1:-1
+                height: heightHeader
                 visible: multiSelectItems
                 padding: 4
                 text:" "
@@ -244,20 +304,204 @@ Control{
                     text: ""
 
                 }
+                Rectangle{
+                    width: 1
+                    height: parent.height
+                    color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
+                    x:parent.width
+                }
             }
+
             Repeater {
                 id: repeater
+                Component.onCompleted: _repeaterHead=repeater
                 model: listHead
+                function setTextInitOrder(morder){
+                    for(var i=0, len=listHead.length;i<len;i++){
+                        if (morder.hasOwnProperty(listHead[i].name)){
+                            repeater.itemAt(i).setTextOrder(morder[listHead[i].name])
+                        }else{
+                            repeater.itemAt(i).setTextOrder(null);
+                        }
+                    }
+                }
                 Label {
+                    id:mll
                     text: modelData.alias
                     font.bold: true
-                    width:  modelData.width==-1?paintedWidth+20:modelData.width
+                    width:  modelData.width<=20?20:modelData.width
+                    height: heightHeader
                     elide: Label.ElideRight
                     padding: 4
                     background: Rectangle {color:mainroot.Material.accent }//Qt.lighter(mainroot.Material.accent)
                     horizontalAlignment: modelData.align
                     verticalAlignment: Label.AlignVCenter
+                    z:100-index
+                    Component.onCompleted: {
+                        //width = Qt.binding(function(){var it=rep_column.itemAt(index); return it.value})
+                    }
+                    function setTextOrder(htype){
+                        var text = "\uf141";
+                        if(htype == "ASC"){
+                            text = "\uf0d8";
+                        }
+                        if(htype == "DESC"){
+                            text = "\uf0d7"
+                        }
+                        tbascdesc.text=text;
+                    }
+
+                    Rectangle{
+                        id:rec_shadow
+                        anchors.fill: parent
+                        opacity: 0.5
+                        color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"
+                        visible: false
+                    }
+                    Rectangle{
+                        id:rec_view_exp
+                        width: 1
+                        height: parent.height
+                        color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
+                        x:parent.width
+                    }
+                    MouseArea{
+                        id:pmap
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered:  {rec_shadow.visible=true;rec_view_exp.width=2}
+                        onExited:  {rec_shadow.visible=false;rec_view_exp.width=1}
+                        cursorShape: isPresedExpand?Qt.SizeHorCursor:Qt.ArrowCursor
+
+                        Rectangle{
+                            id:rec_right
+                            width: 2
+                            height: parent.height
+                            color: "grey"
+                            x:parent.width
+                            opacity: 0
+                            MouseArea{
+                                id:ma
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape : Qt.SizeHorCursor
+                                onPressed:{isPresedExpand=true}// { map.cursorShape = Qt.SizeHorCursor; pmap.cursorShape = Qt.SizeHorCursor}
+                                onEntered: {rec_right.opacity=1}
+                                onExited: {rec_right.opacity=0}
+                                drag.target: rec_right
+                                drag.axis: Drag.XAxis
+                                drag.minimumX: 20
+                                drag.filterChildren: true
+                                onReleased: {
+                                    modelData.width = rec_right.x;
+                                    mll.width = rec_right.x;
+                                    var pi = rep_column.itemAt(index);
+                                    pi.value = rec_right.x;
+                                    isPresedExpand=false;
+                                }
+
+                            }
+                        }
+                        Rectangle{
+                            id:rec_view_line
+                            x:rec_right.x
+                            width: 2
+                            height: listview.height
+                            color: "grey"
+                            visible: ma.pressed?1:0
+                        }
+
+                        MiniButton{
+                            id:tbascdesc
+                            anchors{right: parent.right;rightMargin: 2;verticalCenter: parent.verticalCenter}
+                            width: height-12
+                            height: parent.height+ 8
+                            text: "\uf141"
+                            font.pixelSize:16
+                            visible: rec_shadow.visible
+                            ToolTip.visible: false
+                            onClicked: menu_order.open()
+                            Menu {
+                                id: menu_order
+                                x: parent.width - width
+                                y: parent.height
+                                width: 30
+                                transformOrigin: Menu.BottomRight
+                                MenuItem {
+                                    id: mi1
+                                    width: 30
+                                    height: 30
+                                    contentItem:Text{
+                                        text: "\uf141"
+                                        font.family: fawesome.name
+                                        font.italic: false
+                                        color: mi1.down ? Material.hintTextColor:Material.primaryTextColor
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+
+                                    }
+                                    onTriggered: {
+                                        var virtual = false;
+                                        if (modelData.hasOwnProperty("virtual")){
+                                            virtual = modelData.virtual;
+                                        }
+                                        if(virtual==false){
+                                            setOrder({"head":modelData.name, "type":null});
+                                            mll.setTextOrder(null);
+                                        }
+                                    }
+                                }
+                                MenuItem {
+                                    id: mi2
+                                    width: 30
+                                    height: 30
+                                    contentItem:Text{
+                                        text: "\uf0d8"
+                                        font.family: fawesome.name
+                                        font.italic: false
+                                        color: mi2.down ? Material.hintTextColor:Material.primaryTextColor
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+
+                                    }
+                                    onTriggered: {
+                                        var virtual = false;
+                                        if (modelData.hasOwnProperty("virtual")){
+                                            virtual = modelData.virtual;
+                                        }
+                                        if(virtual==false){setOrder({"head":modelData.name, "type":"ASC"});mll.setTextOrder("ASC");}
+                                    }
+                                }
+                                MenuItem {
+                                    id: mi3
+                                    width: 30
+                                    height: 30
+                                    contentItem:Text{
+                                        text: "\uf0d7"
+                                        font.family: fawesome.name
+                                        font.italic: false
+                                        color: mi3.down ? Material.hintTextColor:Material.primaryTextColor
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+
+                                    }
+                                    onTriggered: {
+                                        var virtual = false;
+                                        if (modelData.hasOwnProperty("virtual")){
+                                            virtual = modelData.virtual;
+                                        }
+                                        if(virtual==false){setOrder({"head":modelData.name, "type":"DESC"});mll.setTextOrder("DESC");}
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+
+
                 }
+
             }
         }
         headerPositioning:ListView.OverlayHeader
@@ -300,6 +544,12 @@ Control{
                 }
                 Column{
                     Row{
+                        Rectangle {
+                            color: mainroot.Material.accent
+                            height: itdele.height
+                            width: 1
+                            opacity: verticalLine?1:0
+                        }
                         CheckBox {
                             id:chitem
                             ButtonGroup.group: multiSelectItems?childGroup:null
@@ -328,21 +578,52 @@ Control{
                                 Label {
                                     id:label
                                     //objectName: "labe"+index
+                                    property var imageId
                                     color: mainroot.Material.foreground
                                     elide: Text.ElideRight
-                                    width:  modelData.width==-1?paintedWidth+20:modelData.width
-                                    //text: parseData(modelData.type)
+                                    width:  modelData.width//==-1?paintedWidth+20:modelData.width
+                                    height: heightField
                                     maximumLineCount: control.maximumLineCount
                                     verticalAlignment: Text.AlignVCenter
                                     horizontalAlignment: modelData.align
                                     fontSizeMode: Text.Fit
                                     minimumPixelSize: 10
                                     padding: 4
+                                    wrapMode: Label.Wrap
 
-                                    Component.onCompleted: {setValue()}
+                                    Component.onCompleted: {
+                                        width = Qt.binding(function(){
+                                            var it=rep_column.itemAt(index);
+                                            if(it.value>20){
+                                                return it.value;
+                                            }
+                                            return 20;
+                                        });
+                                        setValue();
+                                    }
 
                                     function setValue(){
-                                        text= parseData(modelData.type);
+                                        if(modelData.type==="image"){
+                                            var imageQmlObject = Qt.createQmlObject('import QtQuick 2.9;
+                                                                                Image{
+                                                                                      asynchronous: true;
+                                                                                      cache: false;
+                                                                                      anchors.fill:parent;
+                                                                                      fillMode: Image.PreserveAspectFit;
+                                                                                }', label, "dynamicSnippet1");
+                                            imageId=imageQmlObject;
+                                            if(myobject[modelData.name] !== null){
+                                                if(myobject[modelData.name]["__class__"] === "bytes"){
+                                                    imageQmlObject.source = "data:image/"+modelData.format+";base64,"+myobject[modelData.name]["base64"];
+                                                }else{
+                                                    imageQmlObject.source="";
+                                                }
+                                            }else{
+                                                imageQmlObject.source="";
+                                            }
+                                        }else{
+                                            text = parseData(modelData.type);
+                                        }
                                     }
 
                                     function myformatDecimal(){

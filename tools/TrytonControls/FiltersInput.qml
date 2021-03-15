@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.0.0"
+//__version__ = "1.8.0"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -18,6 +18,11 @@ Control{
     id:control
     signal executeFind(var domain)
     signal down()
+    signal executeRestart()
+    property bool buttonRestart: true
+    function clear(){
+        tffilters.text="";
+    }
 
     function _getData(){
         var text = tffilters.text
@@ -63,6 +68,15 @@ Control{
             ToolTip.visible: false
             onClicked: {
                 executeFind(_getData());
+            }
+        }
+        ButtonAwesone{
+            Layout.fillHeight: true
+            text: "\uf01e"
+            ToolTip.visible: false
+            visible: buttonRestart
+            onClicked: {
+                executeRestart();
             }
         }
 

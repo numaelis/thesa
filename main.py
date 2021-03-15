@@ -9,7 +9,7 @@ main
 __author__ = "Numael Garay"
 __copyright__ = "Copyright 2020"
 __license__ = "GPL"
-__version__ = "1.6" 
+__version__ = "1.8" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -28,7 +28,7 @@ from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine#, QQuickStyle
 from PySide2.QtWidgets import QMessageBox
 
-ThesaVersion = "1.6"
+ThesaVersion = "1.8"
 
 engine_point=None
 

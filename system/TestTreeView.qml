@@ -28,9 +28,14 @@ TabDesktop {
         limit: 300//step, step
         multiSelectItems:true
         activeFilters: true
-        domain:[['type', '=', 'out']]
-        verticalLine:false
+        domain:[['type', '=', 'in']]
+        order:[['invoice_date','DESC']]
+        verticalLine:true
         activeStates: true
+        buttonRestart:true
+        //heightField:60
+        maximumLineCount:3
+        //font.pixelSize:14
         modelStates:[
             {"name":"draft","alias":"Borrador"},
             {"name":"validated","alias":qsTr("Validado")},
@@ -74,6 +79,7 @@ TabDesktop {
 
             {
                 "name":"total_amount",
+                "virtual":true,//skip order, etc.. field type Function
                 "alias":"Total",
                 "type":"numeric",
                 "width":200,
@@ -94,7 +100,16 @@ TabDesktop {
                 "type":"text",
                 "width":200,
                 "align":Label.AlignHCenter
-            }
+            },
+
+//            {
+//                "name":"image",
+//                "alias":"Imagen",
+//                "type":"image",//fields binary
+//                "format":"png",
+//                "width":60,
+//                "align":Label.AlignHCenter
+//            }
 
         ]
         onDoubleClick: {
