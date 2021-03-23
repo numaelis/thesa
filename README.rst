@@ -52,6 +52,13 @@ Development:
     javascript functions and variables:
         <see doc...>
 
+
+known issues:
+    ssl ->  https://myprogrammingnotes.com/enable-ssl-support-qt.html 
+    view version ssl PySide2: 
+        from PySide2.QtNetwork import QSslSocket
+        QSslSocket.sslLibraryBuildVersionString()
+
         
 Supports and/or collaborates with thesa!
 
