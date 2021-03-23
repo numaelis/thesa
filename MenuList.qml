@@ -48,7 +48,7 @@ FocusScope {
 
             delegate: ItemDelegate {
                 id:idele
-                width: parent.width
+                width: listView.width
                 height: 60
                 text: model.name
                 font.bold: true

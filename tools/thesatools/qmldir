@@ -3,7 +3,8 @@ module thesatools
 StackDesktop 1.0 StackDesktop.qml
 StackSubDesktop 1.0 StackSubDesktop.qml
 TabDesktop 1.0 TabDesktop.qml
-ButtonAwesone 1.0 ButtonAwesone.qml
+ButtonAwesome 1.0 ButtonAwesome.qml
+FlatAwesome 1.0 FlatAwesome.qml
 Calendar 1.0 Calendar.qml
 FieldCalendar 1.0 FieldCalendar.qml
 FieldDocument 1.0 FieldDocument.qml

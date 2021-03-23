@@ -28,7 +28,7 @@ TabDesktop {
             Layout.fillWidth: true
         }
 
-        ButtonAwesone{
+        ButtonAwesome{
             text: "\uf052"
             textToolTip: "select file"
             onClicked: {

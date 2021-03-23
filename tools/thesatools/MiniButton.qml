@@ -24,9 +24,9 @@ Button {
       background: Rectangle {
           implicitWidth: minibu.width
           implicitHeight: minibu.height
-          opacity: enabled ? 1 : 0.0
+          opacity: enabled ? 0.5 : 0.0
           radius: minibu.width/2
-          color: minibu.hovered? Qt.lighter(mainroot.Material.background):"transparent"
+          color: minibu.hovered? Qt.darker(mainroot.Material.accent):"transparent"
       }
       hoverEnabled: true
 

@@ -142,7 +142,7 @@ ApplicationWindow {
             RowLayout {
                  id:lTitleBarra
                  property var objtitle: {"name":"","icon":""}
-                 Layout.preferredWidth:boolShortWidth16?30:implicitWidth
+                 Layout.preferredWidth:boolShortWidth16?30:t1.width+t2.width
                  Label {
                      id: t1
                      width: paintedWidth

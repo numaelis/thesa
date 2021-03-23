@@ -19,6 +19,7 @@ Dialog {
     property bool boolExpand: false
     property var listTryVersion: ["4","5"]
     property bool boolBackLogin: false
+    property real _height
     anchors.centerIn: parent
 
     focus: true
@@ -42,6 +43,7 @@ Dialog {
             }else{
                 inameuser.forcefocus();
             }
+            _height=contentItem.height;
         }
     }
     header:Item{
@@ -190,7 +192,7 @@ Dialog {
                     id:cl1
                     spacing: 8
                     Layout.fillWidth: true
-                    //Layout.fillHeight: true
+                    Layout.fillHeight: true
                     RowLayout{
                         Layout.fillWidth: true
                         spacing: 8
@@ -229,21 +231,22 @@ Dialog {
                 }
                 Rectangle{
                     id:mibuttonexpand
-                    width: 26
+                    width: 22
                     height: parent.height
                     border{width: 2; color: mainroot.Material.foreground}
                     radius: miradius
                     color: mainroot.Material.background
-                    MiniButton {
+                    FlatAwesome {
                         id: mbexpand
                         width: parent.width
                         height: width
                         anchors{centerIn: parent}
                         text: boolExpand?"\uf137":"\uf138"
-                        textToolTip: qsTr("Config")
+                        //textToolTip: qsTr("Config")
                         onClicked: {
                             if(boolExpand){
                                 boolExpand = false;
+                                mp.height=_height;
                             }else{
                                 boolExpand = true;
                             }

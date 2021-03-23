@@ -23,7 +23,7 @@ Control{
     property bool textFit: true
 //    property var value//:({})
     property int valueId: -1
-    property string valueName: null
+    property string valueName
     property bool boolSearch: true
     property alias textSearch: tfsearch.text
     signal textChanged(string text)//search

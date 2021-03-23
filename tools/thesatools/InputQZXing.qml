@@ -38,7 +38,7 @@ Item {
     property int format_UPC_EAN_EXTENSION : 131072
     //2 4 32 262144 8 16 64 256 128 512 1024 2048 4096 8192 16384 32768 65536 131072
 
-    ButtonAwesone{
+    ButtonAwesome{
         anchors.fill: parent
         text: iQZX.icon
         textToolTip:qsTr("Scan Code")

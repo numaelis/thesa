@@ -163,7 +163,7 @@ TabDesktop {
                                 }
                             }
                         }
-                        ButtonAwesone{
+                        ButtonAwesome{
                             id:bfind
                             width: height - 10
                             height: parent.height
@@ -173,7 +173,7 @@ TabDesktop {
                                 findbyname();
                             }
                         }
-                        ButtonAwesone{
+                        ButtonAwesome{
                             id:brecarga
                             width: height - 10
                             height: parent.height
@@ -215,7 +215,7 @@ TabDesktop {
                             }
                             delegate: ItemDelegate {
                                 id:idelepro
-                                width: parent.width
+                                width: listViewProductS.width
                                 height: 40
                                 font.bold: true
                                 font.pixelSize: 20

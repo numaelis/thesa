@@ -58,8 +58,8 @@ StackDesktop {
 
     StackSubDesktop{
 
-        tabs: [{name: "Fields", icon: ""},
-            {name: "Tree View", icon: ""}]
+        tabs: [{name: "Fields", icon: "\uf044"},
+            {name: "Tree View", icon: "\uf0ce"}]
 
         TestFields {
 

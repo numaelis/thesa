@@ -62,7 +62,7 @@ Control{
                 }
             }
         }
-        ButtonAwesone{
+        ButtonAwesome{
             Layout.fillHeight: true
             text: "\uf002"
             ToolTip.visible: false
@@ -70,7 +70,7 @@ Control{
                 executeFind(_getData());
             }
         }
-        ButtonAwesone{
+        ButtonAwesome{
             Layout.fillHeight: true
             text: "\uf01e"
             ToolTip.visible: false
