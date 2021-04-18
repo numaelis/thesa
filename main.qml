@@ -1,7 +1,7 @@
 //this file is part the thesa: tryton client,  PySide2(qml2) based
 //"""main.qml
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
 //__version__ = "1.8"
 //__maintainer__ = "Numael Garay"
@@ -62,6 +62,7 @@ ApplicationWindow {
     property var nameLongMonths: Tools.calendarLongNamesMonths();
     property int maxIntervalBusy: 30000 //milisecunds
     property int _intCountModels: 0
+    property var generalPurpose: ({})
 
     visibility:  Window.Maximized
     title: qsTr("thesa [tryton client]")
@@ -955,6 +956,17 @@ ApplicationWindow {
 
     function formatDateTime(date, format){
         return Qt.formatDateTime(date, format);
+    }
+
+    function dateSchema(year, month, day){
+        return {'__class__': 'date',
+            'year': year,
+            'month': month,
+            'day': day}
+    }
+
+    function decimalSchema(value){
+        return {'__class__': 'Decimal','decimal':value.toString()}
     }
 
 

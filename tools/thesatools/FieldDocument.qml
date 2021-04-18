@@ -10,13 +10,18 @@ import "messages.js" as MessageLib
 Item {
     id:mainfd
     width: dpis*60
-    height: tfdoc.height
+    //height: tfdoc.height
     property alias value: tfdoc.text
     property int pixelFont: 16
     property string tipeDocument: "DNI"// DNI CUIT
     property bool boolAuto: false // solo para listView
+    property alias readOnly: tfdoc.readOnly
 
     Component.onCompleted: {
+        selectTipeDocument();
+    }
+
+    function selectTipeDocument(){
         switch(tipeDocument){
         case "DNI":
             tfdoc.validator= Qt.createQmlObject('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}', tfdoc, "dynamicSnippet1");
@@ -41,6 +46,7 @@ Item {
             break;
         }
     }
+
     onValueChanged: {
         if(boolAuto){
             reFormatize();
@@ -159,6 +165,9 @@ Item {
         //height: parent.height
         //placeholderText: "dd"
         font.pixelSize: pixelFont
+        leftPadding: 2
+        topPadding: 0
+        bottomPadding: 0
         anchors{horizontalCenter: parent.horizontalCenter}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: !boolMovil
@@ -174,7 +183,7 @@ Item {
     Label{
         id: tfmaskcup
         width: parent.width
-        height: parent.height - dpis*4
+        height: parent.height// - dpis*4
         font.pixelSize: pixelFont
 //        font.family: myFontPrenta
 //        color: mainroot.Material.foreground
@@ -285,6 +294,9 @@ Item {
         id: tfdoc
         width: parent.width
         //height: parent.height
+        leftPadding: 2
+        topPadding: 0
+        bottomPadding: 0
         //placeholderText: "dd"
         font.pixelSize: pixelFont
         anchors{horizontalCenter: parent.horizontalCenter}

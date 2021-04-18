@@ -20,52 +20,87 @@ TabDesktop {
     onFirstTimeTab:{
     }
 
-    Column{
-        anchors.fill: parent
+    ColumnLayout{
+        anchors{fill:parent; margins:20}
         //Layout.fillWidth: true
         Label{
             Layout.alignment: Qt.AlignHCenter
             text:"in construction..."
+            Layout.preferredHeight: 40
         }
 
-        RowLayout{
-            //Layout.fillWidth: true
-           // Layout.alignment: Qt.AlignHCenter
-            spacing: 6
+        Pane{
+            Layout.fillWidth: true
+            Layout.preferredHeight: 140
+            RowLayout{
+                anchors.fill: parent
+                spacing: 6
 
-            Label{
-                text:"Party:"
-                font.pixelSize:20
-                height: myparty.height
-                verticalAlignment: Qt.AlignVCenter
-            }
-
-            FieldMany2One{
-                id:myparty
-                enabled: true
-                width: 400
-                modelName: "party.party"
-                domain: []
-                order: []
-                limit: 500
-                maxItemListHeight:15
-                //textFit:false
-                font.pixelSize:20
-                onClear:{
-                    console.log("clear value");
+                Label{
+                    text:"Party:"
+                    font.pixelSize:20
+                    height: fparty.implicitHeight
+                    verticalAlignment: Qt.AlignBottom
+                    padding: 0
+                    Layout.preferredWidth:paintedWidth
                 }
-                onValueChanged:{
-                    console.log("id:", id, "  rec_name:", name);
 
-                    if(id==-1){
-                        console.log("clear value");
+                FieldMany2One{
+                    id:fparty
+                    enabled: true
+                    modelName: "party.party"
+                    domain: []
+                    order: []
+                    limit: 500
+                    maxItemListHeight:15
+                    //textFit:false
+                    font.pixelSize:20
+                    Layout.fillWidth: true
+                    onValueChanged:{
+                        console.log("id:", id, "  rec_name:", name);
+                        if(boolValueAssigned){
+                            fdirection.domain = [['party', '=', id]];
+                            fdirection.forceActiveFocus();
+                        }else{
+                            fdirection.domain = [];
+                            fdirection.setValue({"id":-1,"name":""});
+                        }
                     }
 
                 }
+                Item {
+                    id: separa
+                    Layout.preferredWidth:30
+                }
+
+                Label{
+                    text:"Direction:"
+                    font.pixelSize:20
+                    height: fdirection.implicitHeight
+                    verticalAlignment: Qt.AlignTop
+                    padding: 0
+                    Layout.preferredWidth:paintedWidth
+                }
+
+                FieldMany2One{
+                    id:fdirection
+                    Layout.preferredWidth:300
+                    enabled: fparty.boolValueAssigned
+                    modelName: "party.address"
+                    font.pixelSize:20
+
+                }
 
             }
+            Material.elevation: 6
 
         }
+
+        Pane{
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
+
 
 
     }

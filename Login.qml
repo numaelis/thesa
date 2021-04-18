@@ -43,9 +43,13 @@ Dialog {
             }else{
                 inameuser.forcefocus();
             }
-            _height=contentItem.height;
+
         }
     }
+    Component.onCompleted: {
+        _height=contentItem.height;
+    }
+
     header:Item{
         id:mh
         implicitHeight: 30
@@ -229,31 +233,33 @@ Dialog {
                         }
                     }
                 }
-                Rectangle{
-                    id:mibuttonexpand
-                    width: 22
-                    height: parent.height
-                    border{width: 2; color: mainroot.Material.foreground}
-                    radius: miradius
-                    color: mainroot.Material.background
-                    FlatAwesome {
-                        id: mbexpand
-                        width: parent.width
-                        height: width
-                        anchors{centerIn: parent}
-                        text: boolExpand?"\uf137":"\uf138"
-                        //textToolTip: qsTr("Config")
-                        onClicked: {
-                            if(boolExpand){
-                                boolExpand = false;
-                                mp.height=_height;
-                            }else{
-                                boolExpand = true;
-                            }
 
+                RoundButton{
+                    //radius: 6
+                    padding: 0
+                    implicitWidth: 36
+                    implicitHeight: 36
+                    text: boolExpand?"\uf137":"\uf138"
+                    font.family:fawesome.name
+                    font.bold: false
+                    font.italic: false
+                    font.pixelSize:18
+                    hoverEnabled: true
+                    ToolTip.delay: 1000
+                    ToolTip.timeout: 3000
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Config")
+                    onClicked: {
+                        if(boolExpand){
+                            boolExpand = false;
+                            mp.height=_height;
+                        }else{
+                            boolExpand = true;
                         }
+
                     }
                 }
+
                 ScrollView{
                     visible: boolExpand
                     clip: true

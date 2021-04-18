@@ -18,7 +18,7 @@ import "../thesatools"
 
 // setValue({"id":-1, "name":""})
 // signal onValueChanged(value)
-// signal clear()
+// signal clear() obsoleto
 
 InputSearchPopupList{
     id:controlm2o
@@ -27,6 +27,41 @@ InputSearchPopupList{
     property var order:[]
     property int limit: 500
     property bool boolLastCall: false
+    Timer{
+        id:tsoneif
+        interval: 100
+        onTriggered: {
+            _selectIfOneItem();
+        }
+    }
+    function selectIfOneItem(){
+        tsoneif.restart();
+    }
+
+    function _selectIfOneItem(){
+        var domainplus = [];
+        domainplus.push(domain);
+        if(!QJsonNetworkQml.isRunning()){
+            var result= QJsonNetworkQml.recursiveCall("@cm2oone",
+                                                      "model."+modelName+".search_read",
+                                                      [
+                                                          domainplus,
+                                                          0,
+                                                          limit,
+                                                          order,
+                                                          ['id','rec_name'],
+                                                          preferences
+                                                      ]
+                                                      );
+            if(result.data!=="error"){
+                var resultArray = result.data.result;
+                if(resultArray.length === 1){
+                    setValue({"id":resultArray[0].id, "name":resultArray[0].rec_name});
+                }
+            }
+        }
+    }
+
     onTextChanged: {
         var domainplus = [];
         domainplus.push(['rec_name', 'ilike', '%'+text+'%']);

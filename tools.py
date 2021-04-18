@@ -154,6 +154,7 @@ class Tools(QObject):
         else:
             data = qfile.readAll()
             qfile.close()
+            print(str(data.toBase64().data().decode('utf-8')))
             return str(data.toBase64().data().decode('utf-8'))
     
     @Slot(str)

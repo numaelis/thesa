@@ -29,3 +29,4 @@ Version 1.8
 * TrytonControls/TreeView: add expandable columns
 * TrytonControls/TreeView: add sortable columns None, ASC DESC
 * TrytonControls/TreeView: add type field Image (Binary field)
+* controls improvements 

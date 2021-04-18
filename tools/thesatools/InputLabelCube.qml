@@ -21,9 +21,13 @@ Rectangle {
     radius: miradius
     signal accepted()
     property bool boolOnDesk: false
+    property bool boolBack: true
     Component.onCompleted: {
         if(boolOnDesk){
             onDesk();
+        }
+        if(!boolBack){
+            ien.color= "transparent";
         }
     }
     onBoolOnDeskChanged: {
@@ -35,15 +39,15 @@ Rectangle {
     }
 
     function onDesk(){
-        ien.border.width= 1
-        radius= miradius+2
-        ien.border.color= Qt.darker(mainroot.Material.foreground)
-        ien.color= "transparent"
+        ien.border.width= 1;
+        radius= miradius+2;
+        ien.border.color= Qt.darker(mainroot.Material.foreground);
+        ien.color = "transparent";
     }
     function onDialog(){
-        ien.border.width= 0
-        radius= miradius
-        ien.color= mainroot.Material.background
+        ien.border.width= 0;
+        radius= miradius;
+        ien.color= mainroot.Material.background;
     }
 
     function forcefocus(){

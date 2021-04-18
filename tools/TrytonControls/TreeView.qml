@@ -626,8 +626,8 @@ Control{
                                         }
                                     }
 
-                                    function myformatDecimal(){
-                                        return myformatDecimalPlaces(numero,2);
+                                    function myformatDecimal(value){
+                                        return myformatDecimalPlaces(value,2);
                                     }
                                     function myformatDecimalPlaces(value, mplaces){
                                         var number = parseFloat(value);
@@ -756,6 +756,7 @@ Control{
             }
         }
     }
+
     Timer{
         id:tcheckitem
         interval: 120

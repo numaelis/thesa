@@ -26,9 +26,14 @@ Control{
     property string valueName
     property bool boolSearch: true
     property alias textSearch: tfsearch.text
+    property real heightDelegate: height
     signal textChanged(string text)//search
     signal valueChanged(int id, string name);
-    signal clear()
+    //signal clear()
+
+    function forceActiveFocus(){
+        tfsearch.forceActiveFocus();
+    }
 
     function updateModel(dataList){
         pmodel.clear();
@@ -36,9 +41,9 @@ Control{
             pmodel.append({"id":dataList[i].id,"name":dataList[i].name})
         }
         if(len <= maxItemListHeight){
-            popup.height = (len * control.height)+2
+            popup.height = (len * heightDelegate)+2
         }else{
-            popup.height = maxItemListHeight * control.height
+            popup.height = maxItemListHeight * heightDelegate
         }
     }
 
@@ -55,14 +60,26 @@ Control{
     function setValue(values){// format -> {"id":-1,"name":""}
         valueId=values.id;
         valueName=values.name;
-        boolValueAssigned=true;
+        if(valueId==-1){
+            boolValueAssigned=false;
+        }else{
+             boolValueAssigned=true;
+        }
+
+
         lname.text = values.name;
         popup.close();
         boolSearch=false;
         tfsearch.text="";
         ttruesearch.start();
-        valueChanged(values.id, values.name);//emit signal onValueChanged(id,name)
+        tvalueEmit.start();
     }
+    Timer{
+        id:tvalueEmit
+        interval: 100
+        onTriggered: {valueChanged(valueId, valueName);}//emit signal onValueChanged(id,name)}
+    }
+
     Timer{
         id:ttruesearch
         interval: 200
@@ -89,55 +106,61 @@ Control{
     Item {
         id: tas
         width: control.width
-        height: control.height//-10
+        height: tfsearch.height//-10
         visible: boolValueAssigned
         Label{
             id:lname
-            anchors{fill:parent;rightMargin: iconq.width+4}
+            anchors{fill:parent;rightMargin: height+4}
             maximumLineCount: control.maximumLineCount
             elide: Label.ElideRight
             fontSizeMode: textFit?Text.Fit:Text.FixedSize
             minimumPixelSize: 10
             verticalAlignment: Text.AlignVCenter
         }
-        Label{
-            id:iconq
-            height: parent.height
-            width: height
-            anchors{right: parent.right}
-            text:"\uf00d"
-            font.family:fawesome.name
-            font.bold: false
-            font.italic: false
-            font.pixelSize:16// height-2
-            verticalAlignment: Text.AlignVCenter
-            color: marea.pressed?mainroot.Material.accent:mainroot.Material.foreground
-            MouseArea{
-                id:marea
-                anchors.fill: parent
-                visible: boolValueAssigned
-                onClicked: {
-                    valueId=-1;
-                    valueName=null;
-                    boolValueAssigned = false;
-                    tfsearch.forceActiveFocus();
-                    clear(); //emit signal clear
-                    valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
-                }
-            }
-        }
+//        Label{
+//            id:iconq
+//            height: parent.height
+//            width: height
+//            anchors{right: parent.right}
+//            text:"\uf00d"
+//            font.family:fawesome.name
+//            font.bold: false
+//            font.italic: false
+//            font.pixelSize:16// height-2
+//            verticalAlignment: Text.AlignVCenter
+//            color: marea.pressed?mainroot.Material.accent:mainroot.Material.foreground
+//            MouseArea{
+//                id:marea
+//                anchors.fill: parent
+//                visible: boolValueAssigned
+//                onClicked: {
+//                    valueId=-1;
+//                    valueName=null;
+//                    boolValueAssigned = false;
+//                    tfsearch.forceActiveFocus();
+//                    clear(); //emit signal clear
+//                    valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
+//                }
+//            }
+//        }
+
     }
+
     function execTimerDelaySearch(){
         tdelaysearch.restart();
     }
 
     TextField{
         id:tfsearch
-        width: control.width
-        visible: !boolValueAssigned
+        width: control.width //- fban.width
+        readOnly: boolValueAssigned
+       // height: parent.height
+//        visible: !boolValueAssigned
         leftPadding: 2
+        topPadding: 0
+        bottomPadding: 0
         onTextChanged: {
-            if(boolSearch){
+            if(boolSearch===true && boolValueAssigned===false){
                 execTimerDelaySearch();
             }
         }
@@ -147,13 +170,31 @@ Control{
                 popuplist.forceActiveFocus();
             }
         }
+        FlatAwesome {
+            id: fban
+            width: height
+            height: 20
+            visible: boolValueAssigned
+            anchors{right: parent.right; verticalCenter: parent.verticalCenter}
+            text:"\uf00d"
+            //textToolTip: qsTr("Config")
+            onClicked: {
+                valueId=-1;
+                valueName=null;
+                boolValueAssigned = false;
+                tfsearch.forceActiveFocus();
+               // clear(); //emit signal clear
+                valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
+
+            }
+        }
     }
     property real popupWidth: control.width
     Component{
         id:pdelegate
         ItemDelegate {
             width: control.width
-            height: control.height
+            height: heightDelegate//control.height
             contentItem: Item{
                 RowLayout{
                     anchors.fill: parent
