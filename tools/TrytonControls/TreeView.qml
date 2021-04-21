@@ -28,6 +28,7 @@ Control{
     property bool lineOdd: true
     property real lineOddShine: 0.1//config
     property alias delegate: listview.delegate
+    property alias contentWidth: listview.contentWidth
     property int maximumLineCount: 1
     property real heightHeader: 30
     property real heightField: 30
@@ -190,6 +191,7 @@ Control{
             id: ifilter
             width: parent.width
             height: activeFilters?heightFilter:0
+            visible: activeFilters
             z:12
             RowLayout{
                 anchors.fill: parent
@@ -273,14 +275,25 @@ Control{
         flickableDirection: Flickable.AutoFlickIfNeeded
         contentWidth: headerItem.width
         //keyNavigationWraps: true
-        header:  Row {
+        header:  Row{
+            id:iph
+            //anchors{fill: parent;margins: 0}
+            Rectangle{
+                width: multiSelectItems?0:1
+                height: heightHeader
+                visible: !multiSelectItems
+                color: mainroot.Material.accent
+            }
+
+            Row {
             id:mHeaderView
             z:8
             height: heightHeader
             spacing: 1
             function itemAt(index) { return repeater.itemAt(index) }
+
             Label{
-                width: multiSelectItems?heightField+1:-1
+                width: multiSelectItems?heightField+1:0
                 height: heightHeader
                 visible: multiSelectItems
                 padding: 4
@@ -504,6 +517,13 @@ Control{
 
             }
         }
+            Rectangle{
+                width: multiSelectItems?0:1
+                height: heightHeader
+                visible: !multiSelectItems
+                color: mainroot.Material.accent
+            }
+        }
         headerPositioning:ListView.OverlayHeader
         onContentYChanged: {
             if (atYEnd){
@@ -547,8 +567,9 @@ Control{
                         Rectangle {
                             color: mainroot.Material.accent
                             height: itdele.height
-                            width: 1
+                            width: multiSelectItems?1:0//1
                             opacity: verticalLine?1:0
+                            visible: multiSelectItems
                         }
                         CheckBox {
                             id:chitem
@@ -571,6 +592,7 @@ Control{
                             height: itdele.height
                             width: 1
                             opacity: verticalLine?1:0
+
                         }
                         Repeater {
                             model: listHead
