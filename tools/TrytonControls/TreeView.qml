@@ -277,6 +277,7 @@ Control{
         //keyNavigationWraps: true
         header:  Row{
             id:iph
+            z:8
             //anchors{fill: parent;margins: 0}
             Rectangle{
                 width: multiSelectItems?0:1
