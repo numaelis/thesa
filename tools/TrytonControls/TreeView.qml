@@ -731,13 +731,13 @@ Control{
                                                 return myobject[modelData.name];
                                             }else{// WARNING this should not happen, use type numeric or date
                                                 if(typeof myobject[modelData.name] === 'object'){
-                                                    return parseObject(myobject[modelData.name]);
-                                                }else{
-                                                    if(typeof myobject[modelData.name] === 'array'){
+                                                    if (Array.isArray(myobject[modelData.name])){
                                                         return "("+myobject[modelData.name].length+")";
                                                     }else{
-                                                        return "";
+                                                        return parseObject(myobject[modelData.name]);
                                                     }
+                                                }else{
+                                                    return "";
                                                 }
                                             }
                                         case 'numeric':
@@ -754,9 +754,17 @@ Control{
                                             }
                                             return myobject[modelData.name];
                                         case 'one2many':
+                                            if (Array.isArray(myobject[modelData.name])){
+                                                return "("+myobject[modelData.name].length+")";
+                                            }
+                                            return "";
+                                        case 'many2many':
+                                            if (Array.isArray(myobject[modelData.name])){
+                                                return "("+myobject[modelData.name].length+")";
+                                            }
                                             return "";
                                         case 'many2one':
-                                            return "";
+                                            return myobject[modelData.name];
                                         default:
                                             return "";
                                         }
