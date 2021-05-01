@@ -59,6 +59,7 @@ Control{
     property var _repeaterHead: null
     property bool buttonRestart: true
     signal doubleClick(int id)
+    signal clicked(int id)
     Component.onCompleted: {
         for(var i=0,len=listHead.length;i<len;i++){
             fields.push(listHead[i].name);
@@ -179,6 +180,22 @@ Control{
         return -1;
     }
 
+
+
+    function getObject(){
+        if(listview.currentIndex!=-1){
+            return listview.currentItem.getObject();
+        }
+        return {}
+    }
+
+    function _restart(){
+        order = JSON.parse(JSON.stringify(initOrder));
+        initTextOrderHead();
+        _models.model.setOrder(order);
+        find([]);
+    }
+
     ButtonGroup {
         id: childGroup
         exclusive: false
@@ -208,10 +225,7 @@ Control{
                     }
                     onExecuteRestart:{
                         filterin.clear();
-                        order = JSON.parse(JSON.stringify(initOrder));
-                        initTextOrderHead();
-                        _models.model.setOrder(order);
-                        find([]);
+                        _restart();
                     }
                 }
             }
@@ -275,6 +289,20 @@ Control{
         flickableDirection: Flickable.AutoFlickIfNeeded
         contentWidth: headerItem.width
         //keyNavigationWraps: true
+
+        function getId(){
+            if(currentIndex!=-1){
+                var mid = currentItem.getId();
+                return mid;
+            }
+        }
+
+        function getObject(){
+            if(currentIndex!=-1){
+                return currentItem.getObject();
+            }
+        }
+
         header:  Row{
             id:iph
             z:8
@@ -553,6 +581,9 @@ Control{
             function checkItem(){
                 selectItem = true;
             }
+            function getObject(){
+                return myobject;
+            }
 
             contentItem: Item{
                 id:pit
@@ -715,6 +746,13 @@ Control{
                                             return myobject[modelData.name+"_format"];
                                         case 'date':
                                             return myobject[modelData.name+"_format"];
+                                        case 'selection':
+                                            if(modelData.hasOwnProperty("selectionalias")){
+                                                if (modelData.selectionalias.hasOwnProperty(myobject[modelData.name])){
+                                                    return modelData.selectionalias[myobject[modelData.name]]
+                                                }
+                                            }
+                                            return myobject[modelData.name];
                                         case 'one2many':
                                             return "";
                                         case 'many2one':
@@ -749,6 +787,7 @@ Control{
                 //check only this item
                 childGroup.checkState=Qt.Unchecked;
                 tcheckitem.restart();
+                control.clicked(myobject.id);
             }
             onDoubleClicked: {
                 listview.forceActiveFocus();

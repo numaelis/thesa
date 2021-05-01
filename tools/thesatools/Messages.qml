@@ -15,13 +15,16 @@ Dialog {
     modal: true
     focus: true
     standardButtons: Dialog.Ok
-    closePolicy: Dialog.NoAutoClose
+    closePolicy: Dialog.CloseOnEscape
     onAccepted: {tcloseAll.start()}
+    onRejected: {tcloseAll.start()}
     Timer{
         id:tcloseAll
         interval: 800
         onTriggered: {destroy(0);}
     }
+
+
     Label {
         id: headerText
         width: parent.width

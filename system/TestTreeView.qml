@@ -86,13 +86,18 @@ TabDesktop {
                 "align":Label.AlignRight
             },
 
-//            {
-//                "name":"state",
-//                "alias":qsTr("Estado"),
-//                "type":"text",
-//                "width":100,
-//                "align":Label.AlignLeft
-//            },
+            {
+                "name":"state",
+                "alias":qsTr("Estado"),
+                "type":"selection",
+                "selectionalias":{'draft': "Borrador",
+                                  'validated': "Validado",
+                                  'posted': "Confirmado",
+                                  'paid': "Pagado",
+                                  'cancelled': "Cancelado"},
+                "width":100,
+                "align":Label.AlignHCenter
+            },
 
             {
                 "name":"description",
