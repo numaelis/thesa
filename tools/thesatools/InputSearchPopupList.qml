@@ -29,6 +29,9 @@ Control{
     property real heightDelegate: height
     signal textChanged(string text)//search
     signal valueChanged(int id, string name);
+    property bool buttonSearchMinus: false
+    //property bool buttonSearchPlus: false
+
     //signal clear()
 
     function forceActiveFocus(){
@@ -171,6 +174,17 @@ Control{
             }
         }
         FlatAwesome {
+            id: fbse
+            width: height
+            height: 20
+            visible: boolValueAssigned==false?buttonSearchMinus==true?true:false:false
+            anchors{right: parent.right; verticalCenter: parent.verticalCenter}
+            text:"\uf010"
+            onClicked: {
+                tfsearch.text=" ";
+            }
+        }
+        FlatAwesome {
             id: fban
             width: height
             height: 20
@@ -188,6 +202,7 @@ Control{
 
             }
         }
+
     }
     property real popupWidth: control.width
     Component{

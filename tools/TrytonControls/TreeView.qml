@@ -539,11 +539,7 @@ Control{
 
                         }
                     }
-
-
-
                 }
-
             }
         }
             Rectangle{

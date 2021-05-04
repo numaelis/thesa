@@ -63,9 +63,11 @@ ApplicationWindow {
     property int maxIntervalBusy: 30000 //milisecunds
     property int _intCountModels: 0
     property var generalPurpose: ({})
+    property string myCompany: ""
+    property string postTitle: ""
 
     visibility:  Window.Maximized
-    title: qsTr("thesa [tryton client]")
+    title: qsTr("thesa mushroom [tryton]  -  "+ myCompany)
 
     Component.onCompleted: {
         QJsonNetworkQml.signalResponse.connect(jsonNetSignalResponse);
@@ -158,7 +160,7 @@ ApplicationWindow {
                      width: boolShortWidth?0:paintedWidth
                      font.pixelSize: 22
                      font.italic: false
-                     text: boolShortWidth16?"":lTitleBarra.objtitle.name
+                     text: boolShortWidth16?"":lTitleBarra.objtitle.name + postTitle
                      visible:!boolShortWidth16
                      verticalAlignment: Label.AlignVCenter
                  }
@@ -493,7 +495,9 @@ ApplicationWindow {
         bool403=false;
         bool401=false;
         psignature="";
+        myCompany="";
         luser="";
+        postTitle="";
         openBusy();
         barroot.currentIndex=-1;
         barroot.deleteTabs();
@@ -958,6 +962,13 @@ ApplicationWindow {
         return Qt.formatDateTime(date, format);
     }
 
+    function dateSchemaFromDate(date){
+        return {'__class__': 'date',
+            'year': date.getFullYear(),
+            'month': date.getMonth()+1,
+            'day': date.getDate()}
+    }
+
     function dateSchema(year, month, day){
         return {'__class__': 'date',
             'year': year,
@@ -1033,7 +1044,8 @@ ApplicationWindow {
             if(data.data!=="error"){
                 preferencesAll = data.data.result;
                 psignature=preferencesAll.name;
-                //console.log(JSON.stringify(preferencesAll))
+                myCompany=preferencesAll["company.rec_name"];
+               // console.log(JSON.stringify(preferencesAll))
             }
         }
     }

@@ -8,14 +8,22 @@ import QtQuick.Controls.Material 2.2
 FocusScope {
     id:tabdes
     signal firstTimeTab();
+    signal selectTab();
     property int countTimeTab: -1
+    property string postTitle: ""
     function selectMyTab(){
         countTimeTab+=1;
     }
+    function getPostTitle(){
+        return postTitle;
+    }
+
+
     onCountTimeTabChanged: {
         if(countTimeTab==0){
             temitsignal.start();
         }
+        selectTab();
     }
     Rectangle{
         anchors.fill: parent

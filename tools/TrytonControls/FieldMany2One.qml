@@ -27,6 +27,10 @@ InputSearchPopupList{
     property var order:[]
     property int limit: 500
     property bool boolLastCall: false
+    function getId(){
+        return valueId;
+    }
+
     Timer{
         id:tsoneif
         interval: 100
@@ -64,7 +68,12 @@ InputSearchPopupList{
 
     onTextChanged: {
         var domainplus = [];
-        domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
+        if(text.trim()==""){
+            domainplus.push(['rec_name', 'ilike', '%'+text.trim()+'%']);
+        }else{
+            domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
+        }
+
         domainplus.push(domain);
         if(!QJsonNetworkQml.isRunning()){
             var result= QJsonNetworkQml.recursiveCall("@cm2o"+countSearch,
