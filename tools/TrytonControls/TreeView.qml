@@ -32,7 +32,7 @@ Control{
     property int maximumLineCount: 1
     property real heightHeader: 30
     property real heightField: 30
-    property real heightFilter: 40
+    property real heightFilter: 45
    // property real heightStates: 40
     property bool verticalLine: true
     property bool horizontalLine: true
@@ -58,6 +58,8 @@ Control{
     property bool isPresedExpand: false
     property var _repeaterHead: null
     property bool buttonRestart: true
+    property var _defaultFilters: [{"field":"id","fieldalias":"ID","type":"numeric"}]
+    property var filters: []
     signal doubleClick(int id)
     signal clicked(int id)
     Component.onCompleted: {
@@ -85,7 +87,9 @@ Control{
         }
         initOrder = JSON.parse(JSON.stringify(order));
         initTextOrderHead();
-
+        //filters
+        _defaultFilters=_defaultFilters.concat(filters);
+        filterin.setFilters(_defaultFilters);
     }
 
     function initTextOrderHead(){
@@ -210,25 +214,25 @@ Control{
             height: activeFilters?heightFilter:0
             visible: activeFilters
             z:12
-            RowLayout{
+            FiltersInput{
+                id:filterin
                 anchors.fill: parent
-                FiltersInput{
-                    id:filterin
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    buttonRestart:control.buttonRestart
-                    onExecuteFind:{
-                        find(domain)
-                    }
-                    onDown:{
-                        listview.forceActiveFocus();
-                    }
-                    onExecuteRestart:{
-                        filterin.clear();
-                        _restart();
-                    }
+                buttonRestart:control.buttonRestart
+                onExecuteFind:{
+                    find(domain)
+                }
+                onDown:{
+                    listview.forceActiveFocus();
+                }
+                onExecuteRestart:{
+                    filterin.clear();
+                    _restart();
                 }
             }
+
+//            RowLayout{
+//                anchors.fill: parent
+//                   }
         }
         TabBar{
             id:barStates

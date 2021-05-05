@@ -28,8 +28,10 @@ TabDesktop {
         limit: 300//step, step
         multiSelectItems:true
         activeFilters: true
-        domain:[['type', '=', 'in']]
+        domain:[['type', '=', 'out']]
         order:[['invoice_date','DESC']]
+        filters:[{"field":"party.name","fieldalias":"Tercero","type":"text"}]
+        //type: text, numeric
         verticalLine:true
         activeStates: true
         buttonRestart:true
@@ -91,13 +93,14 @@ TabDesktop {
                 "alias":qsTr("Estado"),
                 "type":"selection",
                 "selectionalias":{'draft': "Borrador",
-                                  'validated': "Validado",
-                                  'posted': "Confirmado",
-                                  'paid': "Pagado",
-                                  'cancelled': "Cancelado"},
+                                'validated': "Validado",
+                                'posted': "Confirmado",
+                                'paid': "Pagado",
+                                'cancelled': "Cancelado"},
                 "width":100,
                 "align":Label.AlignHCenter
             },
+
 
             {
                 "name":"description",
@@ -107,14 +110,14 @@ TabDesktop {
                 "align":Label.AlignHCenter
             },
 
-//            {
-//                "name":"image",
-//                "alias":"Imagen",
-//                "type":"image",//fields binary
-//                "format":"png",
-//                "width":60,
-//                "align":Label.AlignHCenter
-//            }
+            //            {
+            //                "name":"image",
+            //                "alias":"Imagen",
+            //                "type":"image",//fields binary
+            //                "format":"png",
+            //                "width":60,
+            //                "align":Label.AlignHCenter
+            //            }
 
         ]
         onDoubleClick: {

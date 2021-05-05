@@ -243,6 +243,7 @@ Control{
             }
         }
     }
+
     Popup{
         id: popup
         y: control.height - 1
@@ -264,7 +265,7 @@ Control{
             delegate: pdelegate
             //currentIndex: control.highlightedIndex
             //ScrollIndicator.vertical: ScrollIndicator { }
-            ScrollBar.vertical: ScrollBar {policy: popuplist.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
+            ScrollBar.vertical: ScrollBar {policy: popuplist.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
         }
     }
 }

@@ -68,9 +68,12 @@ InputSearchPopupList{
 
     onTextChanged: {
         var domainplus = [];
-        if(text.trim()==""){
-            domainplus.push(['rec_name', 'ilike', '%'+text.trim()+'%']);
-        }else{
+//        if(text.trim()==""){
+//            domainplus.push(['rec_name', 'ilike', '%'+text.trim()+'%']);
+//        }else{
+//            domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
+//        }
+        if(text.trim()!=""){
             domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
         }
 
