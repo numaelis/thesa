@@ -12,7 +12,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import "../thesatools"
-//TODO add filter dialog and parser
+//TODO add filter datetime, ...
 //
 Control{
     id:control
@@ -28,12 +28,8 @@ Control{
     }
 
     function _getData(){
-        var d=1;
-        console.log(JSON.stringify(listValuesTag));
         if(listValuesTag.length==0){
-        //if(d==1){
             var text = tffilters.text
-            //si texto no tiene : usar rec_name si hay espacios varios rec_name
             var listData=[];
             if(text===""){
                 //listData.push([]);
@@ -65,7 +61,6 @@ Control{
         id:texecute
         interval:100
         onTriggered: {
-            //console.log(JSON.stringify(_getData()));
             executeFind(_getData());
         }
     }
@@ -74,7 +69,6 @@ Control{
         anchors.fill: parent
         ButtonAwesome{
             text:"\uf0b0"
-            //            font.pixelSize: 16
             Layout.preferredWidth: 40
             Layout.fillHeight: true
             ToolTip.visible: false
@@ -83,6 +77,7 @@ Control{
                 popup.open();
             }
         }
+
         TextField{
             id:tffilters
             Layout.fillWidth: true
@@ -118,7 +113,7 @@ Control{
                     filterTagActive = false
                 }
 
-                listValuesTag = listValues;//_getListFilterTag(listValues);
+                listValuesTag = listValues;
                 texecute.start();
             }
         }
@@ -140,6 +135,9 @@ Control{
             ToolTip.visible: false
             visible: buttonRestart
             onClicked: {
+                listValuesTag=[];
+                filterTagActive=false;
+                filtertag.clear();
                 executeRestart();
             }
         }
@@ -179,10 +177,7 @@ Control{
             }
             highlighted: ListView.isCurrentItem
             onClicked: {
-               // filtertag.addTag({"name":"wer > 23","value":["","=",""]})
-                //filtertag.addTag({"name":"werdddddddd > 23","value":""})
                 popup.close();
-                console.log(JSON.stringify({"field":field,"fieldalias":fieldalias,"type":type}))
                 dcreatetag.newfiltre = {"field":field,"fieldalias":fieldalias,"type":type};
                 dcreatetag.open();
 

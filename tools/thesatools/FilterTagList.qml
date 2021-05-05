@@ -17,13 +17,15 @@ Control{
     implicitWidth: 100
     signal changeValues(var values)
 
-    function addTag(obj){//{"name":"","value":""}
-        console.log(JSON.stringify(obj));
+    function addTag(obj){//{"name":"","value1..":""}
         listmodel.append(obj);
-
         tchange.start();
-
     }
+
+    function clear(){
+        listmodel.clear();
+    }
+
     function getValues(){
         var listobj = [];
         for (var i=0, len=listmodel.count;i<len;i++){
@@ -76,16 +78,9 @@ Control{
                     Layout.preferredHeight: listview.height
                     verticalAlignment: Qt.AlignVCenter
                     color: mainroot.Material.accent
-//                    //                topInset: 0
-//                                    background: Rectangle{
-//                                        color: mainroot.Material.accent
-//                                    }
-
                 }
                 FlatAwesome {
                     id: fban
-//                    width: height
-//                    height: 22
                     Layout.preferredHeight: 22
                     Layout.preferredWidth: 22
                     Layout.alignment: Qt.AlignVCenter
