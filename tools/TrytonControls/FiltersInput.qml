@@ -75,6 +75,7 @@ Control{
             height: parent.height
             onClicked: {
                 popup.open();
+                popuplist.forceActiveFocus();
             }
         }
 
@@ -186,10 +187,14 @@ Control{
                 if (event.key === Qt.Key_Return ) {
                     event.accepted = true;
                     popup.close();
+                    dcreatetag.newfiltre = {"field":field,"fieldalias":fieldalias,"type":type};
+                    dcreatetag.open();
                 }
                 if (event.key === Qt.Key_Enter ) {
                     event.accepted = true;
                     popup.close();
+                    dcreatetag.newfiltre = {"field":field,"fieldalias":fieldalias,"type":type};
+                    dcreatetag.open();
                 }
             }
         }
@@ -204,8 +209,7 @@ Control{
         padding: 0
         // modal: true
         //focus: true
-        onClosed: {
-        }
+
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         contentItem: ListView {
             id:popuplist
@@ -224,6 +228,7 @@ Control{
         //height: 200
         title: qsTr("add Filter")
         closePolicy: Dialog.CloseOnEscape
+        focus: true
         //anchors.centerIn: parent
         y:parent.height +200
         x: (parent.width-width)/2

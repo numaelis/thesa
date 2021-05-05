@@ -33,6 +33,7 @@ Control{
     property real heightHeader: 30
     property real heightField: 30
     property real heightFilter: 45
+    property real heightStates: 35
    // property real heightStates: 40
     property bool verticalLine: true
     property bool horizontalLine: true
@@ -238,7 +239,7 @@ Control{
             id:barStates
             width: parent.width
             visible:activeStates
-            height: visible?implicitHeight:0
+            height: visible?heightStates:0
             anchors.top: ifilter.bottom
             clip:true
             Repeater {
@@ -246,6 +247,7 @@ Control{
                 TabButton {
                     text: modelData.alias
                     width: 150
+                    implicitHeight: heightStates
                     property bool booldife: false
                     onPressed: {
                         if(index == barStates.currentIndex){
@@ -471,11 +473,12 @@ Control{
                                 id: menu_order
                                 x: parent.width - width
                                 y: parent.height
-                                width: 30
+                                width: 40
+                                padding: 0
                                 transformOrigin: Menu.BottomRight
                                 MenuItem {
                                     id: mi1
-                                    width: 30
+                                    width: 40
                                     height: 30
                                     contentItem:Text{
                                         text: "\uf141"
@@ -499,10 +502,10 @@ Control{
                                 }
                                 MenuItem {
                                     id: mi2
-                                    width: 30
+                                    width: 40
                                     height: 30
                                     contentItem:Text{
-                                        text: "\uf0d8"
+                                        text: "\uf0d8 \uf15d"
                                         font.family: fawesome.name
                                         font.italic: false
                                         color: mi2.down ? Material.hintTextColor:Material.primaryTextColor
@@ -520,10 +523,10 @@ Control{
                                 }
                                 MenuItem {
                                     id: mi3
-                                    width: 30
+                                    width: 40
                                     height: 30
                                     contentItem:Text{
-                                        text: "\uf0d7"
+                                        text: "\uf0d7 \uf881"
                                         font.family: fawesome.name
                                         font.italic: false
                                         color: mi3.down ? Material.hintTextColor:Material.primaryTextColor
