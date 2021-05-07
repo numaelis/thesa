@@ -1,7 +1,7 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // filters with format
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020 2021"
 //__license__ = "GPL"
 //__version__ = "1.8.0"
 //__maintainer__ = "Numael Garay"
@@ -129,7 +129,6 @@ Control{
             }
         }
         ButtonAwesome{
-            //            Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredWidth: 40
             text: "\uf01e"
@@ -235,18 +234,35 @@ Control{
         property var newfiltre: ({})
         property bool isNumeric: false
         property bool isText: false
+        property bool isDate: false
         property bool isDateTime: false
+        property bool isSelection: false
 
         onAccepted: {
-            if(newfiltre.type=="numeric"){
-                filtertag.addTag({"name":newfiltre.fieldalias+" = "+fieldvalue.text,"value1":newfiltre.field,"value2":"=","value3":fieldvalue.text})
+            if(newfiltre.type==="numeric"){
+                var valueNumeric = fieldvalue.text.toString();
+                if(valueNumeric!=""){
+                    var valueEnd = fieldvalue.text;
+                    if(valueNumeric.indexOf(".")!=-1){
+                        valueEnd = parseFloat(fieldvalue.text);
+                    }
+                    filtertag.addTag({"name":newfiltre.fieldalias+" "+cboperator.currentText+" "+fieldvalue.text,"value":JSON.stringify([newfiltre.field,cboperator.currentText,valueEnd])})
+                }
             }
-            if(newfiltre.type=="text"){
-                filtertag.addTag({"name":newfiltre.fieldalias+" : "+fieldvalue.text,"value1":newfiltre.field,"value2":"ilike","value3":"%"+fieldvalue.text+"%"})
+            if(newfiltre.type==="text"){
+                filtertag.addTag({"name":newfiltre.fieldalias+" : "+fieldvalue.text,"value":JSON.stringify([newfiltre.field,"ilike","%"+fieldvalue.text+"%"])})
+            }
+            if(newfiltre.type==="date"){
+                filtertag.addTag({"name":"("+newfiltre.fieldalias+" : >= "+fvdatefrom.getDate().toLocaleDateString("en-US")+ "  " + newfiltre.fieldalias+" :<= "+fvdateto.getDate().toLocaleDateString("en-US")+")",
+                                     "value":JSON.stringify([[newfiltre.field,">=",dateSchemaFromDate(fvdatefrom.getDate())],
+                                                             [newfiltre.field,"<=",dateSchemaFromDate(fvdateto.getDate())]
+                                                            ])});
             }
             isNumeric= false;
             isText= false;
             isDateTime= false;
+            isDate=false;
+            isSelection=false;
             //fieldvalue.text="";
             //newfiltre={};
         }
@@ -254,7 +270,10 @@ Control{
             isNumeric= false;
             isText= false;
             isDateTime= false;
+            isDate=false;
+            isSelection=false;
             fieldvalue.text="";
+//            cboperator.currentIndex=0;
             newfiltre={}
         }
 
@@ -263,7 +282,8 @@ Control{
             if(visible){
                 if(newfiltre.type=="numeric"){
                     isNumeric=true;
-                    fieldvalue.validator= Qt.createQmlObject('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}', fieldvalue, "dynamicSnippet1");
+                    fieldvalue.validator = Qt.createQmlObject('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }', fieldvalue, "dynamicSnippet1");
+                    cboperator.currentIndex=0;
                 }
                 if(newfiltre.type=="text"){
                     isText=true;
@@ -274,30 +294,93 @@ Control{
                     fieldvalue.text="";
                     fieldvalue.forceActiveFocus();
                 }
+                if(newfiltre.type=="date"){
+                    isDate=true;
+                    namefield.text=newfiltre.fieldalias+":"
+                    fvdatefrom.reset();
+                    fvdateto.reset();
+                }
             }
         }
-        contentItem: RowLayout{
-                spacing: 8
-                Label{
-                    id:namefield
-                    visible: dcreatetag.isNumeric==true || dcreatetag.isText==true?true:false
-                    Layout.preferredWidth: paintedWidth
+        contentItem: Pane{
+            background: Rectangle{
+                opacity: 0
+            }
+            ColumnLayout{
+                anchors.fill: parent
+                RowLayout{
                     Layout.fillHeight: true
-                    verticalAlignment: Qt.AlignVCenter
-                    font.pixelSize: 20
-                }
-
-                TextField{
-                    id:fieldvalue
-                    visible: dcreatetag.isNumeric==true || dcreatetag.isText==true?true:false
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    font.pixelSize: 20
-                    onAccepted: {
-                        dcreatetag.accept();
+                    Layout.alignment: Qt.AlignRight
+                    Label{
+                        text: qsTr("Operator: ")
+                        visible: dcreatetag.isNumeric
+                    }
+
+                    ComboBox{
+                        id:cboperator
+                        Layout.alignment: Qt.AlignRight
+                        visible: dcreatetag.isNumeric
+                        model:["=",">","<"]
                     }
                 }
 
+                RowLayout{
+                    spacing: 8
+                    Layout.alignment: Qt.AlignVCenter
+                    //                Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Label{
+                        id:namefield
+                        //visible: dcreatetag.isNumeric==true || dcreatetag.isText==true?true:false
+                        Layout.preferredWidth: paintedWidth
+                        Layout.preferredHeight: 60
+                        verticalAlignment: Qt.AlignVCenter
+                        font.pixelSize: 20
+                    }
+
+                    TextField{
+                        id:fieldvalue
+                        visible: dcreatetag.isNumeric==true || dcreatetag.isText==true?true:false
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 60
+                        font.pixelSize: 20
+                        onAccepted: {
+                            dcreatetag.accept();
+                        }
+                    }
+                    ColumnLayout{
+                        //                    Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        LabelCube{
+                            label: qsTr("From:")
+                            visible: dcreatetag.isDate==true
+                            height:60
+                            Layout.fillHeight: true
+                            Layout.minimumWidth: 135
+                            Layout.preferredWidth: 135
+                            boolBack:false
+                            FieldCalendar{
+                                id:fvdatefrom
+                            }
+                        }
+                        LabelCube{
+                            label: qsTr("To:")
+                            visible: dcreatetag.isDate==true
+                            height:60
+                            Layout.fillHeight: true
+                            Layout.minimumWidth: 135
+                            Layout.preferredWidth: 135
+                            boolBack:false
+                            FieldCalendar{
+                                id:fvdateto
+                            }
+                        }
+                    }
+
+                }
+
+            }
         }
     }
 

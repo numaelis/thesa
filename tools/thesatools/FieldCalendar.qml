@@ -37,7 +37,7 @@ Item{
     }
 
 
-    function reiniciar(){
+    function reset(){
         calcularFechaActual();
         if(boolCargarFechaNow){
             cargarFechaActual();
@@ -534,11 +534,11 @@ Item{
         changueText();
     }
 
-    function getDateFechaSola(){
+    function getDate(){
         var fechaelis = new Date(currentYear,currentMonth-1,currentDay);
         return fechaelis;
     }
-    function getDateFechaHoraNow(){
+    function getDateTime(){
         var tdate = new Date();
         var fechaelis = new Date(currentYear,currentMonth-1,currentDay,tdate.getHours(),tdate.getMinutes());
         return fechaelis;

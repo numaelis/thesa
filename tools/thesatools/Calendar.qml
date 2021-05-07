@@ -281,9 +281,7 @@ Item {
                     height: rownamesDays.height
                     Rectangle{
                         anchors{fill: parent;margins: 0.5}
-                        //                    border.color: "blue"
-                        //                    border.width: 0.5
-                        color: "silver"//inputAnno.Material.background
+                        color: mainroot.Material.accent
                     }
                     Text{
                         anchors{fill: parent;margins: 0.5}
@@ -320,11 +318,7 @@ Item {
                     Rectangle{
                         id:ibase
                         anchors{fill: parent;margins: 0.5}
-                       // color: "transparent"
-//                        border.color: "silver"
-//                        border.width: type==0 ?0:1
-                        color: type==0 ? "transparent"
-                                       : "silver"//idele.Material.background
+                        color: "transparent"
                     }
                     Text {
                         id:texto
@@ -334,8 +328,7 @@ Item {
                         minimumPixelSize: 3
                         text: idele.text
                         font: idele.font
-                        color: idele.enabled ? idele.Material.primaryTextColor
-                                             : idele.Material.hintTextColor
+                        color: type==0?mainroot.Material.primaryTextColor:mainroot.Material.accent
                         elide: Text.ElideRight
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter

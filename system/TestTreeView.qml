@@ -30,7 +30,10 @@ TabDesktop {
         activeFilters: true
         domain:[['type', '=', 'out']]
         order:[['invoice_date','DESC']]
-        filters:[{"field":"party.name","fieldalias":"Tercero","type":"text"}]
+        filters:[
+            {"field":"party.name","fieldalias":"Tercero","type":"text"},
+            {"field":"invoice_date","fieldalias":"Fecha Factura","type":"date"}
+        ]
         //type: text, numeric
         verticalLine:true
         activeStates: true

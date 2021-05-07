@@ -29,7 +29,8 @@ Control{
     function getValues(){
         var listobj = [];
         for (var i=0, len=listmodel.count;i<len;i++){
-            listobj.push({"value":[listmodel.get(i).value1,listmodel.get(i).value2,listmodel.get(i).value3]});
+            listobj.push({"value":JSON.parse(listmodel.get(i).value)});
+//            listobj.push({"value":[listmodel.get(i).value1,listmodel.get(i).value2,listmodel.get(i).value3]});
         }
         return listobj;
     }

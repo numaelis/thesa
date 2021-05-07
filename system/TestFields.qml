@@ -39,8 +39,8 @@ TabDesktop {
                 Label{
                     text:"Party:"
                     font.pixelSize:20
-                    height: fparty.implicitHeight
-                    verticalAlignment: Qt.AlignBottom
+                    Layout.preferredHeight:fparty.height
+                    verticalAlignment: Qt.AlignTop
                     padding: 0
                     Layout.preferredWidth:paintedWidth
                 }
@@ -76,7 +76,7 @@ TabDesktop {
                 Label{
                     text:"Direction:"
                     font.pixelSize:20
-                    height: fdirection.implicitHeight
+                    Layout.preferredHeight:fparty.height
                     verticalAlignment: Qt.AlignTop
                     padding: 0
                     Layout.preferredWidth:paintedWidth
