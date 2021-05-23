@@ -980,6 +980,15 @@ ApplicationWindow {
         return {'__class__': 'Decimal','decimal':value.toString()}
     }
 
+    function decimalFromSchema(dateSchema){
+        if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("year")){
+            if(dateSchema.__class__==="Decimal"){
+                return dateSchema.decimal;
+            }
+        }
+        return "";
+    }
+
 
     Timer{
         id:timerLastCall

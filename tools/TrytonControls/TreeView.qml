@@ -60,7 +60,9 @@ Control{
     property var _repeaterHead: null
     property bool buttonRestart: true
     property var _defaultFilters: [{"field":"id","fieldalias":"ID","type":"numeric"}]
+    property var filtersRecName: []//expand rec_name from client, idea for discuss
     property var filters: []
+    property string placeholderText: "" ////expand rec_name from client
     signal doubleClick(int id)
     signal clicked(int id)
     Component.onCompleted: {
@@ -91,6 +93,13 @@ Control{
         //filters
         _defaultFilters=_defaultFilters.concat(filters);
         filterin.setFilters(_defaultFilters);
+
+        if(filtersRecName.length>0){
+            filterin._defaultFilterRecName = filtersRecName;
+        }
+        if(placeholderText!=""){
+            filterin.placeholderText=placeholderText;
+        }
     }
 
     function initTextOrderHead(){
@@ -99,6 +108,11 @@ Control{
             mapOrder[order[i][0]]=order[i][1];
         }
         _repeaterHead.setTextInitOrder(mapOrder);
+    }
+
+    function updateRecords(ids){
+        _models.model.updateRecords(ids);
+       listview.reloadItem();
     }
 
     function setOrder(headOrder){//{"head":"","type": none, asc, desc
@@ -145,7 +159,7 @@ Control{
     }
 
     function _initModel(){
-        _models = ModelManagerQml.addModel("_model"+_getNewNumber(), "_proxymodel"+_getNewNumber);
+        _models = ModelManagerQml.addModel("_model"+_getNewNumber(), "_proxymodel"+_getNewNumber());
         if(_models.hasOwnProperty("model")){
             _models.model.setLanguage(planguage);
             _models.model.setModelMethod("model."+modelName);
@@ -231,9 +245,6 @@ Control{
                 }
             }
 
-//            RowLayout{
-//                anchors.fill: parent
-//                   }
         }
         TabBar{
             id:barStates
@@ -306,6 +317,12 @@ Control{
         function getObject(){
             if(currentIndex!=-1){
                 return currentItem.getObject();
+            }
+        }
+
+        function reloadItem(){
+            if(currentIndex!=-1){
+                currentItem.reloadItem();
             }
         }
 
@@ -566,6 +583,23 @@ Control{
         }
     }
 
+    function finditemsField(ite){
+        var result=[];
+        for(var i = 0, len=ite.length;i<len;i++){
+            var result2 = [];
+            if(typeof ite[i].isField !== "undefined"){
+                if(ite[i].isField == true){
+                    result.push(ite[i]);
+                }
+            }
+            if(ite[i].children.length>0){
+                result2 = finditemsField(ite[i].children);
+                result=result.concat(result2);
+            }
+        }
+        return result;
+    }
+
     Component{
         id:pdelegate
         ItemDelegate {
@@ -586,6 +620,15 @@ Control{
             }
             function getObject(){
                 return myobject;
+            }
+
+            function reloadItem(){//update
+                myobject = JSON.parse(JSON.stringify(object.json));
+                var itemstoreload = finditemsField(itdele.contentItem.children);
+                for(var i=0, len= itemstoreload.length;i<len;i++){
+                    itemstoreload[i].setValue();
+                }
+
             }
 
             contentItem: Item{
@@ -634,8 +677,8 @@ Control{
                             Row{
                                 Label {
                                     id:label
-                                    //objectName: "labe"+index
                                     property var imageId
+                                    property bool isField: true
                                     color: mainroot.Material.foreground
                                     elide: Text.ElideRight
                                     width:  modelData.width//==-1?paintedWidth+20:modelData.width

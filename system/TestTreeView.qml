@@ -29,12 +29,12 @@ TabDesktop {
         multiSelectItems:true
         activeFilters: true
         domain:[['type', '=', 'out']]
-        order:[['invoice_date','DESC']]
+        order:[['create_date','DESC'],['invoice_date','DESC']]
         filters:[
             {"field":"party.name","fieldalias":"Tercero","type":"text"},
             {"field":"invoice_date","fieldalias":"Fecha Factura","type":"date"}
-        ]
-        //type: text, numeric
+        ] //type: text, numeric, date
+        placeholderText: "number, party"
         verticalLine:true
         activeStates: true
         buttonRestart:true

@@ -23,8 +23,19 @@ Control{
     signal executeRestart()
     property bool buttonRestart: true
     property real popupWidth: 150
+    property var _defaultFilterRecName: ["rec_name","ilike","%value%"]
+    property alias placeholderText: tffilters.placeholderText
     function clear(){
         tffilters.text="";
+    }
+    //expand rec_name from client
+    function remplaceValue(filters){
+        var tempo={"obj":filters};
+        var strobj = JSON.stringify(tempo);
+        while(strobj.indexOf("value")>-1){
+            strobj= strobj.replace("value", tffilters.text);
+        }
+        return JSON.parse(strobj).obj;
     }
 
     function _getData(){
@@ -34,9 +45,8 @@ Control{
             if(text===""){
                 //listData.push([]);
             }else{
-                listData.push(["rec_name","ilike","%"+text+"%"]);
+                listData.push(remplaceValue(_defaultFilterRecName));
             }
-
             return listData;
         }else{
             return _getListFilterTag();//listValuesTag;
@@ -224,12 +234,11 @@ Control{
         id:dcreatetag
         standardButtons: Dialog.Ok|Dialog.Cancel
         width: 360
-        //height: 200
-        title: qsTr("add Filter")
+        title: qsTr("Add Filter")
         closePolicy: Dialog.CloseOnEscape
         focus: true
         //anchors.centerIn: parent
-        y:parent.height +200
+      //  y:parent.height +200
         x: (parent.width-width)/2
         property var newfiltre: ({})
         property bool isNumeric: false
@@ -263,9 +272,8 @@ Control{
             isDateTime= false;
             isDate=false;
             isSelection=false;
-            //fieldvalue.text="";
-            //newfiltre={};
         }
+
         onRejected: {
             isNumeric= false;
             isText= false;
@@ -273,7 +281,6 @@ Control{
             isDate=false;
             isSelection=false;
             fieldvalue.text="";
-//            cboperator.currentIndex=0;
             newfiltre={}
         }
 
@@ -322,6 +329,11 @@ Control{
                         Layout.alignment: Qt.AlignRight
                         visible: dcreatetag.isNumeric
                         model:["=",">","<"]
+                        onCurrentIndexChanged: {
+                            if(currentIndex!=-1){
+                                fieldvalue.forceActiveFocus();
+                            }
+                        }
                     }
                 }
 
@@ -332,7 +344,6 @@ Control{
                     Layout.fillWidth: true
                     Label{
                         id:namefield
-                        //visible: dcreatetag.isNumeric==true || dcreatetag.isText==true?true:false
                         Layout.preferredWidth: paintedWidth
                         Layout.preferredHeight: 60
                         verticalAlignment: Qt.AlignVCenter
@@ -350,7 +361,6 @@ Control{
                         }
                     }
                     ColumnLayout{
-                        //                    Layout.fillHeight: true
                         Layout.fillWidth: true
                         LabelCube{
                             label: qsTr("From:")
