@@ -98,7 +98,10 @@ Dialog {
                 visible: dialogTsearch.activeActionEdit
                 enabled: idRecordSearch!==-1?true:false
                 onClicked: {
-                    dialogTsearch.actionEdit(idRecordSearch)
+                    idRecordSearch = myTreeView.getId();
+                    if(idRecordSearch!=-1){
+                        dialogTsearch.actionEdit(idRecordSearch)
+                    }
                 }
                 contentItem: Text {
                     text: bcliedit.text
@@ -133,8 +136,12 @@ Dialog {
                 text: qsTr("Select")
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionSelect
+                enabled: idRecordSearch!==-1?true:false
                 onClicked: {
-                    dialogTsearch.actionSelect(idRecordSearch, myTreeView.getObject())
+                    idRecordSearch = myTreeView.getId();
+                    if(idRecordSearch!=-1){
+                        dialogTsearch.actionSelect(idRecordSearch, myTreeView.getObject())
+                    }
                     dialogTsearch.accept();
                 }
                 contentItem: Text {

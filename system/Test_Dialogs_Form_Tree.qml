@@ -64,8 +64,8 @@ TabDesktop {
             },
 
             {
-                "name":"first_address",
-                "alias":"Dirección",
+                "name":"phone",
+                "alias":"Telefono",
                 "type":"text",
                 "width":200,
                 "align":Label.AlignLeft,
@@ -96,6 +96,7 @@ TabDesktop {
                 fieldName: "name"
                 required:true
                 Layout.preferredHeight: 60
+                //implicitWidth:  160
                 Layout.fillWidth: true
             }
             //TemplateFieldNumeric , TemplateFieldSelection
