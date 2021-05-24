@@ -59,7 +59,9 @@ StackDesktop {
     StackSubDesktop{
 
         tabs: [{name: "Fields", icon: "\uf044"},
-            {name: "Tree View", icon: "\uf0ce"}]
+            {name: "Tree View", icon: "\uf0ce"},
+            {name: "Dialogs Form and Tree", icon: "\uf0ce"}
+              ]
 
         TestFields {
 
@@ -67,6 +69,10 @@ StackDesktop {
 
         TestTreeView {
 
+        }
+        
+        Test_Dialogs_Form_Tree {
+        
         }
 
     }

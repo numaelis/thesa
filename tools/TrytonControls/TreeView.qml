@@ -301,8 +301,8 @@ Control{
         model:_models.model
         cacheBuffer: _cacheBuffer//contentHeight+heightField
         delegate: pdelegate
-        ScrollBar.vertical: ScrollBar {policy: listview.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
-        ScrollBar.horizontal: ScrollBar {policy: listview.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
+        ScrollBar.vertical: ScrollBar {policy: listview.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
+        ScrollBar.horizontal: ScrollBar {policy: listview.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
         flickableDirection: Flickable.AutoFlickIfNeeded
         contentWidth: headerItem.width
         //keyNavigationWraps: true

@@ -30,3 +30,9 @@ Version 1.8
 * TrytonControls/TreeView: add sortable columns None, ASC DESC
 * TrytonControls/TreeView: add type field Image (Binary field)
 * controls improvements 
+* TrytonControls/TreeView: add filters, placeholderText
+* TrytonControls/TreeView: update item
+* add TrytonControls: TemplateDialogSearch, TemplateDialogEdit
+* add TrytonControls: TemplateFormEdit
+* add TrytonControls: TemplateFieldText, TemplateFieldNumeric, TemplateFieldSelection
+

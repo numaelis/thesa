@@ -5,4 +5,11 @@ FieldMany2One 1.0 FieldMany2One.qml
 TreeView 1.0 TreeView.qml
 FiltersInput 1.0 FiltersInput.qml
 TrytonManager 1.0 TrytonManager.qml
+TemplateDialogEdit 1.0 TemplateDialogEdit.qml
+TemplateDialogSearch 1.0 TemplateDialogSearch.qml
+TemplateFormEdit 1.0 TemplateFormEdit.qml
+TemplateFieldDocument 1.0 TemplateFieldDocument.qml
+TemplateFieldText 1.0 TemplateFieldText.qml
+TemplateFieldNumeric 1.0 TemplateFieldNumeric.qml
+TemplateFieldSelection 1.0 TemplateFieldSelection.qml
 

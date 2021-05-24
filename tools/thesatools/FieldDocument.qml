@@ -13,16 +13,20 @@ Item {
     //height: tfdoc.height
     property alias value: tfdoc.text
     property int pixelFont: 16
-    property string tipeDocument: "DNI"// DNI CUIT
+    property string typeDocument: "DNI"// DNI CUIT
     property bool boolAuto: false // solo para listView
     property alias readOnly: tfdoc.readOnly
+    signal fieldTextEdited()
+    signal fieldAccepted()
+    signal fieldFocusCh(bool focus)
+    property alias fieldFocus: tfdoc.focus
 
     Component.onCompleted: {
-        selectTipeDocument();
+        selectTypeDocument();
     }
 
-    function selectTipeDocument(){
-        switch(tipeDocument){
+    function selectTypeDocument(){
+        switch(typeDocument){//DNI CUIT TEL
         case "DNI":
             tfdoc.validator= Qt.createQmlObject('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}', tfdoc, "dynamicSnippet1");
             break;
@@ -59,6 +63,10 @@ Item {
     function setValue(data){
         value = data;
         reFormatize();
+    }
+    function clearValue(){
+        value = "";
+        tfmascara.text="";
     }
 
     function formatDni2(texto){
@@ -172,7 +180,7 @@ Item {
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: !boolMovil
         readOnly: true
-        visible: tfdoc.focus==false?tipeDocument=="DECUP"?false:true:false
+        visible: tfdoc.focus==false?typeDocument=="DECUP"?false:true:false
         horizontalAlignment: TextField.AlignRight
         onFocusChanged: {
             if(focus){
@@ -190,7 +198,7 @@ Item {
 //        font.bold: true
         anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: dpis*2}
 
-        visible: tfdoc.focus==false?tipeDocument=="DECUP"?true:false:false
+        visible: tfdoc.focus==false?typeDocument=="DECUP"?true:false:false
         horizontalAlignment: Label.AlignRight
         verticalAlignment: Label.AlignBottom
         onFocusChanged: {
@@ -246,7 +254,7 @@ Item {
     }
 
     function reFormatize(){
-        switch(tipeDocument){
+        switch(typeDocument){
         case "CUIT":
             if(tfdoc.text.trim()!=""){
                 if(validarCuit(tfdoc.text)==false){
@@ -303,6 +311,9 @@ Item {
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: !boolMovil
         opacity: focus==true?1:0
+        onTextEdited: {
+            mainfd.fieldTextEdited();
+        }
 
         onFocusChanged: {
             if(focus){
@@ -310,7 +321,12 @@ Item {
             }else{
                 reFormatize();
             }
+            mainfd.fieldFocusCh(focus);
         }
+        onAccepted: {
+            mainfd.fieldAccepted();
+        }
+
         Keys.onPressed: {
             if (event.key === Qt.Key_Return ) {
                 event.accepted = true;

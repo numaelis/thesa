@@ -120,32 +120,6 @@ Control{
             minimumPixelSize: 10
             verticalAlignment: Text.AlignVCenter
         }
-//        Label{
-//            id:iconq
-//            height: parent.height
-//            width: height
-//            anchors{right: parent.right}
-//            text:"\uf00d"
-//            font.family:fawesome.name
-//            font.bold: false
-//            font.italic: false
-//            font.pixelSize:16// height-2
-//            verticalAlignment: Text.AlignVCenter
-//            color: marea.pressed?mainroot.Material.accent:mainroot.Material.foreground
-//            MouseArea{
-//                id:marea
-//                anchors.fill: parent
-//                visible: boolValueAssigned
-//                onClicked: {
-//                    valueId=-1;
-//                    valueName=null;
-//                    boolValueAssigned = false;
-//                    tfsearch.forceActiveFocus();
-//                    clear(); //emit signal clear
-//                    valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
-//                }
-//            }
-//        }
 
     }
 
@@ -157,8 +131,6 @@ Control{
         id:tfsearch
         width: control.width //- fban.width
         readOnly: boolValueAssigned
-       // height: parent.height
-//        visible: !boolValueAssigned
         leftPadding: 2
         topPadding: 0
         bottomPadding: 0
