@@ -91,12 +91,14 @@ Pane{
     }
 
     function _updateRPC(params){
+        openBusy();
         var data = QJsonNetworkQml.recursiveCall("update..","model."+modelName+".write",
                                                  [
                                                      [idRecord],
                                                          params,
                                                      preferences
                                                  ]);
+        closeBusy();
         if(data.data!=="error"){
             params["id"]=idRecord;
             updated(params);
@@ -177,12 +179,14 @@ Pane{
     }
 
     function _createRPC(params){
+        openBusy();
         var data = QJsonNetworkQml.recursiveCall("crearin","model."+modelName+".create",
                                                  [
                                                      [ params
                                                      ],
                                                      preferences
                                                  ]);
+        closeBusy();
         if(data.data!=="error"){
             var idResult = data.data.result[0];
             params["id"]=idResult;
@@ -194,14 +198,15 @@ Pane{
     }
 
     function _reload(){
-        var params = getFieldsValues(false);
+        var params = getFieldsNames();
+        openBusy();
         var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".search_read",
                                                  [
                                                      [['id','=',idRecord]],
-                                                     0,2,[],Object.keys(params),
+                                                     0,2,[],params,
                                                      preferences
                                                  ]);
-
+        closeBusy();
         if(data.data!=="error"){
             if(data.data.result.length>0){
                 var obj = data.data.result[0];
@@ -210,9 +215,31 @@ Pane{
         }
     }
 
+    function getFieldsNames(){
+        var params=[];
+        for(var i=0,len=itemsField.length;i<len;i++){
+                params.push(itemsField[i].fieldName)
+            if(itemsField[i].type=="many2one"){
+                params.push(itemsField[i].fieldName+".rec_name");
+               // params.push(itemsField[i].fieldName+".name");
+            }
+
+        }
+        return params;
+    }
+
     function setValues(values){
         for(var i=0,len=itemsField.length;i<len;i++){
-            itemsField[i].setValue(values[itemsField[i].fieldName]);
+            if(itemsField[i].type=="many2one"){
+                console.log("ss",JSON.stringify(values));
+                if(values[itemsField[i].fieldName]!=null){
+                    itemsField[i].setValue({"id":values[itemsField[i].fieldName+"."]["id"],"name":values[itemsField[i].fieldName+"."]["rec_name"]});
+                }else{
+                    itemsField[i].setValue({"id":-1,"name":""})
+                }
+            }else{
+                itemsField[i].setValue(values[itemsField[i].fieldName]);
+            }
         }
     }
 }

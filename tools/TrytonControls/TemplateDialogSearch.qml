@@ -41,6 +41,7 @@ Dialog {
     signal actionNew()
 
     modal: true
+    focus: true
 
     onActionEdit:{
         if(dialogEdit != null){
@@ -60,6 +61,20 @@ Dialog {
 
     onOpened: {
         myTreeView.find([]);
+    }
+    function feditItem(){
+        idRecordSearch = myTreeView.getId();
+        if(idRecordSearch!=-1){
+            dialogTsearch.actionEdit(idRecordSearch)
+        }
+    }
+
+    function fselectitem(){
+        idRecordSearch = myTreeView.getId();
+        if(idRecordSearch!=-1){
+            dialogTsearch.actionSelect(idRecordSearch, myTreeView.getObject())
+        }
+        dialogTsearch.accept();
     }
 
     footer: ToolBar {
@@ -90,6 +105,16 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
                 }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTsearch.reject();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTsearch.reject();
+                    }
+                }
             }
             ToolButton {
                 id:bcliedit
@@ -98,10 +123,7 @@ Dialog {
                 visible: dialogTsearch.activeActionEdit
                 enabled: idRecordSearch!==-1?true:false
                 onClicked: {
-                    idRecordSearch = myTreeView.getId();
-                    if(idRecordSearch!=-1){
-                        dialogTsearch.actionEdit(idRecordSearch)
-                    }
+                    dialogTsearch.feditItem();
                 }
                 contentItem: Text {
                     text: bcliedit.text
@@ -111,6 +133,16 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
+                }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTsearch.feditItem();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTsearch.feditItem();
+                    }
                 }
             }
             ToolButton {
@@ -130,6 +162,16 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
                 }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTsearch.actionNew();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTsearch.actionNew();
+                    }
+                }
             }
             ToolButton {
                 id:bcliselect
@@ -138,11 +180,7 @@ Dialog {
                 visible: dialogTsearch.activeActionSelect
                 enabled: idRecordSearch!==-1?true:false
                 onClicked: {
-                    idRecordSearch = myTreeView.getId();
-                    if(idRecordSearch!=-1){
-                        dialogTsearch.actionSelect(idRecordSearch, myTreeView.getObject())
-                    }
-                    dialogTsearch.accept();
+                    dialogTsearch.fselectitem();
                 }
                 contentItem: Text {
                     text: bcliselect.text
@@ -152,6 +190,16 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
+                }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTsearch.fselectitem();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTsearch.fselectitem();
+                    }
                 }
             }
         }

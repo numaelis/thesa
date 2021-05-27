@@ -73,30 +73,85 @@ Control{
         }
     }
 
+    function formatDecimalPlaces(value, mplaces){
+        if(value == ""){
+            return "";
+        }
+        var number = parseFloat(value);
+        if (isNaN(number)){
+            number = 0;
+        }
+        var places = mplaces;
+        var symbol = ""; //$
+        var thousand =  thousands_sep;
+        var decimal = decimal_point;
+        var negative = number < 0 ? "-" : "",
+        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+        return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+    }
     LabelCube{
         id:labelcube
         anchors.fill: parent
         label: labelAlias
         labelcolor:"grey"
         boolBack:false
-        TextField{
-            id:tfield
-            onTextEdited: {
-               // if(focus==true){
-                    isChange=true;
-//                }
-            }
-            onFocusChanged: {
-                if(focus==false){
-                    if(isChange==true){
-                        change(text);
+        Item{
+            TextField{
+                anchors.fill: parent
+                readOnly: true
+                visible: format_text.visible
+                onFocusChanged: {
+                    if(focus==true){
+                        tfield.forceActiveFocus();
                     }
                 }
             }
+            Label{
+                id:format_text
+                anchors.fill: parent
+                visible: type=="numeric" && tfield.focus==false?true:false
+                horizontalAlignment: Label.AlignRight
+                fontSizeMode: Label.Fit
+                minimumPixelSize: 9
+                elide: Label.ElideRight
+                font.pixelSize: tfield.font.pixelSize
+                text:formatDecimalPlaces(tfield.text, decimal)
+                padding: 0
+                verticalAlignment: Label.AlignVCenter
+                bottomPadding: tfield.bottomPadding-4
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        tfield.forceActiveFocus();
+                    }
+                }
+                z:12
+            }
 
-            onAccepted: {
-                if(isChange==true){
-                    change(text);
+            TextField{
+                id:tfield
+                anchors.fill: parent
+                visible: !format_text.visible
+                topPadding: 0
+                onTextEdited: {
+                    // if(focus==true){
+                    isChange=true;
+                    //                }
+                }
+                onFocusChanged: {
+                    if(focus==false){
+                        if(isChange==true){
+                            change(text);
+                        }
+                    }
+                }
+
+                onAccepted: {
+                    focus = false;
+                    if(isChange==true){
+                        change(text);
+                    }
                 }
             }
         }

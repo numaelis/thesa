@@ -9,7 +9,7 @@ import "messages.js" as MessageLib
 
 Item {
     id:mainfd
-    width: dpis*60
+    //width: dpis*60
     //height: tfdoc.height
     property alias value: tfdoc.text
     property int pixelFont: 16
@@ -169,19 +169,14 @@ Item {
     //textFormat: Text.RichText
     TextField{
         id: tfmascara
-        width: parent.width
-        //height: parent.height
-        //placeholderText: "dd"
-        font.pixelSize: pixelFont
-        leftPadding: 2
+        anchors.fill: parent
         topPadding: 0
-        bottomPadding: 0
-        anchors{horizontalCenter: parent.horizontalCenter}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: !boolMovil
         readOnly: true
         visible: tfdoc.focus==false?typeDocument=="DECUP"?false:true:false
         horizontalAlignment: TextField.AlignRight
+        //verticalAlignment: TextField.AlignVCenter
         onFocusChanged: {
             if(focus){
                 tfdoc.forceActiveFocus();
@@ -190,17 +185,11 @@ Item {
     }
     Label{
         id: tfmaskcup
-        width: parent.width
-        height: parent.height// - dpis*4
-        font.pixelSize: pixelFont
-//        font.family: myFontPrenta
-//        color: mainroot.Material.foreground
-//        font.bold: true
-        anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: dpis*2}
-
+        anchors.fill: parent
         visible: tfdoc.focus==false?typeDocument=="DECUP"?true:false:false
         horizontalAlignment: Label.AlignRight
-        verticalAlignment: Label.AlignBottom
+        verticalAlignment: Label.AlignVCenter
+        bottomPadding: tfdoc.bottomPadding-4
         onFocusChanged: {
             if(focus){
                 tfdoc.forceActiveFocus();
@@ -300,13 +289,8 @@ Item {
 
     TextField{
         id: tfdoc
-        width: parent.width
-        //height: parent.height
-        leftPadding: 2
+        anchors.fill: parent
         topPadding: 0
-        bottomPadding: 0
-        //placeholderText: "dd"
-        font.pixelSize: pixelFont
         anchors{horizontalCenter: parent.horizontalCenter}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: !boolMovil

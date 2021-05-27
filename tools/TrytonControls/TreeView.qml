@@ -298,7 +298,7 @@ Control{
         anchors{fill: parent;topMargin: filsta.height+2}
         clip: true
         focus: true
-        model:_models.model
+        model:_models.model//proxy
         cacheBuffer: _cacheBuffer//contentHeight+heightField
         delegate: pdelegate
         ScrollBar.vertical: ScrollBar {policy: listview.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}

@@ -21,7 +21,6 @@ Control{
     property int maximumLineCount: 1
     property int countSearch: 0
     property bool textFit: true
-//    property var value//:({})
     property int valueId: -1
     property string valueName
     property bool boolSearch: true
@@ -51,13 +50,22 @@ Control{
     }
 
     function selectItem(data){
-        setValue(data);
+        updateValue(data);
     }
 
-    function initValue(values){// format -> {"id":-1,"name":""}
-        valueId=values.id;
-        valueName=values.name;
+    function clearValue(){
+        valueId=-1;
+        valueName="";
+        lname.text ="";
+        popup.close();
+        tfsearch.text="";
+        boolValueAssigned=false;
         //no emit signal
+    }
+
+    function updateValue(values){// format -> {"id":-1,"name":""}
+        setValue(values);
+        tvalueEmit.start();
     }
 
     function setValue(values){// format -> {"id":-1,"name":""}
@@ -66,17 +74,16 @@ Control{
         if(valueId==-1){
             boolValueAssigned=false;
         }else{
-             boolValueAssigned=true;
+            boolValueAssigned=true;
         }
-
 
         lname.text = values.name;
         popup.close();
         boolSearch=false;
         tfsearch.text="";
         ttruesearch.start();
-        tvalueEmit.start();
     }
+
     Timer{
         id:tvalueEmit
         interval: 100
@@ -106,34 +113,16 @@ Control{
         id:pmodel
     }
 
-    Item {
-        id: tas
-        width: control.width
-        height: tfsearch.height//-10
-        visible: boolValueAssigned
-        Label{
-            id:lname
-            anchors{fill:parent;rightMargin: height+4}
-            maximumLineCount: control.maximumLineCount
-            elide: Label.ElideRight
-            fontSizeMode: textFit?Text.Fit:Text.FixedSize
-            minimumPixelSize: 10
-            verticalAlignment: Text.AlignVCenter
-        }
-
-    }
-
     function execTimerDelaySearch(){
         tdelaysearch.restart();
     }
 
     TextField{
         id:tfsearch
-        width: control.width //- fban.width
+        anchors.fill: parent
+        //width: control.width //- fban.width
         readOnly: boolValueAssigned
-        leftPadding: 2
         topPadding: 0
-        bottomPadding: 0
         onTextChanged: {
             if(boolSearch===true && boolValueAssigned===false){
                 execTimerDelaySearch();
@@ -145,13 +134,28 @@ Control{
                 popuplist.forceActiveFocus();
             }
         }
+    }
+
+    Item{
+        anchors{fill:parent; bottomMargin: tfsearch.bottomPadding-4}
+        Label{
+            id:lname
+            visible: boolValueAssigned
+            anchors{fill:parent;rightMargin: 24}
+            maximumLineCount: control.maximumLineCount
+            elide: Label.ElideRight
+            fontSizeMode: textFit?Text.Fit:Text.FixedSize
+            minimumPixelSize: 10
+            font.pixelSize: tfsearch.font.pixelSize
+            verticalAlignment: Text.AlignVCenter
+        }
         FlatAwesome {
             id: fbse
             width: height
             height: 20
             visible: boolValueAssigned==false?buttonSearchMinus==true?true:false:false
-            anchors{right: parent.right; verticalCenter: parent.verticalCenter}
-            text:"\uf010"
+            anchors{right: parent.right; verticalCenter: parent.verticalCenter; verticalCenterOffset:-lname.bottomPadding}
+            text:"\uf0d7"//"\uf010"
             onClicked: {
                 tfsearch.text=" ";
             }
@@ -161,21 +165,20 @@ Control{
             width: height
             height: 20
             visible: boolValueAssigned
-            anchors{right: parent.right; verticalCenter: parent.verticalCenter}
+            anchors{right: parent.right; verticalCenter: parent.verticalCenter; verticalCenterOffset:-lname.bottomPadding}
             text:"\uf00d"
-            //textToolTip: qsTr("Config")
             onClicked: {
                 valueId=-1;
                 valueName=null;
                 boolValueAssigned = false;
                 tfsearch.forceActiveFocus();
-               // clear(); //emit signal clear
+                // clear(); //emit signal clear
                 valueChanged(valueId, valueName);//emit signal onValueChanged(id,name)
 
             }
         }
-
     }
+
     property real popupWidth: control.width
     Component{
         id:pdelegate

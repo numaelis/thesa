@@ -63,10 +63,6 @@ Dialog {
         }
     }
 
-    Component.onCompleted: {
-
-    }
-
     onAccepted: {
 
     }
@@ -76,6 +72,7 @@ Dialog {
     }
 
     modal: true
+    focus: true
 
     onOpened: {
         myForm = contentItem;
@@ -118,6 +115,16 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
                 }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTedit.emitActionCancel();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTedit.emitActionCancel();
+                    }
+                }
             }
             ToolButton {
                 id:bokdcli
@@ -136,6 +143,16 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
+                }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                        dialogTedit.emitActionOk();
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        dialogTedit.emitActionOk();
+                    }
                 }
             }
         }

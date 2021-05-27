@@ -618,7 +618,11 @@ ApplicationWindow {
                                 QJsonNetworkQml.saveLastCall();
                             }
                         }else{
-                            MessageLib.showMessageLog("error: "+JSON.stringify(jsonData.error),mainroot);
+                            if(jsonData.error[0] == "UserError"){
+                                MessageLib.showMessageLog("error: "+JSON.stringify(jsonData.error[1][0]),mainroot);
+                            }else{
+                                MessageLib.showMessageLog("error: "+JSON.stringify(jsonData.error),mainroot);
+                            }
                         }
                     }
                 }

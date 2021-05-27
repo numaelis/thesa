@@ -16,19 +16,43 @@ import "../thesatools"
 //* a popup list updates the text
 //*...?
 
-// setValue({"id":-1, "name":""})
+// getValue() -> id
+// setValue({"id":-1, "name":""}) no emit change
+// updateValue({"id":-1, "name":""})//emit change
 // signal onValueChanged(value)
-// signal clear() obsoleto
+
 
 InputSearchPopupList{
     id:controlm2o
+    property bool tryton: true
+    property string fieldName: ""
+    property string type: "many2one"
+//    property bool required: false
+//    property bool readOnly: false
+//    enabled: !readOnly
     property string modelName: ""
     property var domain:[]
     property var order:[]
     property int limit: 500
     property bool boolLastCall: false
+
+    //property bool isChange: false
+    //signal change(string text)
+
+//    Component.onCompleted: {
+//        control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
+//    }
+
     function getId(){
+        if(valueId==-1){
+            return null;
+        }
+
         return valueId;
+    }
+
+    function getValue(){
+        return getId();
     }
 
     Timer{
@@ -60,7 +84,7 @@ InputSearchPopupList{
             if(result.data!=="error"){
                 var resultArray = result.data.result;
                 if(resultArray.length === 1){
-                    setValue({"id":resultArray[0].id, "name":resultArray[0].rec_name});
+                    updateValue({"id":resultArray[0].id, "name":resultArray[0].rec_name});
                 }
             }
         }
@@ -68,11 +92,6 @@ InputSearchPopupList{
 
     onTextChanged: {
         var domainplus = [];
-//        if(text.trim()==""){
-//            domainplus.push(['rec_name', 'ilike', '%'+text.trim()+'%']);
-//        }else{
-//            domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
-//        }
         if(text.trim()!=""){
             domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
         }

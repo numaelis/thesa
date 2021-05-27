@@ -39,7 +39,7 @@ Dialog {
         ScrollView{
             clip:true
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+            ScrollBar.vertical.policy: contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff
             anchors.fill: parent
             TextArea {
                 id: areaText
