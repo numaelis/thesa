@@ -205,8 +205,9 @@ class ModelJson(QObjectListModel):
                         for li in range(len(lfp)-1):
                             lfp[li]=lfp[li]+"."
                         temp=jsonobj[lfp[0]]
-                        for c in lfp[1:]:
-                           temp = temp[c]
+                        for c in lfp[1:]:                                
+                            if temp!=None:
+                                temp = temp[c]                        
                         jsonobj[fp] = temp
                 
             for vp in self.m_fieldsFormatDecimal:

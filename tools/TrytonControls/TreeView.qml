@@ -71,6 +71,9 @@ Control{
             if(listHead[i].type==='numeric'){
                 fieldsFormatDecimal.push(listHead[i].name);
             }
+            if(listHead[i].type==='many2one'){
+                fields.push(listHead[i].name+".rec_name");
+            }
             if(listHead[i].type==='datetime' || listHead[i].type==='date'){
                 if(listHead[i].hasOwnProperty("format")){
                     var format = listHead[i].format;
@@ -206,6 +209,10 @@ Control{
             return listview.currentItem.getObject();
         }
         return {}
+    }
+
+    function _filterClear(){
+        filterin.clear();
     }
 
     function _restart(){
@@ -535,7 +542,11 @@ Control{
                                         if (modelData.hasOwnProperty("virtual")){
                                             virtual = modelData.virtual;
                                         }
-                                        if(virtual==false){setOrder({"head":modelData.name, "type":"ASC"});mll.setTextOrder("ASC");}
+                                        var fieldNameg=modelData.name;
+                                        if(modelData.type=="many2one"){
+                                            virtual = true;
+                                        }
+                                        if(virtual==false){setOrder({"head":fieldNameg, "type":"ASC"});mll.setTextOrder("ASC");}
                                     }
                                 }
                                 MenuItem {
@@ -556,7 +567,11 @@ Control{
                                         if (modelData.hasOwnProperty("virtual")){
                                             virtual = modelData.virtual;
                                         }
-                                        if(virtual==false){setOrder({"head":modelData.name, "type":"DESC"});mll.setTextOrder("DESC");}
+                                        var fieldNameg=modelData.name;
+                                        if(modelData.type=="many2one"){
+                                            virtual = true;
+                                        }
+                                        if(virtual==false){setOrder({"head":fieldNameg, "type":"DESC"});mll.setTextOrder("DESC");}
                                     }
                                 }
                             }
@@ -810,7 +825,10 @@ Control{
                                             }
                                             return "";
                                         case 'many2one':
-                                            return myobject[modelData.name];
+                                            if(myobject[modelData.name+".rec_name"]===null){
+                                                return "";
+                                            }
+                                            return myobject[modelData.name+".rec_name"];
                                         default:
                                             return "";
                                         }
