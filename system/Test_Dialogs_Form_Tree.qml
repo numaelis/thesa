@@ -19,7 +19,7 @@ TabDesktop {
     ColumnLayout{
         anchors.fill: parent
         Label{
-            text:" Dialog Form Edit and Dialog Search  <No Warranty>"
+            text:" Dialog Form Edit and Dialog Search"
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredHeight: 60
             font.pixelSize: 20
@@ -59,15 +59,33 @@ TabDesktop {
                 "name":"name",
                 "alias":"Nombre",
                 "type":"text",
-                "width":250,
+                "width":200,
                 "align":Label.AlignLeft
+            },
+
+            {
+                "name":"tax_identifier",
+                "alias":"Identificador",
+                "type":"many2one",
+                "width":120,
+                "align":Label.AlignLeft,
+                "virtual":true
+            },
+
+            {
+                "name":"lang",
+                "alias":"idioma",
+                "type":"many2one",
+                "width":130,
+                "align":Label.AlignLeft,
+                "virtual":true
             },
 
             {
                 "name":"phone",
                 "alias":"Telefono",
                 "type":"text",
-                "width":200,
+                "width":120,
                 "align":Label.AlignLeft,
                 "virtual":true
             },
@@ -96,15 +114,40 @@ TabDesktop {
                 fieldName: "name"
                 required:true
                 Layout.preferredHeight: 60
-                //implicitWidth:  160
                 Layout.fillWidth: true
             }
+            RowLayout{
+                TemplateFieldText{
+                    labelAlias: "Código"
+                    fieldName: "code"
+                    readOnly: true
+                    Layout.preferredHeight: 60
+                    Layout.fillWidth: true
+                }
+                TemplateFieldMany2One{
+                    labelAlias: "Idioma"
+                    fieldName: "lang"
+                    modelName:"ir.lang"
+                    Layout.preferredHeight: 60
+                    Layout.fillWidth: true
+                    buttonSelection:true
+                }
+            }//
+            TemplateFieldMany2One{
+                labelAlias: "Identificador"
+                fieldName: "tax_identifier"
+                modelName:"party.identifier"
+                Layout.preferredHeight: 60
+                Layout.fillWidth: true
+                readOnly: true
+                //buttonSelection:true
+            }
+
             //TemplateFieldNumeric , TemplateFieldSelection
         }
-
-        paramsPlusCreate:{
-            "active":true,
-        }
+//        paramsPlusCreate:{
+//            "active":true,
+//        }
 
     }
 

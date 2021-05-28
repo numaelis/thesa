@@ -115,7 +115,9 @@ Pane{
                     params[itemsField[i].fieldName]=itemsField[i].getValue();
                 }
             }else{
-                params[itemsField[i].fieldName]=itemsField[i].getValue();
+                if(itemsField[i].readOnly==false){
+                    params[itemsField[i].fieldName]=itemsField[i].getValue();
+                }
             }
         }
         return params;
@@ -231,7 +233,6 @@ Pane{
     function setValues(values){
         for(var i=0,len=itemsField.length;i<len;i++){
             if(itemsField[i].type=="many2one"){
-                console.log("ss",JSON.stringify(values));
                 if(values[itemsField[i].fieldName]!=null){
                     itemsField[i].setValue({"id":values[itemsField[i].fieldName+"."]["id"],"name":values[itemsField[i].fieldName+"."]["rec_name"]});
                 }else{
@@ -239,6 +240,15 @@ Pane{
                 }
             }else{
                 itemsField[i].setValue(values[itemsField[i].fieldName]);
+            }
+        }
+    }
+
+    function _forceActiveFocus(){
+        for(var i=0,len=itemsField.length;i<len;i++){
+            if(itemsField[i].readOnly==false){
+               itemsField[i]._forceActiveFocus();
+                break;
             }
         }
     }

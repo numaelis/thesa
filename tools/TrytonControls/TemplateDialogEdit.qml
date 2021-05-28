@@ -82,6 +82,8 @@ Dialog {
         myForm._initFields();
         if(idRecord!=-1){
             myForm._reload();
+        }else{
+            myForm._forceActiveFocus();
         }
     }
 

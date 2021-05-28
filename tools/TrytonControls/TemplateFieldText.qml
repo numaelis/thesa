@@ -32,6 +32,10 @@ Control{
     signal change(string text)
 
     padding: 0
+    function _forceActiveFocus(){
+        tfield.forceActiveFocus();
+    }
+
     function getValue(){
         if(type=="numeric"){
             return decimalSchema(tfield.text);
@@ -60,8 +64,10 @@ Control{
     Component.onCompleted: {
         control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
         if(type == "numeric"){
-            if(decimal>=1){//TODO 2 decimals or 4 decimals
+            if(decimal>=1 && decimal <=2){//TODO 2 decimals or 4 decimals
                 setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
+            }if(decimal>3){
+                setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
             }else{
                 setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
             }

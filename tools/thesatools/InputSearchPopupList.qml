@@ -30,6 +30,7 @@ Control{
     signal valueChanged(int id, string name);
     property bool buttonSearchMinus: false
     //property bool buttonSearchPlus: false
+    property bool boolForceSearch: false
 
     //signal clear()
 
@@ -99,12 +100,13 @@ Control{
         id:tdelaysearch
         interval: 300
         onTriggered: {
-            if(tfsearch.text==""){
+            if(tfsearch.text=="" && boolForceSearch==false){
                 popup.close();
             }else{
                 popup.open();
                 countSearch = countSearch>100?0:countSearch+1;
                 control.textChanged(tfsearch.text);
+                boolForceSearch=false;
             }
         }
     }
@@ -157,7 +159,13 @@ Control{
             anchors{right: parent.right; verticalCenter: parent.verticalCenter; verticalCenterOffset:-lname.bottomPadding}
             text:"\uf0d7"//"\uf010"
             onClicked: {
-                tfsearch.text=" ";
+                tfsearch.text="";
+                boolForceSearch=true;
+                tdelaysearch.start();
+                if(tfsearch.focus==false){
+                    tfsearch.forceActiveFocus();
+                }
+
             }
         }
         FlatAwesome {

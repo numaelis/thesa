@@ -60,6 +60,7 @@ Dialog {
     }
 
     onOpened: {
+        myTreeView._filterClear();
         myTreeView.find([]);
     }
     function feditItem(){

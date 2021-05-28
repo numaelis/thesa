@@ -12,4 +12,6 @@ TemplateFieldDocument 1.0 TemplateFieldDocument.qml
 TemplateFieldText 1.0 TemplateFieldText.qml
 TemplateFieldNumeric 1.0 TemplateFieldNumeric.qml
 TemplateFieldSelection 1.0 TemplateFieldSelection.qml
+TemplateFieldOne2Many 1.0 TemplateFieldOne2Many.qml
+TemplateFieldMany2One 1.0 TemplateFieldMany2One.qml
 

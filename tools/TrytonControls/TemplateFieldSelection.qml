@@ -31,6 +31,10 @@ Control{
 
     padding: 0
 
+    function _forceActiveFocus(){
+        tfield.forceActiveFocus();
+    }
+
     function getValue(){
         if(tfield.currentIndex==-1){
             return "";
