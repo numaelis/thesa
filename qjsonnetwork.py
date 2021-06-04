@@ -148,7 +148,7 @@ class QJsonNetwork(QObject):
         if self.boolDirect==False:
             data = reply.readAll()
             self.processingData(data, reply)
-            reply.deleteLater()
+           # reply.deleteLater()
             
     @Slot("QNetworkReply*", "const QList<QSslError> &")        
     def slotSslError(self, reply, errors):
@@ -302,7 +302,7 @@ class QJsonNetwork(QObject):
         reply = self.managerAccess.post(request, bparams)
         connection_loop.exec_()#sleep
         #reply->bytesAvailable();
-        reply.deleteLater()
+        #reply.deleteLater()
         return reply
     
     def processingData(self, data, reply):
@@ -375,6 +375,7 @@ class QJsonNetwork(QObject):
                 self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
         
         self.boolRun=False
+        reply.deleteLater()
 #    void processingData(const QByteArray &data, QNetworkReply *reply);
             
     @Slot(str, str, QJsonArray)
