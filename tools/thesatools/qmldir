@@ -26,3 +26,4 @@ ThesaScanQZXing 1.0 ThesaScanQZXing.qml
 InputQZXing 1.0 InputQZXing.qml
 LabelCube 1.0 LabelCube.qml
 QuestionAction 1.0 QuestionAction.qml
+ToolTipDynamic 1.0 ToolTipDynamic.qml

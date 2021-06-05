@@ -31,6 +31,8 @@ Control{
 
     signal change(string text)
 
+    property bool isParentO2M: false
+
     padding: 0
     function _forceActiveFocus(){
         tfield.forceActiveFocus();

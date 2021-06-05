@@ -26,4 +26,37 @@ function showQuestion(texto, pariente, action){
     dial.open();
 }
 
+function showQuestionInput(texto, pariente, action){//action(text)
+    var quest = "import QtQuick 2.5;"+
+                    "QuestionAction {"+
+                    "mtext: '"+texto+"';"+
+                    "inputText: true;"+
+                    "onEmitActionInput: {"+action+";}"+
+                    " }"
+
+    var dial = Qt.createQmlObject(quest, pariente, "dynamicSnippet1");
+    dial.open();
+}
+
+function showQuestionInputPass(texto, pariente, action){//action(text)
+    var quest = "import QtQuick 2.5;"+
+                    "QuestionAction {"+
+                    "mtext: '"+texto+"';"+
+                    "inputText: true;"+
+                    "onEmitActionInput: {"+action+";}"+
+                    " }"
+
+    var dial = Qt.createQmlObject(quest, pariente, "dynamicSnippet1");
+    dial.activePassword();
+    dial.open();
+}
+
+function showToolTip(text, timeout, colortext, colorback, parent){
+    var tooltipcom=Qt.createComponent("ToolTipDynamic.qml");
+    var tooltip = tooltipcom.createObject(parent);
+    tooltip.colortext = colortext;
+    tooltip.colorback = colorback;
+    tooltip.show(text, timeout);
+}
+
 
