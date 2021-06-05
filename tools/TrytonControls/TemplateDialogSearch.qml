@@ -33,6 +33,7 @@ Dialog {
     property string placeholderText: ""
     property var filtersRecName: []
     property alias treeViewItem: myTreeView
+    property var modelStates: []
     property QtObject dialogEdit
     title: _title
     closePolicy: Dialog.CloseOnEscape
@@ -58,11 +59,17 @@ Dialog {
             dialogEdit.open();
         }
     }
-
-    onOpened: {
-        myTreeView._filterClear();
-        myTreeView.find([]);
+    onVisibleChanged: {
+        if(visible){
+            myTreeView._filterClear();
+            myTreeView._restart();
+        }
     }
+//    onOpened: {
+//        myTreeView._filterClear();
+//        myTreeView._restart();
+//    }
+
     function feditItem(){
         idRecordSearch = myTreeView.getId();
         if(idRecordSearch!=-1){
@@ -226,9 +233,12 @@ Dialog {
             filters: dialogTsearch.filters
             placeholderText: dialogTsearch.placeholderText
             filtersRecName: dialogTsearch.filtersRecName
+            modelStates: dialogTsearch.modelStates
             verticalLine:true
             activeFilters: true
-            //activeStates: true
+            activeStates: true
+            widthStates:120
+            heightStates: 30
             buttonRestart:true
             maximumLineCount:3
             onClicked:{

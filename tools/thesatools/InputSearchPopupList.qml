@@ -226,6 +226,14 @@ Control{
             }
         }
     }
+    ToolTip{
+        id:ttmessage
+        delay: 300
+        timeout: 3000
+    }
+    function showtooltip(text){
+        ttmessage.show(text,3000);
+    }
 
     Popup{
         id: popup

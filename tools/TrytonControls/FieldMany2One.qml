@@ -47,7 +47,6 @@ InputSearchPopupList{
         if(valueId==-1){
             return null;
         }
-
         return valueId;
     }
 
@@ -115,6 +114,10 @@ InputSearchPopupList{
                 for(var i=0,len=resultArray.length;i<len;i++){
                     dataList.push({"id":resultArray[i].id, "name":resultArray[i].rec_name});
                 }
+                if(len==0){
+                    showtooltip(qsTr("no items"));
+                }
+
                 updateModel(dataList);
                 if(boolLastCall){
                     boolLastCall=false;

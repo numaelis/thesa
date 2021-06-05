@@ -34,6 +34,7 @@ Control{
     property real heightField: 30
     property real heightFilter: 45
     property real heightStates: 35
+    property real widthStates: 150
    // property real heightStates: 40
     property bool verticalLine: true
     property bool horizontalLine: true
@@ -102,6 +103,11 @@ Control{
         }
         if(placeholderText!=""){
             filterin.placeholderText=placeholderText;
+        }
+        if(modelStates.length==0){
+            activeStates=false
+        }else{
+            activeStates=true
         }
     }
 
@@ -219,7 +225,24 @@ Control{
         order = JSON.parse(JSON.stringify(initOrder));
         initTextOrderHead();
         _models.model.setOrder(order);
-        find([]);
+        //find([]);
+        timerfindblank.restart();
+    }
+
+    Timer{
+        id:timerfindblank
+        interval: 120
+        onTriggered: {
+            find([]);
+        }
+    }
+
+    Timer{
+        id:timerfind
+        interval: 120
+        onTriggered: {
+            find(filterin._getData());
+        }
     }
 
     ButtonGroup {
@@ -264,7 +287,7 @@ Control{
                 model: modelStates
                 TabButton {
                     text: modelData.alias
-                    width: 150
+                    width: widthStates
                     implicitHeight: heightStates
                     property bool booldife: false
                     onPressed: {
@@ -275,7 +298,8 @@ Control{
                     onClicked: {
                        if(booldife){
                            domainState = modelData.name===""?[]:["state","=",modelData.name];
-                           find(filterin._getData());
+//                           find(filterin._getData());
+                           timerfind.restart();
                            booldife=false;
                        }
                     }
@@ -286,7 +310,8 @@ Control{
                 if (mindex!==-1 && activeStates==true && (modelStates.length > 0)){
                     domainState = modelStates[mindex].name===""?[]:["state","=",modelStates[mindex].name];
                     if(_models!=null){
-                        find(filterin._getData());
+//                        find(filterin._getData());
+                        timerfind.restart();
                     }
                 }
             }

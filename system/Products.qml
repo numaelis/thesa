@@ -24,9 +24,10 @@ TabDesktop {
         ModelProduct.setLanguage(planguage);
         ModelProduct.setModelMethod("model.product.template");
         ModelProduct.setDomain([]);
-        ModelProduct.setMaxLimit(1000);
+        ModelProduct.setMaxLimit(300);
         ModelProduct.setOrder([['name', 'ASC']])
         ModelProduct.setFields(["rec_name", "name"]);//[]);
+        //var pre = {"client":"92a1725c-4321-4c5a-9ed7-870533993de4","groups":[1,16,12,7,9,2,8,3,15,5,4,13,6,11,10,14],"company":1,"language":"es","company.rec_name":"Todo Bolsas","language_direction":"ltr"}
         ModelProduct.setPreferences(preferences);
 
 //        ModelProduct.setSearch("model.product.template",
@@ -76,13 +77,27 @@ TabDesktop {
         }
     }
 
-    function findbyname(){
-        if(ffind.text!=""){
-            ModelProduct.find(["name","ilike","%"+ffind.text+"%"]);
-        }else{
+    Timer{ //best
+        id:timerFindName
+        interval: 120
+        onTriggered: {
+            if(ffind.text!=""){
+                ModelProduct.find(["name","ilike","%"+ffind.text+"%"]);
+            }else{
+                ModelProduct.find();
+            }
+        }
+    }
+
+    Timer{
+        id:timerFindBlank
+        interval: 120
+        onTriggered: {
             ModelProduct.find();
         }
     }
+
+
     Item {
         id: iii
         anchors.fill: parent
@@ -118,7 +133,7 @@ TabDesktop {
                                 }
                                 if (event.key === Qt.Key_Return ) {
                                     event.accepted = true;
-                                    findbyname();
+                                    timerFindName.restart();
                                 }
                             }
                         }
@@ -129,7 +144,7 @@ TabDesktop {
                             anchors{right: brecarga.left;rightMargin: 4}
                             text: "\uf002"
                             onClicked: {
-                                findbyname();
+                                timerFindName.restart();
                             }
                         }
                         ButtonAwesome{
@@ -143,7 +158,7 @@ TabDesktop {
                                 if(ffind.text!=""){
                                     ffind.text="";
                                 }
-                                ModelProduct.find();
+                                timerFindBlank.restart();
                             }
 
                         }
