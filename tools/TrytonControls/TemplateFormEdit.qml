@@ -67,9 +67,25 @@ Pane{
                 }
             }
             if(ite[i].children.length>0){
-                result2 = finditemsField(ite[i].children);
-                result=result.concat(result2);
+                if(typeof ite[i].objectName !== "undefined"){
+                    if(ite[i].objectName.indexOf("tryton")>-1){
+                        if(ite[i].type!=="one2many"){
+                            result2 = finditemsField(ite[i].children);
+                            result=result.concat(result2);
+                        }
+                    }else{
+                        result2 = finditemsField(ite[i].children);
+                        result=result.concat(result2);
+                    }
+                }else{
+                    result2 = finditemsField(ite[i].children);
+                    result=result.concat(result2);
+                }
             }
+//            if(ite[i].children.length>0){
+//                result2 = finditemsField(ite[i].children);
+//                result=result.concat(result2);
+//            }
         }
         return result;
     }
@@ -137,13 +153,20 @@ Pane{
                     }
 
                     MessageLib.showMessage(qsTr("Updated"), mainroot);
+                    return true;
                 }else{
                     MessageLib.showMessage(qsTr("No Updated"), mainroot);
+                    return false;
                 }
             }else{
-                myParent.accept();
-                clearValues();
+                if(myParent!=-1){
+                    myParent.accept();
+                    clearValues();
+                }
+                return true;
             }
+        }else{
+            return false;
         }
     }
 
@@ -151,19 +174,35 @@ Pane{
         for(var i=0,len=itemsField.length;i<len;i++){
             var value =itemsField[i].getValue();
             if(itemsField[i].required === true){
-                if(value === "" || value === -1){
-                    MessageLib.showMessage(itemsField[i].labelAlias+ " "+qsTr("required"), mainroot);
-                    return false;
+                if(itemsField[i].type=="one2many"){
+                    var bres = itemsField[i]._preValidRequired();
+                    if(bres==false){
+                        return false;
+                    }
+                }else{
+                    if(value === "" || value === -1 || value === null){
+                        MessageLib.showMessage(itemsField[i].labelAlias+ " "+qsTr("required"), mainroot);
+                        itemsField[i]._forceActiveFocus();
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
+    function _save(){
+        if(idRecord==-1){
+            return _preCreate();
+        }else{
+            return _preUpdate();
+        }
+    }
+
     function _preCreate(){
         if(_preValidRequired()==true){
             var paramsf = getFieldsValues(false);
-            if(Object.keys(paramsf).length>0){
+            if(Object.keys(paramsf).length>=0){
                 var params = Object.assign(paramsf,paramsPlusCreate)
                 if(_createRPC(params)==true){
                     if(myParent!=-1){
@@ -173,10 +212,15 @@ Pane{
 
                     }
                     MessageLib.showMessage(qsTr("Created"), mainroot);
+                    return true;
                 }else{
                     MessageLib.showMessage(qsTr("No Created"), mainroot);
+                    return false;
                 }
             }
+            //return true;
+        }else{
+            return false;
         }
     }
 
@@ -192,6 +236,7 @@ Pane{
         if(data.data!=="error"){
             var idResult = data.data.result[0];
             params["id"]=idResult;
+            idRecord = idResult;
             created(params);
             return true
         }
@@ -223,7 +268,11 @@ Pane{
                 params.push(itemsField[i].fieldName)
             if(itemsField[i].type=="many2one"){
                 params.push(itemsField[i].fieldName+".rec_name");
-               // params.push(itemsField[i].fieldName+".name");
+            }
+            if(itemsField[i].type=="one2many"){
+                var _po2m = itemsField[i].getFieldsNames();
+               // params = Object.assign(params,_po2m)
+                params=params.concat(_po2m);
             }
 
         }
@@ -239,7 +288,11 @@ Pane{
                     itemsField[i].setValue({"id":-1,"name":""})
                 }
             }else{
-                itemsField[i].setValue(values[itemsField[i].fieldName]);
+                if(itemsField[i].type=="one2many"){
+                    itemsField[i].setValue(values[itemsField[i].fieldName+"."]);
+                }else{
+                    itemsField[i].setValue(values[itemsField[i].fieldName]);
+                }
             }
         }
     }

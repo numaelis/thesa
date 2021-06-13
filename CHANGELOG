@@ -35,4 +35,6 @@ Version 1.8
 * add TrytonControls: TemplateDialogSearch, TemplateDialogEdit
 * add TrytonControls: TemplateFormEdit
 * add TrytonControls: TemplateFieldText, TemplateFieldNumeric, TemplateFieldSelection
+* add TrytonControls: TemplateFieldMany2One
+* add TrytonControls: TemplateFieldOne2Many
 

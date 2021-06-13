@@ -19,6 +19,7 @@ Item {
     signal fieldTextEdited()
     signal fieldAccepted()
     signal fieldFocusCh(bool focus)
+    signal fieldCursorVisible(bool isCursor)
     property alias fieldFocus: tfdoc.focus
 
     Component.onCompleted: {
@@ -307,6 +308,11 @@ Item {
             }
             mainfd.fieldFocusCh(focus);
         }
+
+        onCursorVisibleChanged: {
+            mainfd.fieldCursorVisible(isCursorVisible);
+        }
+
         onAccepted: {
             mainfd.fieldAccepted();
         }

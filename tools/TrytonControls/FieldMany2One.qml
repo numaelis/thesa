@@ -12,9 +12,6 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import "../thesatools"
 
-//TODO facilitate the search for a many2one field
-//* a popup list updates the text
-//*...?
 
 // getValue() -> id
 // setValue({"id":-1, "name":""}) no emit change

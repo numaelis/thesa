@@ -26,7 +26,7 @@ Control{
     property alias item_field: tfield
     property var model: []//TODO append "", ""
     property bool isChange: false
-
+    property var itemParent: -1
     signal change(string text)
 
     padding: 0
@@ -45,9 +45,16 @@ Control{
     property bool boolTimer: false
 
     function getIndexOf(value){
+        var isNumber = typeof value === 'number'?true:false
         for(var i=0,len=model.length;i<len;i++){
-            if(value === model[i].name){
-                return i;
+            if(isNumber){
+                if(value == parseInt(model[i].name)){
+                    return i;
+                }
+            }else{
+                if(value == model[i].name){
+                    return i;
+                }
             }
         }
         model.push({"name":value, "alias":value})
@@ -55,6 +62,9 @@ Control{
     }
 
     function setValue(value){
+        if(value==null){
+            value = "";
+        }
         var index = getIndexOf(value);
         boolTimer = true;
         tfield.currentIndex=index;
@@ -64,9 +74,14 @@ Control{
 
     function clearValue(){
         boolTimer = true;
-        tfield.currentIndex=-1//model.length>0?0:-1;
+        //tfield.currentIndex=-1//
+        tfield.currentIndex=model.length>0?0:-1;
         isChange=false;
         tbooltimer.start();
+    }
+
+    function changeOff(){
+        isChange=false;
     }
 
     Timer{
@@ -74,6 +89,14 @@ Control{
         interval: 200
         onTriggered: {
             boolTimer = false;
+        }
+    }
+
+    function changeToParent(name, value){
+        if(itemParent!=-1){
+            if(itemParent.type=="one2many"){
+               itemParent.changeField(name, value);
+            }
         }
     }
 
@@ -97,6 +120,7 @@ Control{
                 if(boolTimer==false){
                     isChange=true;
                     change(currentValue);
+                    changeToParent(fieldName,currentValue);
                 }
             }
         }

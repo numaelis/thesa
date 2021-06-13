@@ -16,6 +16,18 @@ import TrytonControls 1.0
 
 TabDesktop {
     id:testDialogs
+    property var list_types:[
+        {"name":'phone', "alias":'Phone'},
+        {"name":'mobile', "alias":'Mobile'},
+        {"name":'fax', "alias":'Fax'},
+        {"name":'email', "alias":'E-Mail'},
+        {"name":'website', "alias":'Website'},
+        {"name":'skype', "alias":'Skype'},
+        {"name":'sip', "alias":'SIP'},
+        {"name":'irc', "alias":'IRC'},
+        {"name":'jabber', "alias":'Jabber'},
+        {"name":'other', "alias":'Other'},
+    ]
     ColumnLayout{
         anchors.fill: parent
         Label{
@@ -65,7 +77,7 @@ TabDesktop {
 
             {
                 "name":"tax_identifier",
-                "alias":"Identificador",
+                "alias":"Ident Fiscal",
                 "type":"many2one",
                 "width":120,
                 "align":Label.AlignLeft,
@@ -128,22 +140,91 @@ TabDesktop {
                     labelAlias: "Idioma"
                     fieldName: "lang"
                     modelName:"ir.lang"
+                    required:true
                     Layout.preferredHeight: 60
                     Layout.fillWidth: true
                     buttonSelection:true
                 }
             }//
             TemplateFieldMany2One{
-                labelAlias: "Identificador"
+                labelAlias: "Identificador Fiscal"
                 fieldName: "tax_identifier"
                 modelName:"party.identifier"
                 Layout.preferredHeight: 60
                 Layout.fillWidth: true
-                readOnly: true
-                //buttonSelection:true
+                readOnly: true  // virtual --> fields.Function
             }
 
-            //TemplateFieldNumeric , TemplateFieldSelection
+//            TemplateFieldOne2Many{
+//                fieldName: "identifiers"
+//                fieldOne2Many: "party"
+//                modelName: "party.identifier"
+//               // title:""
+//                Layout.preferredHeight: 100
+//                Layout.fillWidth: true
+//                oneItemDefault: true
+//                paramsPlusCreate: {"type":"ar_dni"}
+//                contentItemForm: ColumnLayout{
+//                    TemplateFieldText{
+//                        labelAlias: "Dni"
+//                        fieldName: "code"
+//                        required:true
+//                        Layout.preferredHeight: 60
+//                        Layout.fillWidth: true
+//                    }
+
+//                }
+//            }
+            TemplateFieldOne2Many{
+                fieldName: "addresses"
+                fieldOne2Many: "party"
+                modelName: "party.address"
+                title:"Dirección"
+                Layout.preferredHeight: 100
+                Layout.fillWidth: true
+                oneItemDefault: true
+                contentItemForm: ColumnLayout{
+                    TemplateFieldText{
+                        labelAlias: "Calle"
+                        fieldName: "street"
+//                        required:true
+                        Layout.preferredHeight: 60
+                        Layout.fillWidth: true
+                    }
+
+                }
+            }
+
+            TemplateFieldOne2Many{
+                fieldName: "contact_mechanisms"
+                fieldOne2Many: "party"
+                modelName: "party.contact_mechanism"
+                title: "Contacto"
+                Layout.preferredHeight: 100
+                Layout.fillWidth: true
+                oneItemDefault: true
+                //paramsPlusCreate: {"type":"phone"}
+                contentItemForm: RowLayout{
+                    TemplateFieldSelection{
+                        labelAlias: "tipo"
+                        fieldName: "type"
+                        required:true
+                        height:70
+                        Layout.preferredWidth:150
+                        model:list_types
+                    }
+                    TemplateFieldText{
+                        labelAlias: "Telefono"
+                        fieldName: "value"
+//                        required:true
+                        Layout.preferredHeight: 60
+                        Layout.fillWidth: true
+                    }
+
+                }
+            }
+
+            //TemplateFieldNumeric
         }
 //        paramsPlusCreate:{
 //            "active":true,

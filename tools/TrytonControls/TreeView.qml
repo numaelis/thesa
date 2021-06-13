@@ -13,7 +13,7 @@ import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import "../thesatools"
 
-//TODO  add type button
+//TODO  add type button, type ext file
 
 Control{
     id:control
@@ -231,7 +231,7 @@ Control{
 
     Timer{
         id:timerfindblank
-        interval: 120
+        interval: 200
         onTriggered: {
             find([]);
         }
@@ -239,7 +239,7 @@ Control{
 
     Timer{
         id:timerfind
-        interval: 120
+        interval: 180
         onTriggered: {
             find(filterin._getData());
         }

@@ -24,6 +24,7 @@ Control{
     property alias typeDocument: tfield.typeDocument// "DNI"//DNI CUIT TEL
     property bool readOnly: false
     enabled: !readOnly
+    property var itemParent: -1
     property alias item_field: tfield
 
     property bool isChange: false
@@ -41,6 +42,9 @@ Control{
     }
 
     function setValue(text){
+        if(text==null){
+            text = "";
+        }
         tfield.setValue(text);
         isChange=false;
     }
@@ -50,12 +54,24 @@ Control{
         isChange=false;
     }
 
+    function changeOff(){
+        isChange=false;
+    }
+
     function setValidator(str_qml_regexp){
         tfield.validator= Qt.createQmlObject(str_qml_regexp, tfield, "dynamicSnippet1");
     }
 
     Component.onCompleted: {
         control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
+    }
+
+    function changeToParent(name, value){
+        if(itemParent!=-1){
+            if(itemParent.type=="one2many"){
+               itemParent.changeField(name, value);
+            }
+        }
     }
 
     LabelCube{
@@ -71,18 +87,20 @@ Control{
                     isChange=true;
 //                }
             }
-            onFieldFocusCh: {
-                if(focus==false){
+
+            onFieldCursorVisible:{
+                if(isCursor==false){
                     if(isChange==true){
-                        change(getValue());
+                        change(value);
+                        changeToParent(fieldName,value);
                     }
                 }
             }
 
             onFieldAccepted: {
-                if(isChange==true){
-                    change(getValue());
-                }
+//                if(isChange==true){
+//                    change(getValue());
+//                }
             }
         }
     }

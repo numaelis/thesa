@@ -985,7 +985,7 @@ ApplicationWindow {
     }
 
     function decimalFromSchema(dateSchema){
-        if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("year")){
+        if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("decimal")){
             if(dateSchema.__class__==="Decimal"){
                 return dateSchema.decimal;
             }

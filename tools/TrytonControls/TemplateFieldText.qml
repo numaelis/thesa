@@ -31,7 +31,8 @@ Control{
 
     signal change(string text)
 
-    property bool isParentO2M: false
+//    property bool isParentO2M: false
+    property var itemParent: -1
 
     padding: 0
     function _forceActiveFocus(){
@@ -46,6 +47,10 @@ Control{
     }
 
     function setValue(value){
+        if(value==null){
+            value = "";
+        }
+
         if(type=="numeric"){
             tfield.text = decimalFromSchema(value);
         }else{
@@ -56,6 +61,10 @@ Control{
 
     function clearValue(){
         tfield.clear();
+        isChange=false;
+    }
+
+    function changeOff(){
         isChange=false;
     }
 
@@ -98,6 +107,15 @@ Control{
         j = (j = i.length) > 3 ? j % 3 : 0;
         return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
     }
+
+    function changeToParent(name, value){
+        if(itemParent!=-1){
+            if(itemParent.type=="one2many"){
+               itemParent.changeField(name, value);
+            }
+        }
+    }
+
     LabelCube{
         id:labelcube
         anchors.fill: parent
@@ -142,24 +160,22 @@ Control{
                 anchors.fill: parent
                 visible: !format_text.visible
                 topPadding: 0
+
                 onTextEdited: {
-                    // if(focus==true){
                     isChange=true;
-                    //                }
                 }
-                onFocusChanged: {
-                    if(focus==false){
+
+                onCursorVisibleChanged: {
+                    if(isCursorVisible==false){
                         if(isChange==true){
                             change(text);
+                            changeToParent(fieldName,text);
                         }
                     }
                 }
 
                 onAccepted: {
-                    focus = false;
-                    if(isChange==true){
-                        change(text);
-                    }
+
                 }
             }
         }

@@ -88,6 +88,7 @@ TabDesktop {
                     enabled: fparty.boolValueAssigned
                     modelName: "party.address"
                     font.pixelSize:20
+                    buttonSelection:true
 
                 }
 

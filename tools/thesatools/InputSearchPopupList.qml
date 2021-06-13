@@ -28,7 +28,7 @@ Control{
     property real heightDelegate: height
     signal textChanged(string text)//search
     signal valueChanged(int id, string name);
-    property bool buttonSearchMinus: false
+    property bool buttonSelection: false
     //property bool buttonSearchPlus: false
     property bool boolForceSearch: false
 
@@ -155,7 +155,7 @@ Control{
             id: fbse
             width: height
             height: 20
-            visible: boolValueAssigned==false?buttonSearchMinus==true?true:false:false
+            visible: boolValueAssigned==false?buttonSelection==true?true:false:false
             anchors{right: parent.right; verticalCenter: parent.verticalCenter; verticalCenterOffset:-lname.bottomPadding}
             text:"\uf0d7"//"\uf010"
             onClicked: {

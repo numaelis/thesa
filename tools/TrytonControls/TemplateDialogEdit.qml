@@ -50,8 +50,11 @@ Dialog {
         }
     }
 
-    onEmitActionCancel:{
+    function clearValues(){
         myForm.clearValues();
+    }
+
+    onEmitActionCancel:{
         dialogTedit.reject();
     }
 
@@ -61,6 +64,7 @@ Dialog {
         }else{
             myForm._preUpdate();
         }
+
     }
 
     onAccepted: {
@@ -68,7 +72,7 @@ Dialog {
     }
 
     onRejected: {
-
+        clearValues();
     }
 
     modal: true
@@ -83,6 +87,7 @@ Dialog {
         if(idRecord!=-1){
             myForm._reload();
         }else{
+            myForm.clearValues();
             myForm._forceActiveFocus();
         }
     }
@@ -134,7 +139,9 @@ Dialog {
                 visible:dialogTedit.actionOK
                 implicitHeight: 34
                 onClicked: {
-                    dialogTedit.emitActionOk();
+                    forceActiveFocus();
+                    timerActionOk.start();
+//                    dialogTedit.emitActionOk();
 
                 }
                 contentItem: Text {
@@ -149,14 +156,26 @@ Dialog {
                 Keys.onPressed: {
                     if (event.key === Qt.Key_Return ) {
                         event.accepted = true;
-                        dialogTedit.emitActionOk();
+                        forceActiveFocus();
+                        timerActionOk.start();
+//                        dialogTedit.emitActionOk();
                     }
                     if (event.key === Qt.Key_Enter ) {
                         event.accepted = true;
-                        dialogTedit.emitActionOk();
+                        forceActiveFocus();
+                        timerActionOk.start();
+//                        dialogTedit.emitActionOk();
                     }
                 }
             }
+        }
+    }
+
+    Timer{
+        id:timerActionOk
+        interval: 100
+        onTriggered: {
+            dialogTedit.emitActionOk();
         }
     }
 

@@ -27,6 +27,9 @@ Control{
     property alias placeholderText: tffilters.placeholderText
     function clear(){
         tffilters.text="";
+        listValuesTag=[];
+        filterTagActive=false;
+        filtertag.clear();
     }
     //expand rec_name from client
     function remplaceValue(filters){
@@ -145,9 +148,6 @@ Control{
             ToolTip.visible: false
             visible: buttonRestart
             onClicked: {
-                listValuesTag=[];
-                filterTagActive=false;
-                filtertag.clear();
                 executeRestart();
             }
         }

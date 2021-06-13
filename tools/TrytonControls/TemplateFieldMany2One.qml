@@ -28,10 +28,10 @@ Control{
     property var order:[]
     property int limit: 200
     property bool boolLastCall: false
-    property alias buttonSelection: fm2o.buttonSearchMinus
+    property alias buttonSelection: fm2o.buttonSelection
     property bool isChange: false
     signal change(int id, string name)
-
+    property var itemParent: -1
     padding: 0
 
     function _forceActiveFocus(){
@@ -50,6 +50,18 @@ Control{
     function clearValue(){
         fm2o.clearValue();
         isChange=false;
+    }
+
+    function changeOff(){
+        isChange=false;
+    }
+
+    function changeToParent(name, value){
+        if(itemParent!=-1){
+            if(itemParent.type=="one2many"){
+               itemParent.changeField(name, value);
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -72,6 +84,7 @@ Control{
             onValueChanged: {
                 isChange=true;
                 change(id, name);
+                changeToParent(fieldName,id);
             }
 
         }
