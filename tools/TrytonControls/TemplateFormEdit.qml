@@ -257,6 +257,7 @@ Pane{
         if(data.data!=="error"){
             if(data.data.result.length>0){
                 var obj = data.data.result[0];
+                console.log("aaa", JSON.stringify(obj))
                 setValues(obj);
             }
         }
@@ -283,13 +284,21 @@ Pane{
         for(var i=0,len=itemsField.length;i<len;i++){
             if(itemsField[i].type=="many2one"){
                 if(values[itemsField[i].fieldName]!=null){
-                    itemsField[i].setValue({"id":values[itemsField[i].fieldName+"."]["id"],"name":values[itemsField[i].fieldName+"."]["rec_name"]});
+                    if(setting.typelogin==0){//Tryton 4
+                        itemsField[i].setValue({"id":values[itemsField[i].fieldName],"name":values[itemsField[i].fieldName+".rec_name"]});
+                    }else{
+                        itemsField[i].setValue({"id":values[itemsField[i].fieldName+"."]["id"],"name":values[itemsField[i].fieldName+"."]["rec_name"]});
+                    }
                 }else{
                     itemsField[i].setValue({"id":-1,"name":""})
                 }
             }else{
                 if(itemsField[i].type=="one2many"){
-                    itemsField[i].setValue(values[itemsField[i].fieldName+"."]);
+                    if(setting.typelogin==0){//Tryton 4
+                        itemsField[i].setValueTryton40(values[itemsField[i].fieldName]);
+                    }else{
+                        itemsField[i].setValue(values[itemsField[i].fieldName+"."]);
+                    }
                 }else{
                     itemsField[i].setValue(values[itemsField[i].fieldName]);
                 }

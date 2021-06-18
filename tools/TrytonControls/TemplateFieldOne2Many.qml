@@ -133,8 +133,16 @@ Pane{
             addRecordBlank(false);
         }else{
             isChange=false;
+            if(mode=="form"){
+                enabledFields(false);
+            }
         }
+    }
 
+    function enabledFields(active){
+        for(var i=0,len=itemsField.length;i<len;i++){
+            itemsField[i].enabled=active;
+        }
     }
 
     function addRecordBlank(echange){
@@ -171,6 +179,32 @@ Pane{
         change(listRecords);
     }
 
+    function setValueTryton40(ids){
+        if(ids.length>0){
+            _read(ids);
+        }else{
+            setValue([]);
+        }
+    }
+
+    function _read(ids){
+        var params = getFieldsNamesTryton40();
+        openBusy();
+        var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".read",
+                                                 [
+                                                    ids,
+                                                     params,
+                                                     preferences
+                                                 ]);
+        closeBusy();
+        if(data.data!=="error"){
+            if(data.data.result.length>0){
+                var obj = data.data.result;
+                setValue(obj);
+            }
+        }
+    }
+
     function setValue(values){//TODO order
         listRecords=[];
         modelLines.clear();
@@ -196,8 +230,12 @@ Pane{
             }
             isChange=false;
         }else{
-            if(autoRecord){
+            if(oneItemDefault){
                 addRecordBlank(false);
+            }else{
+                if(mode=="form"){
+                    enabledFields(false);
+                }
             }
         }
 
@@ -208,7 +246,11 @@ Pane{
         for(var i = 0, len=itemsField.length;i<len;i++){
             if(itemsField[i].type==="many2one"){
                 if(dataCurrentItem[itemsField[i].fieldName]!==null){
-                    itemsField[i].setValue({"id":dataCurrentItem[itemsField[i].fieldName+"."]["id"],"name":dataCurrentItem[itemsField[i].fieldName+"."]["rec_name"]});
+                    if(setting.typelogin==0){//Tryton 4
+                        itemsField[i].setValue({"id":dataCurrentItem[itemsField[i].fieldName],"name":dataCurrentItem[itemsField[i].fieldName+".rec_name"]});
+                    }else{
+                        itemsField[i].setValue({"id":dataCurrentItem[itemsField[i].fieldName+"."]["id"],"name":dataCurrentItem[itemsField[i].fieldName+"."]["rec_name"]});
+                    }
                 }else{
                     itemsField[i].setValue({"id":-1,"name":""})
                 }
@@ -386,6 +428,18 @@ Pane{
         if(isSequence){
             params.push(fieldName+"."+fieldSequence);
         }
+        return params;
+    }
+
+    function getFieldsNamesTryton40(){
+        var params=[];
+        for(var i=0,len=itemsField.length;i<len;i++){
+            params.push(itemsField[i].fieldName)
+            if(itemsField[i].type=="many2one"){
+                params.push(itemsField[i].fieldName+".rec_name");
+            }
+        }
+        params.push("id");
         return params;
     }
 
