@@ -45,17 +45,20 @@ Control{
     property bool boolTimer: false
 
     function getIndexOf(value){
-        var isNumber = typeof value === 'number'?true:false
+//        var isNumber = typeof value === 'number'?true:false
         for(var i=0,len=model.length;i<len;i++){
-            if(isNumber){
-                if(value == parseInt(model[i].name)){
-                    return i;
-                }
-            }else{
-                if(value == model[i].name){
-                    return i;
-                }
+            if(value === model[i].name){
+                return i;
             }
+//            if(isNumber){
+//                if(value === model[i].name){
+//                    return i;
+//                }
+//            }else{
+//                if(value === model[i].name){
+//                    return i;
+//                }
+//            }
         }
         model.push({"name":value, "alias":value})
         return model.length-1;

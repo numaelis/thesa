@@ -64,6 +64,9 @@ Dialog {
             Layout.fillWidth: true
             visible: inputText
             focus: true
+            onAccepted: {
+                dialog.accept();
+            }
         }
     }
 }
