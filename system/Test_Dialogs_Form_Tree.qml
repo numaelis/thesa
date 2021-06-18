@@ -16,6 +16,14 @@ import TrytonControls 1.0
 
 TabDesktop {
     id:testDialogs
+
+    isPreClosing: true
+    function preClosing(){//warning: must be synchronous
+        //......
+        console.log("closing...");
+        //......
+    }
+
     property var list_types:[
         {"name":'phone', "alias":'Phone'},
         {"name":'mobile', "alias":'Mobile'},

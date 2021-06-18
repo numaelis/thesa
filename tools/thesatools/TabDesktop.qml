@@ -9,14 +9,28 @@ FocusScope {
     id:tabdes
     signal firstTimeTab();
     signal selectTab();
+    property string type: "tab"
     property int countTimeTab: -1
     property string postTitle: ""
+    property bool isPreClosing: false
+    // if isPreClosing is true: a function must be defined with the name preClosing
+    //      example
+    //      function preClosing(){
+    //         .....
+    //         .....
+    //         .....
+    //      }
+
+
+    //property string name: value
     function selectMyTab(){
         countTimeTab+=1;
     }
     function getPostTitle(){
         return postTitle;
     }
+
+
 
 
     onCountTimeTabChanged: {

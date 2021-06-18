@@ -16,7 +16,14 @@ import thesatools 1.0
 TabDesktop {
     id:articulos
     onFirstTimeTab:{
-        ModelProduct.find();//synchro apartir de ahora
+        ModelProduct.find();//synchro
+    }
+
+    isPreClosing: true
+    function preClosing(){//warning: must be synchronous
+        //......
+        console.log("closing...");
+        //......
     }
 
     Component.onCompleted: {

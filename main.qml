@@ -92,6 +92,11 @@ ApplicationWindow {
         dquestionclose.open();
     }
 
+    function preThesaClosing(){
+        checkClosable();//warning: must be synchronous <<function preClosing in tab>>
+        thesaClosing();
+    }
+
     function thesaClosing(){
         if(boolSession){
             QJsonNetworkQml.call("desconect","common.db.logout",
@@ -489,7 +494,7 @@ ApplicationWindow {
     }
 
     function closeSession(){
-
+        checkClosable();//warning: must be synchronous <<function preClosing in tab>>
         boolLogin=false;
         boolSession=false;
         bool403=false;
@@ -723,6 +728,48 @@ ApplicationWindow {
         id:tactionCacheOnCompleted
         interval:400
         onTriggered: {SystemNet.actionCacheOnCompleted();}
+    }
+
+    function finditemsTabs(ite){
+        var result=[];
+        for(var i = 0, len=ite.length;i<len;i++){
+            var result2 = [];
+            if(typeof ite[i].type !== "undefined"){
+                if(ite[i].type==="tab"){
+                    result.push(ite[i]);
+                }
+            }
+            if(ite[i].children.length>0){
+                result2 = finditemsTabs(ite[i].children);
+                result=result.concat(result2);
+            }
+        }
+        return result;
+    }
+
+    property var  itemsTabs: []
+
+    function checkClosable(){
+        // if in tab property isPreClosing is true: a function must be defined with the name preClosing
+        //      example
+        //      function preClosing(){
+        //         .....
+        //         .....
+        //         .....
+        //      }
+        if(container.desktop !== null){
+            if(container.desktop.children!=="undefined"){
+                var items = finditemsTabs(container.desktop.children);
+                for(var i = 0, len=items.length;i<len;i++){
+                    if(items[i].isPreClosing===true){
+                        if(typeof items[i].preClosing !== "undefined"){
+                            items[i].preClosing();//warning: must be synchronous
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     RowLayout {
@@ -1207,7 +1254,7 @@ ApplicationWindow {
         //title: "close"
         closePolicy: Dialog.NoAutoClose
         anchors.centerIn: parent
-        onAccepted: thesaClosing();
+        onAccepted: preThesaClosing();
         modal: true
         Label {
             anchors.centerIn: parent
