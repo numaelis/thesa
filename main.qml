@@ -763,7 +763,13 @@ ApplicationWindow {
                 for(var i = 0, len=items.length;i<len;i++){
                     if(items[i].isPreClosing===true){
                         if(typeof items[i].preClosing !== "undefined"){
-                            items[i].preClosing();//warning: must be synchronous
+                            try {
+                              items[i].preClosing();//warning: must be synchronous
+                            } catch (error) {
+                              console.log(error);
+                              MessageLib.showMessage(qsTr("error preClosing Tab: ")+error, mainroot);
+                            }
+
                         }
                     }
                 }
