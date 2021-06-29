@@ -54,9 +54,10 @@ Development:
 
 
 known issues:
-    ssl ->  https://myprogrammingnotes.com/enable-ssl-support-qt.html 
     
-    view version ssl PySide2: 
+    * qt.network.ssl: QSslSocket: cannot call unresolved function SSLv23_client_method ...
+        the solution is to install the corresponding ssl libraries.In windows, search the official website for libeayxx.dll and ssleayxx.dll, and install in the "site-packages/PySide2/" directory .
+        view version ssl PySide2: 
     
         from PySide2.QtNetwork import QSslSocket
         
