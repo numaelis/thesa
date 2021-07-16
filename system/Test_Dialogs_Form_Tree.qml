@@ -129,7 +129,7 @@ TabDesktop {
 
         }
         contentItemForm: ColumnLayout{
-            TemplateFieldText{
+            TemplateFieldChar{
                 labelAlias: "Nombre"
                 fieldName: "name"
                 required:true
@@ -137,7 +137,7 @@ TabDesktop {
                 Layout.fillWidth: true
             }
             RowLayout{
-                TemplateFieldText{
+                TemplateFieldChar{
                     labelAlias: "Código"
                     fieldName: "code"
                     readOnly: true
@@ -160,7 +160,7 @@ TabDesktop {
                 modelName:"party.identifier"
                 Layout.preferredHeight: 60
                 Layout.fillWidth: true
-                readOnly: true  // virtual --> fields.Function
+                readOnly: true  // virtual --> fields.Function without setter
             }
 
 //            TemplateFieldOne2Many{
@@ -173,7 +173,7 @@ TabDesktop {
 //                oneItemDefault: true
 //                paramsPlusCreate: {"type":"ar_dni"}
 //                contentItemForm: ColumnLayout{
-//                    TemplateFieldText{
+//                    TemplateFieldChar{
 //                        labelAlias: "Dni"
 //                        fieldName: "code"
 //                        required:true
@@ -192,7 +192,7 @@ TabDesktop {
                 Layout.fillWidth: true
                 oneItemDefault: true
                 contentItemForm: ColumnLayout{
-                    TemplateFieldText{
+                    TemplateFieldChar{
                         labelAlias: "Calle"
                         fieldName: "street"
 //                        required:true
@@ -221,7 +221,7 @@ TabDesktop {
                         Layout.preferredWidth:150
                         model:list_types
                     }
-                    TemplateFieldText{
+                    TemplateFieldChar{
                         labelAlias: "Telefono"
                         fieldName: "value"
 //                        required:true

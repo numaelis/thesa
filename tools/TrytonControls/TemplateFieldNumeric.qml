@@ -14,7 +14,7 @@ import QtQuick.Layouts 1.12
 import thesatools 1.0
 import TrytonControls 1.0
 
-TemplateFieldText {
+TemplateFieldChar {
     type:"numeric"
     decimal: 0
 }

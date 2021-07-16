@@ -9,9 +9,10 @@ TemplateDialogEdit 1.0 TemplateDialogEdit.qml
 TemplateDialogSearch 1.0 TemplateDialogSearch.qml
 TemplateFormEdit 1.0 TemplateFormEdit.qml
 TemplateFieldDocument 1.0 TemplateFieldDocument.qml
-TemplateFieldText 1.0 TemplateFieldText.qml
+TemplateFieldChar 1.0 TemplateFieldChar.qml
 TemplateFieldNumeric 1.0 TemplateFieldNumeric.qml
 TemplateFieldSelection 1.0 TemplateFieldSelection.qml
 TemplateFieldOne2Many 1.0 TemplateFieldOne2Many.qml
 TemplateFieldMany2One 1.0 TemplateFieldMany2One.qml
+TemplateFieldText 1.0 TemplateFieldText.qml
 
