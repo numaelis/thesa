@@ -34,7 +34,8 @@ Version 1.8
 * TrytonControls/TreeView: update item
 * add TrytonControls: TemplateDialogSearch, TemplateDialogEdit
 * add TrytonControls: TemplateFormEdit
-* add TrytonControls: TemplateFieldText, TemplateFieldNumeric, TemplateFieldSelection
+* add TrytonControls: TemplateFieldChar, TemplateFieldNumeric, TemplateFieldSelection
 * add TrytonControls: TemplateFieldMany2One
 * add TrytonControls: TemplateFieldOne2Many
+* add TrytonControls: TemplateFieldText Multiline
 
