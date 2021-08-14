@@ -1,9 +1,9 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // tools Calendar, need to functions tools.calendar
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
-//__version__ = "1.0.0"
+//__version__ = "1.1.0"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -14,8 +14,8 @@ import QtQuick.Layouts 1.3
 
 Item {
     id:mainCaDes
-    width: gdias.width
-    height: icuerpo.height+barra.height
+    width: gdays.width
+    height: ibody.height+barra.height
     property real widthGrid: 28
     property real heightGrid: 30
     //property real heightBarra: 20
@@ -23,6 +23,7 @@ Item {
 
     property bool boolFocus: false
 
+    property int currentDay: 1
     property int currentYear: 2020
     property int currentMonth: 1
     property bool boolFitText: true
@@ -30,7 +31,8 @@ Item {
     property var namesMonths: []
     property bool boolEscChangue: false
 
-    signal clickDia( date datesis)
+    signal clickDay( date datesis)
+
     Keys.onPressed: {
         if (event.key == Qt.Key_Back) {
             signalClose();
@@ -44,17 +46,17 @@ Item {
     }
     signal signalClose();
     Component.onCompleted: {
-                calculateCurrentDate();
-                loadNames();
-                reload();
+        calculateCurrentDate();
+        loadNames();
+        reload();
     }
 
     function forceF(){
-        inputAnno.forceActiveFocus()
+        inputYear.forceActiveFocus()
     }
     function calculateCurrentDate(){
         var dataNow = new Date();
-        //        diaActual = dataNow.getDate();
+        currentDay = dataNow.getDate();
         currentMonth = dataNow.getMonth()+1;
         currentYear = dataNow.getFullYear();
     }
@@ -62,11 +64,11 @@ Item {
 
         return false;
     }
-    function enterAnno(){
-        currentYear=inputAnno.text;
+    function enterYear(){
+        currentYear=inputYear.text;
         reload();
     }
-    function atras(){
+    function back(){
         if(currentMonth==1){
             currentYear-=1;
             currentMonth=12;
@@ -75,7 +77,7 @@ Item {
         }
         reload();
     }
-    function adelante(){
+    function forward(){
         if(currentMonth==12){
             currentYear+=1;
             currentMonth=1;
@@ -85,10 +87,10 @@ Item {
         reload();
     }
 
-    function revisarAnno(){
-        var texto = inputAnno.text.toString();
+    function checkYear(){
+        var texto = inputYear.text.toString();
         if(texto.length<4){
-            inputAnno.text=currentYear.toString();
+            inputYear.text=currentYear.toString();
         }
     }
     function loadNames(){
@@ -97,31 +99,47 @@ Item {
     }
 
     ListModel{
-        id:modelmes
+        id:modelmonth
     }
-    function setDate(anno,mes){
-        currentMonth=mes;
-        currentYear=anno;
+
+    function setDate(year,month){
+        currentMonth=month;
+        currentYear=year;
         reload();
+    }
+    property int indexCurrentDay: -1
+
+    function checkCurrentDay(){
+        if(indexCurrentDay!=-1){
+            gdays.currentIndex = indexCurrentDay;
+            gdays.currentItem.isCurrentDay = true;
+        }
     }
 
     function reload(){
-        modelmes.clear()
-        var lista = Tools.calendarMonth(currentYear,currentMonth);
+        modelmonth.clear()
+        indexCurrentDay = -1;
+        var dataNow = new Date();
+        var _currentMonth = dataNow.getMonth()+1;
+        var _currentYear = dataNow.getFullYear();
+        var lista = Tools.calendarMonth(currentYear, currentMonth);
         for(var i = 0, len = lista.length; i < len; i++){
-            modelmes.append(lista[i]);
-            //console.log(lista[i].dia)
+            modelmonth.append(lista[i]);
+            if(_currentMonth==currentMonth && _currentYear==currentYear && lista[i].type==0 && lista[i].dia == currentDay){
+                indexCurrentDay = i;
+            }
         }
-        nombreMes.text=namesMonths[currentMonth-1];
+        nameMonth.text=namesMonths[currentMonth-1];
         boolEscChangue=true;
-        inputAnno.text=currentYear;
+        inputYear.text=currentYear;
         boolEscChangue=false;
+        checkCurrentDay();
     }
 
     Item{
         id:barra
-        width: gdias.width
-        height: inputAnno.height
+        width: gdays.width
+        height: inputYear.height
         anchors{top:parent.top}
 
         Button{
@@ -129,7 +147,7 @@ Item {
             width: height-dpis*4
             height: parent.height
             anchors{left: parent.left;}
-            onClicked: {atras()}
+            onClicked: {back()}
             //display: Button.TextOnly
             font.family: fawesome.name
             font.italic: false
@@ -142,7 +160,7 @@ Item {
             width: height-dpis*4
             height: parent.height
             anchors{right: parent.right;}
-            onClicked: {adelante()}
+            onClicked: {forward()}
             //display: Button.TextOnly
             font.family: fawesome.name
             font.italic: false
@@ -151,25 +169,17 @@ Item {
         }
 
         Text{
-            id:nombreMes
-            //text:"aaaa"
-            width: parent.width-bizq.width-inputAnno.width-bder.width-dpis// - (dpis*2)
+            id:nameMonth
+            width: parent.width-bizq.width-inputYear.width-bder.width-dpis// - (dpis*2)
             height: parent.height
             anchors{left: bizq.right;leftMargin: 0}
             font.italic: true
-            //                font.family: va.allFontPrenta
             font.pixelSize: 20
             minimumPixelSize: 6
             fontSizeMode: Text.Fit
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            color: inputAnno.Material.primaryTextColor
-
-            //color: va.allColorInput
-            //            MouseArea{
-            //                anchors.fill: parent
-            //                cursorShape: Qt.IBeamCursor
-            //            }
+            color: inputYear.Material.primaryTextColor
         }
 
         Text{
@@ -177,27 +187,21 @@ Item {
             text:"2222"
             width: paintedWidth
             height: parent.height
-            anchors{left: nombreMes.right;}
-            //            font.italic: va.allBoolItalic
-            //            font.family: va.allFontPrenta
+            anchors{left: nameMonth.right;}
             font.pixelSize: fontPixel
             verticalAlignment: TextInput.AlignVCenter
             horizontalAlignment: TextInput.AlignHCenter
-            color: "silver"
             visible: false
-
         }
 
         TextField{
-            id: inputAnno
+            id: inputYear
             width: textWidth.width
             //height: parent.height
-            placeholderText: "aaaa"
+            placeholderText: qsTr("yyyy")
             anchors{right: bder.left; rightMargin: dpis;}
             mouseSelectionMode: TextInput.SelectWords
             selectByMouse: true
-            //            font.italic: va.allBoolItalic
-            //            font.family: va.allFontPrenta
             font.pixelSize: fontPixel
             verticalAlignment: TextInput.AlignVCenter
             horizontalAlignment: TextInput.AlignHCenter
@@ -206,7 +210,7 @@ Item {
             onTextChanged: {
                 if(boolEscChangue==false){
                     if(text.toString().length>3){
-                        enterAnno();
+                        enterYear();
                     }
                 }
             }
@@ -215,20 +219,20 @@ Item {
                     boolFocus=true;
                     selectAll();
                 }else{
-                    revisarAnno();
+                    checkYear();
                 }
             }
             validator: RegExpValidator { regExp:/^(19|20|21)\d\d$/}
             Keys.onPressed: {
                 if (event.key === Qt.Key_Enter){
                     event.accepted = true;
-                    revisarAnno();
-                    enterAnno();
+                    checkYear();
+                    enterYear();
                 }
                 if (event.key === Qt.Key_Return){
                     event.accepted = true;
-                    revisarAnno();
-                    enterAnno();
+                    checkYear();
+                    enterYear();
                 }
                 if (event.key === Qt.Key_Up){
                     event.accepted = true;
@@ -237,9 +241,9 @@ Item {
                         x+=1;
                         text = x;
                     }
-                    revisarAnno();
+                    checkYear();
                     selectAll();
-                    enterAnno();
+                    enterYear();
                 }
                 if (event.key === Qt.Key_Down){
                     event.accepted = true;
@@ -248,8 +252,8 @@ Item {
                         xd-=1;
                         text = xd;
                     }
-                    revisarAnno();
-                    enterAnno();
+                    checkYear();
+                    enterYear();
                     selectAll();
                 }
                 if (event.key === Qt.Key_Escape ){
@@ -257,21 +261,21 @@ Item {
                 }
                 if (event.key === Qt.Key_Tab ){
                     event.accepted = true;
-                    revisarAnno();
-                    enterAnno();
+                    checkYear();
+                    enterYear();
                 }
             }
         }
     }
     Item{
-        id:icuerpo
-        width: gdias.width
-        height:gdias.height+rownamesDays.height
+        id:ibody
+        width: gdays.width
+        height:gdays.height+rownamesDays.height
         anchors{bottom: parent.bottom}
 
         Row{
             id:rownamesDays
-            width: gdias.width
+            width: gdays.width
             height: dpis*4
             anchors{top: parent.top;}
             Repeater{
@@ -286,21 +290,19 @@ Item {
                     Text{
                         anchors{fill: parent;margins: 0.5}
                         text: namesDays[index]
-                        // font.italic: va.allBoolItalic
-                        //font.family: va.allFontPrenta
                         font.pixelSize: dpis*3
                         minimumPixelSize: 6
                         fontSizeMode: Text.Fit
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
-                        color: inputAnno.Material.primaryTextColor
+                        color: inputYear.Material.primaryTextColor
                     }
                 }
             }
         }
 
         GridView{
-            id:gdias
+            id:gdays
             width: cellWidth*7
             height: cellHeight*6
             cellWidth: widthGrid
@@ -308,17 +310,18 @@ Item {
             anchors{bottom: parent.bottom;}
             delegate: ItemDelegate {
                 id:idele
-                width: gdias.cellWidth
-                height: gdias.cellHeight
+                width: gdays.cellWidth
+                height: gdays.cellHeight
                 text: dia
                 font.bold: true
                 font.pixelSize: fontPixel
+                property bool isCurrentDay: false
                 contentItem: Item{
                     anchors.fill: parent
                     Rectangle{
                         id:ibase
                         anchors{fill: parent;margins: 0.5}
-                        color: "transparent"
+                        color: isCurrentDay?mainroot.Material.accent:"transparent"
                     }
                     Text {
                         id:texto
@@ -336,11 +339,12 @@ Item {
                     }
                 }
                 onClicked: {
-                    clickDia(new Date (anno,mes-1,dia));
+                    clickDay(new Date (anno,mes-1,dia));
                 }
             }
-            model:modelmes
+            model:modelmonth
             clip: true
+
         }
     }
 }

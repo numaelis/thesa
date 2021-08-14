@@ -38,4 +38,5 @@ Version 1.8
 * add TrytonControls: TemplateFieldMany2One
 * add TrytonControls: TemplateFieldOne2Many
 * add TrytonControls: TemplateFieldText Multiline
+* add TrytonControls: TemplateFieldDate
 

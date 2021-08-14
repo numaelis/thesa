@@ -1,9 +1,9 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // tools FieldCalendar, need to functions tools.calendar
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
-//__version__ = "1.0.0"
+//__version__ = "1.1.0"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -14,157 +14,183 @@ import QtQuick.Layouts 1.3
 
 Item{
     id:mainCa
-    width: inputDia.width+sepa1.width+inputMes.width+sepa2.width+inputAnno.width+ bcalendar.width +dpis*3
-    height: inputDia.height
-
-    // property bool boolFocus: false
-    property bool boolCargarFechaNow: true
+    width: inputDay.width+sepa1.width+inputMonth.width+sepa2.width+inputYear.width+ bcalendar.width + 6
+    height: inputDay.height
+    property bool dateInit: true
     property bool boolEscChangueText: false
     property int currentDay: 1
     property int currentMonth: 1
     property int currentYear: 2020
-
-    property string tituloCalendario: ""
+    property string placeholderDay: qsTr("dd");
+    property string placeholderMonth: qsTr("mm");
+    property string placeholderYear: qsTr("yyyy");
+    property string calendarTitle: ""
     property int pixelFont: 16
 
     signal changueText()
+    signal valueEdited()
+    signal dateChangedNoCursor(var date)
 
     Component.onCompleted: {
-        calcularFechaActual();
-        if(boolCargarFechaNow){
-            cargarFechaActual();
+        checkDateNow();
+        if(dateInit){
+            loadDateNow();
         }
     }
 
-
     function reset(){
-        calcularFechaActual();
-        if(boolCargarFechaNow){
-            cargarFechaActual();
+        checkDateNow();
+        if(dateInit){
+            loadDateNow();
         }
     }
 
     function forceF(){
-        inputDia.forceActiveFocus()
+        inputDay.forceActiveFocus()
     }
 
-    function calcularFechaActual(){
+    function checkDateNow(){
         var dataNow = new Date();
         currentDay = dataNow.getDate();
         currentMonth = dataNow.getMonth()+1;
         currentYear = dataNow.getFullYear();
     }
-    function cargarFechaActual(){
-        boolEscChangueText=true;
-        inputDia.text=currentDay.toString();
-        inputMes.text=currentMonth.toString();
-        inputAnno.text=currentYear.toString();
-        revisarDia();
-        revisarMes();
-        boolEscChangueText=false;
-        changueText();
 
+    function setNull(){
+        boolEscChangueText=true;
+        inputDay.focus=false;
+        inputDay.text="";
+        inputMonth.focus=false;
+        inputMonth.text="";
+        inputYear.focus=false;
+        inputYear.text="";
+        boolEscChangueText=false;
+        checkDateNow();
     }
 
-    function revisarDia(){
-        var texto = inputDia.text.toString();
+    function loadDateNow(){
+        boolEscChangueText=true;
+        inputDay.text=currentDay.toString();
+        inputMonth.text=currentMonth.toString();
+        inputYear.text=currentYear.toString();
+        checkDay();
+        checkMonth();
+        boolEscChangueText=false;
+        changueText();
+    }
+
+    function checkDay(){
+        var texto = inputDay.text.toString();
         if(texto==="0" || texto===""){
             texto=currentDay.toString();
         }
-
         if(texto.length<2){
-            inputDia.text="0" + texto;
+            inputDay.text="0" + texto;
         }else{
-            inputDia.text=texto;
+            inputDay.text=texto;
         }
-        if(currentDay!==parseInt(inputDia.text)){
-            currentDay=parseInt(inputDia.text)
+        if(currentDay!==parseInt(inputDay.text)){
+            currentDay=parseInt(inputDay.text)
             changueText();
         }
         //revisar mes anno
-        ajustarDia();
+        adjustDay();
     }
-    function ajustarDia(){
+    function adjustDay(){
         var ultimoDia = Tools.calendarLastDay(currentYear,currentMonth);
         if(ultimoDia<currentDay){
             boolEscChangueText=true;
             currentDay = ultimoDia;
-            inputDia.text=currentDay.toString();
+            inputDay.text=currentDay.toString();
             changueText();
             boolEscChangueText=false;
         }
     }
 
-    function revisarMes(){
-        var texto = inputMes.text.toString();
+    function checkMonth(){
+        var texto = inputMonth.text.toString();
         if(texto==="0" || texto===""){
             texto=currentMonth.toString();//importante ser string
         }
         if(texto.length<2){
-            inputMes.text="0" + texto;
+            inputMonth.text="0" + texto;
         }else{
-            inputMes.text=texto;
+            inputMonth.text=texto;
         }
-        if(currentMonth !== parseInt(inputMes.text)){
-            currentMonth = parseInt(inputMes.text)
+        if(currentMonth !== parseInt(inputMonth.text)){
+            currentMonth = parseInt(inputMonth.text)
             changueText();
         }
         //revisar dia con el mes y año
-        ajustarDia();
+        adjustDay();
 
     }
-    function revisarAnno(){
-        var texto = inputAnno.text.toString();
+    function checkYear(){
+        var texto = inputYear.text.toString();
         if(texto.length<4){
-            inputAnno.text=currentYear.toString();
+            inputYear.text=currentYear.toString();
         }
-        if(currentYear !== parseInt(inputAnno.text)){
-            currentYear = parseInt(inputAnno.text)
+        if(currentYear !== parseInt(inputYear.text)){
+            currentYear = parseInt(inputYear.text)
             changueText();
         }
         //revisar dia con mes y año
-        ajustarDia();
+        adjustDay();
+    }
+
+    Timer{
+        id:tcursorChangued
+        interval: 20
+        onTriggered: {
+            dateChangedNoCursor(getDate());
+        }
     }
 
     Text{
-        id: textWidth
-        text:"2222"
-        width: paintedWidth
+        id: textWidthYear
+        text:inputYear.text==""?placeholderYear:inputYear.text
+        width: paintedWidth +3
         height: parent.height
-        anchors{left: parent.left;leftMargin: dpis;}
-        //font.italic: va.allBoolItalic
-        //font.family: va.allFontPrenta
+        anchors{left: parent.left}
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        color: "silver"
         visible: false
     }
 
     Text{
-        id: textWidth2
-        text:"22"
+        id: textWidtMonth
+        text:inputMonth.text==""?placeholderMonth:inputMonth.text
         width: paintedWidth
         height: parent.height
-        anchors{left: parent.left;leftMargin: dpis;}
-        //font.italic: va.allBoolItalic
-        //font.family: va.allFontPrenta
+        anchors{left: parent.left}
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        color: "silver"
+        visible: false
+    }
+
+    Text{
+        id: textWidthDay
+        text:inputDay.text==""?placeholderDay:inputDay.text
+        width: paintedWidth
+        height: parent.height
+        anchors{left: parent.left;}
+        font.pixelSize: pixelFont
+        verticalAlignment: TextInput.AlignVCenter
+        horizontalAlignment: TextInput.AlignHCenter
         visible: false
     }
 
     TextField{
-        id: inputDia
-        width: textWidth2.width
-        //height: parent.height
-        placeholderText: "dd"
+        id: inputDay
+        width: textWidthDay.width
+        leftPadding: 0
+        rightPadding: 0
+        placeholderText: placeholderDay
         anchors{left: parent.left}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: true
-        readOnly:false
         font.pixelSize:pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
@@ -172,7 +198,7 @@ Item{
         onTextChanged: {
             if(boolEscChangueText==false){
                 if(text.toString().length>1){
-                    inputMes.forceActiveFocus();
+                    inputMonth.forceActiveFocus();
                 }
             }
             if(focus==true){
@@ -183,22 +209,32 @@ Item{
                 selectAll();
             }else{
                 boolEscChangueText=true
-                revisarDia();
+                checkDay();
                 boolEscChangueText=false
             }
         }
+        onTextEdited: {
+            valueEdited();
+        }
+
+        onCursorVisibleChanged: {
+            if(isCursorVisible==false){
+                tcursorChangued.start();
+            }
+        }
+
         // { regExp:/^(0[1-9]|[1-9]|[12][0-9]|3[01])[/](0[1-9]|[1-9]|1[012])[/](17|18|19|20)\d\d$/}
         validator: RegExpValidator { regExp:/^(0[1-9]|[1-9]|[12][0-9]|3[01])$/}
         Keys.onPressed: {
             if (event.key === Qt.Key_Enter){
                 event.accepted = true;
-                revisarDia();
-                inputMes.forceActiveFocus();
+                checkDay();
+                inputMonth.forceActiveFocus();
             }
             if (event.key === Qt.Key_Return){
                 event.accepted = true;
-                revisarDia();
-                inputMes.forceActiveFocus();
+                checkDay();
+                inputMonth.forceActiveFocus();
             }
             if (event.key === Qt.Key_Up){
                 event.accepted = true;
@@ -208,7 +244,7 @@ Item{
                     x+=1;
                     text = x;
                 }
-                revisarDia();
+                checkDay();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -220,7 +256,7 @@ Item{
                     xd-=1;
                     text = xd;
                 }
-                revisarDia();
+                checkDay();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -230,8 +266,8 @@ Item{
             }
             if (event.key === Qt.Key_Right ){
                 event.accepted = true;
-                revisarDia();
-                inputMes.forceActiveFocus();
+                checkDay();
+                inputMonth.forceActiveFocus();
             }
         }
 
@@ -239,46 +275,41 @@ Item{
 
     Label{
         id:sepa1
-        width: textWidth2/2
+        width: paintedWidth
+        leftPadding: 0
+        rightPadding: 0
         height: parent.height
-        anchors{left:inputDia.right}
-        //font.italic: true
-        //font.family: va.allFontPrenta
+        anchors{left:inputDay.right;leftMargin: 2}
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        fontSizeMode: Text.Fit
-        minimumPixelSize: 12
         bottomPadding: dpis*2
         text:"/"
         MouseArea{
             anchors.fill: parent
-            onClicked: inputDia.forceActiveFocus();
+            onClicked: inputDay.forceActiveFocus();
         }
 
     }
 
     TextField{
-        id: inputMes
-        width: textWidth2.width
+        id: inputMonth
+        width: textWidtMonth.width
         //height: parent.height
-        placeholderText: "mm"
-        anchors{left: sepa1.right;leftMargin: dpis}
+        leftPadding: 0
+        rightPadding: 0
+        placeholderText: placeholderMonth
+        anchors{left: sepa1.right;leftMargin: 2}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: true
-        readOnly:false
-        //        font.italic: va.allBoolItalic
-        //        font.family: va.allFontPrenta
         font.pixelSize:pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        //clip:true
-        //color: va.allColorInput
         activeFocusOnPress: true
         onTextChanged: {
             if(boolEscChangueText==false){
                 if(text.toString().length>1){
-                    inputAnno.forceActiveFocus();
+                    inputYear.forceActiveFocus();
                 }
             }
             if(focus==true){
@@ -291,21 +322,30 @@ Item{
                 selectAll();
             }else{
                 boolEscChangueText=true
-                revisarMes();
+                checkMonth();
                 boolEscChangueText=false
+            }
+        }
+        onTextEdited: {
+            valueEdited();
+        }
+
+        onCursorVisibleChanged: {
+            if(isCursorVisible==false){
+                tcursorChangued.start();
             }
         }
         validator: RegExpValidator { regExp:/^(0[1-9]|[1-9]|1[012])$/}
         Keys.onPressed: {
             if (event.key === Qt.Key_Enter){
                 event.accepted = true;
-                revisarMes();
-                inputAnno.forceActiveFocus();
+                checkMonth();
+                inputYear.forceActiveFocus();
             }
             if (event.key === Qt.Key_Return){
                 event.accepted = true;
-                revisarMes();
-                inputAnno.forceActiveFocus();
+                checkMonth();
+                inputYear.forceActiveFocus();
             }
             if (event.key === Qt.Key_Up){
                 event.accepted = true;
@@ -315,7 +355,7 @@ Item{
                     x+=1;
                     text = x;
                 }
-                revisarMes();
+                checkMonth();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -327,7 +367,7 @@ Item{
                     xd-=1;
                     text = xd;
                 }
-                revisarMes();
+                checkMonth();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -337,13 +377,13 @@ Item{
             }
             if (event.key === Qt.Key_Right ){
                 event.accepted = true;
-                revisarMes();
-                inputAnno.forceActiveFocus();
+                checkMonth();
+                inputYear.forceActiveFocus();
             }
             if (event.key === Qt.Key_Left ){
                 event.accepted = true;
-                revisarMes();
-                inputDia.forceActiveFocus();
+                checkMonth();
+                inputDay.forceActiveFocus();
             }
         }
 
@@ -351,41 +391,37 @@ Item{
 
     Label{
         id:sepa2
-        width: textWidth2.width/2
+        width: paintedWidth
+        leftPadding: 0
+        rightPadding: 0
         height: parent.height
-        anchors{left:inputMes.right}
-        //        font.italic: true
-        //        font.family: va.allFontPrenta
+        anchors{left:inputMonth.right;leftMargin: 2}
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        fontSizeMode: Text.Fit
-        minimumPixelSize: 12
         bottomPadding: dpis*2
         text:"/"
         MouseArea{
             anchors.fill: parent
-            onClicked: inputMes.forceActiveFocus();
+            onClicked: inputMonth.forceActiveFocus();
         }
 
     }
 
     TextField{
-        id: inputAnno
-        width: textWidth.width
+        id: inputYear
+        width: textWidthYear.width
         //height: parent.height
-        placeholderText: "aaaa"
-        anchors{left: sepa2.right;leftMargin: dpis}
+        leftPadding: 0
+        rightPadding: 0
+        placeholderText: placeholderYear
+        anchors{left: sepa2.right;leftMargin: 2}
         mouseSelectionMode: TextInput.SelectWords
         selectByMouse: true
         readOnly:false
-        //        font.italic: va.allBoolItalic
-        //        font.family: va.allFontPrenta
         font.pixelSize:pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        //clip:true
-        //color: va.allColorInput
         activeFocusOnPress: true
         onTextChanged: {
             if(boolEscChangueText==false){
@@ -402,21 +438,30 @@ Item{
                 selectAll();
             }else{
                 boolEscChangueText=true;
-                revisarAnno();
+                checkYear();
                 boolEscChangueText=false;
+            }
+        }
+        onTextEdited: {
+            valueEdited();
+        }
+
+        onCursorVisibleChanged: {
+            if(isCursorVisible==false){
+                tcursorChangued.start();
             }
         }
         validator: RegExpValidator { regExp:/^(19|20|21)\d\d$/}
         Keys.onPressed: {
             if (event.key === Qt.Key_Enter){
                 event.accepted = true;
-                revisarAnno();
+                checkYear();
                 bcalendar.forceActiveFocus();
                 //mainCa.forceActiveFocus();
             }
             if (event.key === Qt.Key_Return){
                 event.accepted = true;
-                revisarAnno();
+                checkYear();
                 bcalendar.forceActiveFocus()
                 //mainCa.forceActiveFocus();
             }
@@ -428,7 +473,7 @@ Item{
                     x+=1;
                     text = x;
                 }
-                revisarAnno();
+                checkYear();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -440,7 +485,7 @@ Item{
                     xd-=1;
                     text = xd;
                 }
-                revisarAnno();
+                checkYear();
                 selectAll();
                 boolEscChangueText =false;
             }
@@ -449,13 +494,13 @@ Item{
             }
             if (event.key === Qt.Key_Right ){
                 event.accepted = true;
-                revisarAnno();
+                checkYear();
                 bcalendar.forceActiveFocus()
             }
             if (event.key === Qt.Key_Left ){
                 event.accepted = true;
-                revisarAnno();
-                inputMes.forceActiveFocus();
+                checkYear();
+                inputMonth.forceActiveFocus();
             }
         }
 
@@ -465,7 +510,7 @@ Item{
         id:bcalendar
         width: height - 20
         height: parent.height
-        anchors{left: inputAnno.right; top:parent.top;leftMargin: dpis}
+        anchors{left: inputYear.right; top:parent.top;leftMargin: dpis}
         //display: Button.TextOnly
         font.family: fawesome.name
         font.italic: false
@@ -474,19 +519,19 @@ Item{
         //highlighted: true
         hoverEnabled: true
         onClicked: {
-            crearCalenDesk()
+            buildCalenDesk()
         }
     }
 
 
-    function crearCalenDesk(){
+    function buildCalenDesk(){
         var tmens= "import QtQuick 2.9;import QtQuick.Controls 2.2;import QtQuick.Layouts 1.3;"+
                 "Dialog {"+
                 "id:dicalen;"+
                 "modal: true;"+
                 "x: ((mainroot.width - width) / 2);"+
                 "y: ((mainroot.height - height)/ 2);"+
-                "title: qsTr(tituloCalendario);"+
+                "title: qsTr(calendarTitle);"+
                 "contentWidth: calendesk.width;"+
                 "contentHeight: calendesk.height;"+
                 "visible: true;"+
@@ -503,20 +548,22 @@ Item{
                 //"onAccepted: {tcerraris.start()}"+
                 "onRejected: {tcloseAll.start();}"+
                 "contentItem:Calendar{"+
-                    "id:calendesk;"+
-                    "fontPixel: pixelFont;"+
-                    "onClickDia: {"+
-                        "mainCa.setDate(datesis);"+
-                        "dicalen.visible=false;"+
-                        "tcloseAll.start();"+
-                    "}"+
+                "id:calendesk;"+
+                "fontPixel: pixelFont;"+
+                "onClickDay: {"+
+                "mainCa.setDate(datesis);"+
+                "valueEdited();"+
+                "tcursorChangued.start();"+
+                "dicalen.visible=false;"+
+                "tcloseAll.start();"+
+                "}"+
                 "onSignalClose: {"+
-                    "reject();"+
+                "reject();"+
                 "}"+
                 "}"+
                 "}"
         var object=Qt.createQmlObject(tmens, mainroot, "dynamicSnippet1");
-        object.openis();
+        object.open();
     }
 
     function setDate(data){
@@ -524,24 +571,35 @@ Item{
         currentDay=data.getDate();
         currentMonth=data.getMonth()+1;
         currentYear=data.getFullYear();
-        inputDia.text=currentDay;
-        inputMes.text=currentMonth;
-        inputAnno.text=currentYear;
-        revisarDia();
-        revisarMes();
-        revisarAnno();
+        inputDay.text=currentDay;
+        inputMonth.text=currentMonth;
+        inputYear.text=currentYear;
+        checkDay();
+        checkMonth();
+        checkYear();
         boolEscChangueText=false;
         changueText();
     }
 
-    function getDate(){
-        var fechaelis = new Date(currentYear,currentMonth-1,currentDay);
-        return fechaelis;
+    function setDateTime(data){//TODO
+        setDate(data);
     }
-    function getDateTime(){
+
+    function getDate(){
+        if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
+            return null;
+        }
+        var myDate = new Date(currentYear,currentMonth-1,currentDay);
+        return myDate;
+    }
+
+    function getDateTime(){//TODO add inputs Hours and Minutes
+        if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
+            return null;
+        }
         var tdate = new Date();
-        var fechaelis = new Date(currentYear,currentMonth-1,currentDay,tdate.getHours(),tdate.getMinutes());
-        return fechaelis;
+        var myDate = new Date(currentYear,currentMonth-1,currentDay,tdate.getHours(),tdate.getMinutes());
+        return myDate;
     }
 
 }

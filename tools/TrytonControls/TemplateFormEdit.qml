@@ -257,7 +257,6 @@ Pane{
         if(data.data!=="error"){
             if(data.data.result.length>0){
                 var obj = data.data.result[0];
-                console.log("aaa", JSON.stringify(obj))
                 setValues(obj);
             }
         }
