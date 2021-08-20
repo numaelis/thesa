@@ -528,6 +528,12 @@ ApplicationWindow {
                              []);
         closeBusy();
     }
+//  test
+//    property var argsResponse
+//    function _jsonNetSignalResponse(){
+//        jsonNetSignalResponse(argsResponse[0],argsResponse[1],argsResponse[2]);
+//        argsResponse=[];
+//    }
 
     function  jsonNetSignalResponse(pid, option, data){
 

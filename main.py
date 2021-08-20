@@ -7,7 +7,7 @@ main
 """
 
 __author__ = "Numael Garay"
-__copyright__ = "Copyright 2020"
+__copyright__ = "Copyright 2020-2021"
 __license__ = "GPL"
 __version__ = "1.8" 
 __maintainer__ = "Numael Garay" 
@@ -94,6 +94,7 @@ if __name__ == '__main__':
     
     jchc = QJsonNetwork(app)
     jchc.setEngine(engine)
+    #jchc.selectRequestPython(True)
     
     systemnet = SystemNet(jchc)
     modelmanager = ModelManager(jchc, engine, app)

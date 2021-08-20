@@ -39,4 +39,5 @@ Version 1.8
 * add TrytonControls: TemplateFieldOne2Many
 * add TrytonControls: TemplateFieldText Multiline
 * add TrytonControls: TemplateFieldDate
+* add Python requests library, option by default
 

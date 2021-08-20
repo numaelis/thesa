@@ -144,7 +144,8 @@ Dialog {
                                    ipassword.text,
                                    ihost.text,
                                    iport.text,
-                                   idatabase.text);
+                                   idatabase.text,
+                                   true);
     }
     property alias aliasBackground: backgroundlogin.source
     contentItem: Pane{

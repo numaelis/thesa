@@ -9,9 +9,9 @@ qjsonmodel, basic model data list connect json-rpc
 
 """
 __author__ = "Numael Garay"
-__copyright__ = "Copyright 2020"
+__copyright__ = "Copyright 2020-2021"
 __license__ = "GPL"
-__version__ = "1.6" 
+__version__ = "1.8" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
@@ -261,7 +261,7 @@ class ModelJson(QObjectListModel):
 
     @Slot()
     @Slot(int)
-    def nextSearch(self, maxlimit=-1):# metodo asincronico
+    def nextSearch(self, maxlimit=-1):# metodo asincronico o sincro
         self.openBusy()
         limit = self.m_maxLimit
         if maxlimit !=-1:
