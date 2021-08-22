@@ -2,10 +2,55 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es_ES">
 <context>
+    <name>Calendar</name>
+    <message>
+        <source>yyyy</source>
+        <translation>aaaa</translation>
+    </message>
+</context>
+<context>
+    <name>FieldCalendar</name>
+    <message>
+        <source>dd</source>
+        <translation>dd</translation>
+    </message>
+    <message>
+        <source>mm</source>
+        <translation>mm</translation>
+    </message>
+    <message>
+        <source>yyyy</source>
+        <translation>aaaa</translation>
+    </message>
+</context>
+<context>
+    <name>FieldMany2One</name>
+    <message>
+        <source>no items</source>
+        <translation>sin items</translation>
+    </message>
+</context>
+<context>
     <name>FiltersInput</name>
     <message>
         <source>Filters</source>
-        <translation>Filtros</translation>
+        <translation type="vanished">Filtros</translation>
+    </message>
+    <message>
+        <source>Add Filter</source>
+        <translation>Agregar Filtro</translation>
+    </message>
+    <message>
+        <source>Operator: </source>
+        <translation>Operador:</translation>
+    </message>
+    <message>
+        <source>From:</source>
+        <translation>Desde:</translation>
+    </message>
+    <message>
+        <source>To:</source>
+        <translation>Hasta:</translation>
     </message>
 </context>
 <context>
@@ -13,6 +58,17 @@
     <message>
         <source>Scan Code</source>
         <translation>Escanear Código</translation>
+    </message>
+</context>
+<context>
+    <name>ListViewEditable</name>
+    <message>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+    <message>
+        <source>Remove Item</source>
+        <translation>Quitar Item</translation>
     </message>
 </context>
 <context>
@@ -92,6 +148,13 @@
     </message>
 </context>
 <context>
+    <name>QuestionAction</name>
+    <message>
+        <source>Question</source>
+        <translation>Pregunta</translation>
+    </message>
+</context>
+<context>
     <name>ScanQZXing</name>
     <message>
         <source>Scan</source>
@@ -100,6 +163,74 @@
     <message>
         <source>Available Cameras:</source>
         <translation>Cámaras Disponibles</translation>
+    </message>
+</context>
+<context>
+    <name>TemplateDialogEdit</name>
+    <message>
+        <source>Edit</source>
+        <translation>Editar</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ok</translation>
+    </message>
+</context>
+<context>
+    <name>TemplateDialogSearch</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Editar</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Seleccionar</translation>
+    </message>
+</context>
+<context>
+    <name>TemplateFieldOne2Many</name>
+    <message>
+        <source>required</source>
+        <translation>requerido</translation>
+    </message>
+</context>
+<context>
+    <name>TemplateFormEdit</name>
+    <message>
+        <source>Updated</source>
+        <translation>Actualizado</translation>
+    </message>
+    <message>
+        <source>No Updated</source>
+        <translation>No Actualizado</translation>
+    </message>
+    <message>
+        <source>required</source>
+        <translation>requerido</translation>
+    </message>
+    <message>
+        <source>Created</source>
+        <translation>Creado</translation>
+    </message>
+    <message>
+        <source>No Created</source>
+        <translation>No Creado</translation>
     </message>
 </context>
 <context>
@@ -113,7 +244,7 @@
     <name>main</name>
     <message>
         <source>thesa [tryton client]</source>
-        <translation>thesa [cliente tryton]</translation>
+        <translation type="vanished">thesa [cliente tryton]</translation>
     </message>
     <message>
         <source>Screen</source>
@@ -239,6 +370,10 @@ the last order could not be made</source>
     <message>
         <source>¿Close thesa?</source>
         <translation>¿Cerrar thesa?</translation>
+    </message>
+    <message>
+        <source>error preClosing Tab: </source>
+        <translation>error Pre Cerrando Tab:</translation>
     </message>
 </context>
 </TS>
