@@ -152,10 +152,12 @@ Pane{
 
                     }
 
-                    MessageLib.showMessage(qsTr("Updated"), mainroot);
+                    //MessageLib.showMessage(qsTr("Updated"), mainroot);
+                    MessageLib.showToolTip(qsTr("Updated"),16,3000,"white","green", mainroot);
                     return true;
                 }else{
-                    MessageLib.showMessage(qsTr("No Updated"), mainroot);
+                   // MessageLib.showMessage(qsTr("No Updated"), mainroot);
+                    MessageLib.showToolTip(qsTr("No Updated"),16,3000,"white","red", mainroot);
                     return false;
                 }
             }else{
@@ -211,10 +213,12 @@ Pane{
                     }else{
 
                     }
-                    MessageLib.showMessage(qsTr("Created"), mainroot);
+                    //MessageLib.showMessage(qsTr("Created"), mainroot);
+                    MessageLib.showToolTip(qsTr("Created"),16,3000,"white","green", mainroot);
                     return true;
                 }else{
-                    MessageLib.showMessage(qsTr("No Created"), mainroot);
+                    MessageLib.showToolTip(qsTr("No Created"),16,3000,"white","red", mainroot);
+                    //MessageLib.showMessage(qsTr("No Created"), mainroot);
                     return false;
                 }
             }
@@ -258,6 +262,13 @@ Pane{
             if(data.data.result.length>0){
                 var obj = data.data.result[0];
                 setValues(obj);
+            }
+        }else{
+            clearValues();
+            if(myParent!=-1){
+                if(myParent.type == "dialogedit"){
+                    myParent.emitActionCancel();
+                }
             }
         }
     }

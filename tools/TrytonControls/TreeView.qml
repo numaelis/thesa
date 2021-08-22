@@ -1,7 +1,7 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // view tree
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
 //__version__ = "1.8.0"
 //__maintainer__ = "Numael Garay"
@@ -117,6 +117,10 @@ Control{
             mapOrder[order[i][0]]=order[i][1];
         }
         _repeaterHead.setTextInitOrder(mapOrder);
+    }
+    //prevent false shadow on the head
+    function shadowOff(){
+        _repeaterHead.shadowOff();
     }
 
     function updateRecords(ids){
@@ -422,6 +426,12 @@ Control{
                         }
                     }
                 }
+                function shadowOff(){
+                    for(var i=0, len=listHead.length;i<len;i++){
+                        repeater.itemAt(i).shadowOff();
+                    }
+                }
+
                 Label {
                     id:mll
                     text: modelData.alias
@@ -447,9 +457,13 @@ Control{
                         }
                         tbascdesc.text=text;
                     }
+                    function shadowOff(){
+                        rec_shadow.visible=false;
+                    }
 
                     Rectangle{
                         id:rec_shadow
+                        objectName: "rec_shadow"
                         anchors.fill: parent
                         opacity: 0.5
                         color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"

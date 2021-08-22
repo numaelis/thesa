@@ -51,11 +51,12 @@ function showQuestionInputPass(texto, pariente, action){//action(text)
     dial.open();
 }
 
-function showToolTip(text, timeout, colortext, colorback, parent){
+function showToolTip(text, pixelSize, timeout, colortext, colorback, parent){
     var tooltipcom=Qt.createComponent("ToolTipDynamic.qml");
     var tooltip = tooltipcom.createObject(parent);
     tooltip.colortext = colortext;
     tooltip.colorback = colorback;
+    tooltip.font.pixelSize = pixelSize;
     tooltip.show(text, timeout);
 }
 

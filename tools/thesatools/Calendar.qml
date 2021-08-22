@@ -125,8 +125,10 @@ Item {
         var lista = Tools.calendarMonth(currentYear, currentMonth);
         for(var i = 0, len = lista.length; i < len; i++){
             modelmonth.append(lista[i]);
-            if(_currentMonth==currentMonth && _currentYear==currentYear && lista[i].type==0 && lista[i].dia == currentDay){
-                indexCurrentDay = i;
+            if(lista[i].dia == currentDay){
+                if(_currentMonth==currentMonth && _currentYear==currentYear && lista[i].type==0){
+                    indexCurrentDay = i;
+                }
             }
         }
         nameMonth.text=namesMonths[currentMonth-1];
@@ -143,7 +145,7 @@ Item {
         anchors{top:parent.top}
 
         Button{
-            id:bizq
+            id:bleft
             width: height-dpis*4
             height: parent.height
             anchors{left: parent.left;}
@@ -156,7 +158,7 @@ Item {
         }
 
         Button{
-            id:bder
+            id:bright
             width: height-dpis*4
             height: parent.height
             anchors{right: parent.right;}
@@ -170,9 +172,9 @@ Item {
 
         Text{
             id:nameMonth
-            width: parent.width-bizq.width-inputYear.width-bder.width-dpis// - (dpis*2)
+            width: parent.width-bleft.width-inputYear.width-bright.width-dpis// - (dpis*2)
             height: parent.height
-            anchors{left: bizq.right;leftMargin: 0}
+            anchors{left: bleft.right;leftMargin: 0}
             font.italic: true
             font.pixelSize: 20
             minimumPixelSize: 6
@@ -199,7 +201,7 @@ Item {
             width: textWidth.width
             //height: parent.height
             placeholderText: qsTr("yyyy")
-            anchors{right: bder.left; rightMargin: dpis;}
+            anchors{right: bright.left; rightMargin: dpis;}
             mouseSelectionMode: TextInput.SelectWords
             selectByMouse: true
             font.pixelSize: fontPixel

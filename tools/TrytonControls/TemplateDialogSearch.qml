@@ -63,6 +63,7 @@ Dialog {
         if(visible){
             myTreeView._filterClear();
             myTreeView._restart();
+            myTreeView.shadowOff();
         }
     }
 //    onOpened: {

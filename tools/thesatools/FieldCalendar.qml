@@ -45,8 +45,10 @@ Item{
         }
     }
 
-    function forceF(){
-        inputDay.forceActiveFocus()
+    function _forceActiveFocus(){
+        forceActiveFocus();
+//        inputDay.forceActiveFocus()
+//        inputDay.selectAll();
     }
 
     function checkDateNow(){

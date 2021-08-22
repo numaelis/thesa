@@ -19,6 +19,7 @@ Dialog {
     //standardButtons: Dialog.Ok|Dialog.Cancel
     width: 500
     anchors.centerIn: parent
+    property string type: "dialogedit"
     property int idRecord: -1
     property string modelName: ""
     property bool actionOK: true

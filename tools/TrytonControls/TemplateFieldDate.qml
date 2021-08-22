@@ -32,7 +32,7 @@ Control{
     padding: 0
 
     function _forceActiveFocus(){
-        tfield.forceActiveFocus();
+        tfield._forceActiveFocus();
     }
 
     function getValue(){
