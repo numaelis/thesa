@@ -102,6 +102,10 @@ class QJsonNetwork(QObject):
         
     def setEngine(self, engine):#QQmlApplicationEngine *engine=nullptr);
         self.m_engine = engine
+    
+    @Slot()
+    def forceNotRun(self):
+        self.boolRun=False
         
     def selectRequestPython(self, boolRP):
         self.requestPython = boolRP
@@ -180,8 +184,8 @@ class QJsonNetwork(QObject):
     @Slot("QNetworkReply*")
     def replyFinishedOrder(self, reply):
         if self.boolDirect==False:
-            data = reply.readAll()
-            self.processingData(data, reply)
+            #data = reply.readAll()
+            self.processingData(reply)
            # reply.deleteLater()
             
     @Slot("QNetworkReply*", "const QList<QSslError> &")        
@@ -295,42 +299,9 @@ class QJsonNetwork(QObject):
                 request = self.prepareRequest()
         
                 reply = self.data_request(request, bparams)
-                data = reply.readAll()##        QByteArray 
-                parseError = QJsonParseError()
-                
-                resultObject["data"] = "error"
-                document = QJsonDocument.fromJson(data, parseError)
-                
-                error = reply.error()
-                statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-                if QNetworkReply.NoError==error:
-                    if parseError.error==True:
-                        resultObject["data"] = "error"
-                    else:
-                        if document.isObject():
-                            jv=document.object()
-                            if jv.__contains__("result"):
-                                resultObject["data"] = jv
-                            else:
-                                if self.boolRecursive:
-                                    if jv.__contains__("error"):
-                                        if jv["error"].__class__() == []:
-                                            if jv["error"].__contains__("UserWarning") or jv["error"][0].__contains__("403") or jv["error"][0].__contains__("401"):
-                                                resultObject["data"] = jv
-                                            elif self.mpid == "open@":
-                                                resultObject["data"] = jv                                                
-                        else:
-                            if document.isArray()==True:
-                                resultObject["data"] = document.array()
-                            else:
-                                resultObject["data"] = "error"
-                else:
-                    if statusCode==401 or statusCode==403:
-                        resultObject["data"] = statusCode
-                    
-                self.processingData(data, reply) 
-                reply.deleteLater()
+                resultObject = self.processingData(reply)
                 return resultObject
+            
         else:
             resultObject["data"] = "error"
             if pid != self.mpid:
@@ -338,7 +309,7 @@ class QJsonNetwork(QObject):
             return resultObject
         
     def data_request_python(self):
-        if self.mpid != "open@":
+        if self.mpid != "open@" and self.mpid != "desconect":
             auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
             auth = b'Session '+ base64.b64encode(auth.encode())
             headers = {'content-type': 'application/json', 'authorization': auth}
@@ -378,7 +349,7 @@ class QJsonNetwork(QObject):
         error = False
         errorString = ""
         statusCode = response.status_code
-        fraseStatusCode = response.reason
+        reasonPhrase = response.reason
         
         if statusCode == 200:
             data = response.json()
@@ -387,7 +358,7 @@ class QJsonNetwork(QObject):
         
         resultObject = {
                 "status": statusCode,
-                "fraseStatus": fraseStatusCode,
+                "reasonPhrase": reasonPhrase,
                 "errorString": errorString
                 }
     
@@ -415,15 +386,16 @@ class QJsonNetwork(QObject):
                             self.signalResponse.emit(self.mpid, 2, resultObject)
                             if self.mpid != "open@":
                                 resultObject["data"] = "error"
-                    else:
-                        self.signalResponse.emit(self.mpid, 2, resultObject)
+                    elif self.mpid!="desconect":
+                            self.signalResponse.emit(self.mpid, 2, resultObject)
         else:
             # print(error, statusCode, errorString)
             if self.boolRecursive==True:
                 if statusCode!=401 and statusCode!=403:
                     self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
             else:
-                self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
+                if self.mpid!="desconect":
+                    self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
             # if self.boolDirect:
             if statusCode==401 or statusCode==403:
                 resultObject["data"] = statusCode
@@ -433,22 +405,23 @@ class QJsonNetwork(QObject):
         return resultObject
         
         
-    def processingData(self, data, reply):
+    def processingData(self, reply):
         parseError = QJsonParseError()
         error = reply.error()
-        
+        data = reply.readAll()
         errorString = reply.errorString()
         statusCode = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-        fraseStatusCode = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
+        reasonPhrase = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
         redirectUrl = QUrl(reply.attribute(QNetworkRequest.RedirectionTargetAttribute))
         redirectUrlFix = self.redirectUrlComp(redirectUrl, self.urlServer)
         resultObject = {
                 "status": statusCode,
-                "fraseStatus": fraseStatusCode,
+                "reasonPhrase": reasonPhrase,
                 "errorString": errorString
                 }
-        result = False
+        result = "error"
     #    QJsonValue result=false; Bug QJsonValue(True)
+        resultObject["data"] = "error"
         if self.mpid=="open@":
             resultObject["credentials"]=False
         if QNetworkReply.NoError==error:
@@ -462,7 +435,8 @@ class QJsonNetwork(QObject):
                     document = QJsonDocument.fromJson(data, parseError)
                     if parseError.error==True:
                         resultObject["data"] = data.__str__()
-                        self.signalResponse.emit(self.mpid, 4, resultObject)#redireccion
+                        self.signalResponse.emit(self.mpid, 4, resultObject)
+                        result = "error"
                     else:
                         if document.isArray()==True:
                             result = document.array()
@@ -479,7 +453,6 @@ class QJsonNetwork(QObject):
                     resultObject["data"] = result
                     if self.boolDirect==False:
                         self.signalResponse.emit(self.mpid, 2, resultObject)#ok
-
                     else:
                         #and report                                    
                         if self.mpid=="open@" and result.__contains__("error")==False and self.boolRecursive == False:
@@ -491,80 +464,81 @@ class QJsonNetwork(QObject):
                             if self.boolRecursive==True:
                                 if result["error"].__class__() == [] and result["error"].__contains__("UserWarning") == False and result["error"][0].__contains__("403") == False and result["error"][0].__contains__("401") == False:
                                     self.signalResponse.emit(self.mpid, 2, resultObject)
-                            elif document.isObject():
+                                    if self.mpid != "open@":
+                                        resultObject["data"] = "error"
+                            elif self.mpid!="desconect":
                                 self.signalResponse.emit(self.mpid, 2, resultObject)
         else:
             print(error, statusCode, errorString)#, resultObject)
             if self.boolRecursive==True:
-                if resultObject['status']!=401 and resultObject['status']!=403:
+                if statusCode!=401 and statusCode!=403:
                     self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
             else:
-                self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
-        
+                if self.mpid!="desconect": 
+                    self.signalResponse.emit(self.mpid, 3, resultObject)#//error comunicacion
+            if statusCode==401 or statusCode==403:
+                resultObject["data"] = statusCode
+            else:
+                resultObject["data"] = "error"
         self.boolRun=False
         reply.deleteLater()
+        return resultObject
+    
+    @Slot(str, str, int, int)
+    @Slot(str, str, int, int, "QJsonObject")
+    def openReport(self, name, model, id, action_id, attributes={}):
+        method = "report.%s.execute"%model
+        attributes["model"] = model
+        attributes["ids"] = [id]
+        attributes["id"] = id
+        attributes["action_id"] = action_id
+        params = QJsonArray()
+        qid = QJsonArray()
+        qid.append(id)
+        params.append(qid)
+        params.append(attributes)
+        params.append(self.preferences)
+        # params = [[id], attributes, self.preferences]
+        self.runReport(name, method, params)
             
     @Slot(str, str, QJsonArray)
-    def runReport(self, pid, method, par):
-        self.boolDirect = True
-        self.mtypeCall ="report"
-        self.mpid = pid
-        self.mmethod = method
-        self.mparams = par
-        if self.requestPython:
-            response = self.data_request_python()
-            data = QByteArray(response.content)
-            resultObject = self.processingDataPython(response)
-        else:
-            bparams = self.prepareParams()
-            request = self.prepareRequest()
-            reply = self.data_request(request, bparams)
-            data = reply.readAll()
-        parseError = QJsonParseError()
-        resultObject={}
-        resultObject["data"] = "error"
-        document = QJsonDocument.fromJson(data, parseError)
-        if parseError.error==True:
-            resultObject["data"] = "error"
-        else:
-            if document.isObject():
-                jv=document.object()
-                if jv.__contains__("result")==True and jv["result"].__class__() == []:
-                    #tryton 4.0
-                    #'result': ['pdf', {'base64':wwwwww, '__class__':'bytes'}, False,'Printis']
-                    jre = jv["result"]
-                    namesecs = "tryton_"+self.mpid+ str(QDateTime.currentMSecsSinceEpoch())+"."+jre[0]
-                    
-                    mdir = QDir(self.mDir + QDir.separator() + "tempReports")
-                    if mdir.exists()==False:
-                        s=QDir(self.mDir)
-                        s.mkdir("tempReports")
+    def runReport(self, pid, method, params):#recursive
+        result = self.recursiveCall("runReport_"+pid, method ,params)
+        data = result["data"]
+        if data != "error" and data.__class__() == {}:
+            if data.__contains__("result")==True and data["result"].__class__() == []:
 
-                    filename = self.mDir+ QDir.separator() +"tempReports"+ QDir.separator() + namesecs
-                    file = QFile(filename)
-                    if file.open(QIODevice.WriteOnly) == False:
-                        #error
-                        self.signalResponse.emit(self.mpid,7,{})
-                        print("error",filename,file.errorString())
-                    else:
-                        bafile= QByteArray.fromBase64(jre[1]["base64"].encode())
-                        file.write(bafile)
-                        file.close()
-                        QDesktopServices.openUrl(QUrl.fromLocalFile(filename))
-            else:
-                if document.isArray()==True:
+                mid = params.toVariantList()[1].get("id",-1)
+                namereport = "%s (%s).%s"%(pid,str(mid),data["result"][0])
+                    
+                mdir = QDir(self.mDir + QDir.separator() + "tempReports")
+                if mdir.exists()==False:
+                    s=QDir(self.mDir)
+                    s.mkdir("tempReports")
+
+                filename = self.mDir+ QDir.separator() +"tempReports"+ QDir.separator() + namereport
+                file = QFile(filename)
+                if file.open(QIODevice.WriteOnly) == False:
+                    #error
                     self.signalResponse.emit(self.mpid,7,{})
-        if self.requestPython:
-            self.processingDataPython(response)
+                    print("error",filename,file.errorString())
+                else:
+                    bafile= QByteArray.fromBase64(data["result"][1]["base64"].encode())
+                    file.write(bafile)
+                    file.close()
+                    QDesktopServices.openUrl(QUrl.fromLocalFile(filename))
+            else:
+                self.signalResponse.emit(self.mpid,7,{})
         else:
-            self.processingData(data, reply)
+            self.signalResponse.emit(self.mpid,7,{})
         
+           
     def prepareRequest(self):
         request = QNetworkRequest()
         request.setUrl(self.urlServer)
         request.setRawHeader(QByteArray(b"content-type"), QByteArray(b"application/json"))
         request.setRawHeader(QByteArray(b"charset"), QByteArray(b"utf-8") )
-        if self.mpid != "open@":
+        if self.mpid != "open@" and self.mpid != "desconect":
             tokenStr = self.usuario+":"+ str(int(self.token[0]))+":"+ str(self.token[1]) if self.token != [] else ""
             tokenByte = QByteArray(tokenStr.encode())
             tokenByteComplete = QByteArray(b"Session ") + tokenByte.toBase64()

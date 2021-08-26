@@ -73,6 +73,9 @@ def qt_message_handler(mode, context, message):
     if mode=='Debug':
         print("%s: %s" % (mode, message))
     else:
+        if mode == "critical" or "fatal":
+            root = engine_point.rootObjects()[0]
+            QMetaObject.invokeMethod(root, "_forceNotRun")
         print("%s: %s (%s:%d, %s)" % (mode, message, context.file, context.line, context.file))
     
 if __name__ == '__main__':
@@ -94,7 +97,7 @@ if __name__ == '__main__':
     
     jchc = QJsonNetwork(app)
     jchc.setEngine(engine)
-    #jchc.selectRequestPython(True)
+    #jchc.selectRequestPython(False)
     
     systemnet = SystemNet(jchc)
     modelmanager = ModelManager(jchc, engine, app)

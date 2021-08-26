@@ -99,6 +99,7 @@ ApplicationWindow {
 
     function thesaClosing(){
         if(boolSession){
+            QJsonNetworkQml.forceNotRun();
             QJsonNetworkQml.call("desconect","common.db.logout",
                                  []);
             tquit.start();
@@ -524,6 +525,7 @@ ApplicationWindow {
             "name":"",
             "icon":""
         };
+        QJsonNetworkQml.forceNotRun();
         QJsonNetworkQml.callDirect("desconect","common.db.logout",
                              []);
         closeBusy();
@@ -536,7 +538,6 @@ ApplicationWindow {
 //    }
 
     function  jsonNetSignalResponse(pid, option, data){
-
         if(pid==="run@"){
             if(option===8){
                 MessageLib.showMessage("Warning!\nmultiple calls at once", mainroot);
@@ -611,7 +612,7 @@ ApplicationWindow {
             var jsonData=data.data;
             if(jsonData.hasOwnProperty("error")){ //cath errors de user
                 if(Array.isArray(jsonData.error)){
-                    var errores2 = data.errorString+" "+data.fraseStatus+" "+data.status;
+                    var errores2 = data.errorString+" "+data.reasonPhrase+" "+data.status;
                     if(jsonData.error[0].startsWith('403')){//sessión vencida trytond o acceso denegado( en 5.0 propiedad errada)
                         boolLogin=false;
                         // the session is boolSession=true
@@ -645,16 +646,16 @@ ApplicationWindow {
         }
         if(option===3){
             boolLogin=false;//por ahora asi
-            var errores3 = data.errorString+" "+data.fraseStatus+" "+data.status;
+            var errores3 = data.errorString+" "+data.reasonPhrase+" "+data.status;
             if(data.status===""){
                 errores3 += "\n"+qsTr("No connection to server");
             }
             if(pid==="open@"){
-                //"open@" 3 QJsonObject({"fraseStatus":"Bad Request","status":"400"})
+                //"open@" 3 QJsonObject({"reasonPhrase":"Bad Request","status":"400"})
                 MessageLib.showMessage(errores3, mainroot);
             }else{
                 //data.status =="403"-> 5.0 distinta a 4
-                //"fraseStatus":"FORBIDDEN","status":"403"
+                //"reasonPhrase":"FORBIDDEN","status":"403"
                 MessageLib.showMessage(qsTr("Failed to connect")+": \n"+errores3, mainroot);
             }
             boolBlocking=false;
@@ -1138,7 +1139,12 @@ ApplicationWindow {
             //for PySide2 12, by bug no macro Q_ARG
             messageWarning(argsFucntionLastCall[0]);
             argsFucntionLastCall=[];//clear
+            QJsonNetworkQml.forceNotRun();
         }
+    function _forceNotRun(){
+        QJsonNetworkQml.forceNotRun();
+    }
+
     function messageWarning(msg){
         MessageLib.showMessageLog(msg,mainroot);
     }

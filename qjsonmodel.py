@@ -286,7 +286,7 @@ class ModelJson(QObjectListModel):
         else:
             self.m_qjsonnetwork.call("nextSearch"+self.objectName(), self.m_model_method_search+".search_read" ,params)
     
-    @Slot(QJsonArray)# metodo asincronico
+    @Slot(QJsonArray)
     def updateRecords(self, ids):#update record with tryton, 
         self.openBusy()
         params = QJsonArray()
@@ -340,7 +340,7 @@ class ModelJson(QObjectListModel):
 
     
     @Slot(str, int, dict)# obsoleto mejor usar calldirect!
-    def slotJsonConnect(self, pid, option, data):#cath datos de call, 
+    def slotJsonConnect(self, pid, option, data): 
         if pid=="nextSearch"+self.objectName():
             if option==2:#result
                 dataObject = data["data"]
@@ -349,7 +349,6 @@ class ModelJson(QObjectListModel):
                         self.addResult(dataObject["result"])
                         self.signalResponseData.emit("nextSearch", option, {})# ok envio emit de confirmacion
                 else:
-                    #print("la data",data)
                     self.signalResponseData.emit("nextSearch", 5, data)#puede ser un error 403 timeout
             else:
                 self.signalResponseData.emit("nextSearch", option, data)#dejo cruzar los datos
@@ -375,6 +374,7 @@ class ModelJson(QObjectListModel):
             
     def connectSlotJC(self):
         if self.boolSynchro==False:
+            ##TODO thread unique
             self.m_qjsonnetwork.signalResponse.connect(self.slotJsonConnect)
 #        self.connect(self.m_qjsonnetwork, SIGNAL(signalResponse(QString,int,QJsonObject)),
 #                     self, SLOT(slotJsonConnect(QString,int,QJsonObject)));
