@@ -227,7 +227,7 @@ TabDesktop {
                     model:myModelPhone
                     delegate: Item{
                         id:ideph
-                        width: parent.width
+                        width: listViewPhone.width
                         height: 40
                         RowLayout{
                             anchors.fill: parent

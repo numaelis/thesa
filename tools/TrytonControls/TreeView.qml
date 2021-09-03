@@ -459,6 +459,7 @@ Control{
                     }
                     function shadowOff(){
                         rec_shadow.visible=false;
+                        rec_view_exp.width=1;
                     }
 
                     Rectangle{

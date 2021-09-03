@@ -350,7 +350,6 @@ class QJsonNetwork(QObject):
         errorString = ""
         statusCode = response.status_code
         reasonPhrase = response.reason
-        
         if statusCode == 200:
             data = response.json()
         else:
@@ -387,7 +386,7 @@ class QJsonNetwork(QObject):
                             if self.mpid != "open@":
                                 resultObject["data"] = "error"
                     elif self.mpid!="desconect":
-                            self.signalResponse.emit(self.mpid, 2, resultObject)
+                        self.signalResponse.emit(self.mpid, 2, resultObject)
         else:
             # print(error, statusCode, errorString)
             if self.boolRecursive==True:
@@ -564,7 +563,7 @@ class QJsonNetwork(QObject):
         self.clearMessagesWarning()
         self.boolRecursive = True
         result = self.callDirect(pid, method, par)
-        if result["data"].__contains__("result"):
+        if result["data"].__class__()=={} and result["data"].__contains__("result"):
             if self.mpid != "open@":
                 self.boolRecursive = False    
                 return result
