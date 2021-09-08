@@ -60,7 +60,7 @@ ApplicationWindow {
     property var listTranslations
     property var nameShortDays: Tools.calendarShortNamesDays();
     property var nameLongMonths: Tools.calendarLongNamesMonths();
-    property int maxIntervalBusy: 30000 //milisecunds
+    property int maxIntervalBusy: 30000 //miliseconds
     property int _intCountModels: 0
     property var generalPurpose: ({})
     property string myCompany: ""
@@ -100,7 +100,7 @@ ApplicationWindow {
     function thesaClosing(){
         if(boolSession){
             QJsonNetworkQml.forceNotRun();
-            QJsonNetworkQml.call("desconect","common.db.logout",
+            QJsonNetworkQml.callDirect("desconect","common.db.logout",
                                  []);
             tquit.start();
         }else{
@@ -610,7 +610,7 @@ ApplicationWindow {
         if(option===2){
             //cath timeout
             var jsonData=data.data;
-            if(jsonData.hasOwnProperty("error")){ //cath errors de user
+            if(jsonData.hasOwnProperty("error")){ //catch errors de user
                 if(Array.isArray(jsonData.error)){
                     var errores2 = data.errorString+" "+data.reasonPhrase+" "+data.status;
                     if(jsonData.error[0].startsWith('403')){//sessión vencida trytond o acceso denegado( en 5.0 propiedad errada)
@@ -858,7 +858,6 @@ ApplicationWindow {
                 focus: true
                 //KeyNavigation.tab: container.desktop
                 onSignalSelectPanel: {
-                    //console.log("index",index);
                     if (container.desktop!=null){
                         container.desktop.currentIndex=index;
                     }
@@ -1097,6 +1096,10 @@ ApplicationWindow {
         }
     }
 
+    function contextPreferences(context){
+        return Object.assign(JSON.parse(JSON.stringify(preferences)), context)
+    }
+
     function getPreferences(){
         var data =QJsonNetworkQml.callDirect("getPreferences","model.res.user.get_preferences",
                                              [true,{}]);
@@ -1118,7 +1121,6 @@ ApplicationWindow {
                 preferencesAll = data.data.result;
                 psignature=preferencesAll.name;
                 myCompany=preferencesAll["company.rec_name"];
-               // console.log(JSON.stringify(preferencesAll))
             }
         }
     }
@@ -1164,7 +1166,7 @@ ApplicationWindow {
         property string style: "Material"
         property int theme: Material.Dark
         property color accent: "#41cd52"
-        property color primary: "#41cd52"//"green" //"#41cd52"//Material.Purple
+        property color primary: "#41cd52"
         property bool boolBackground: true
         property int typelogin: 1//"4":0,"5":1
         property bool typesysmodule: false//"local":false, "module":true
@@ -1181,7 +1183,7 @@ ApplicationWindow {
         anchors.centerIn: parent
         Label {
             textFormat: Label.RichText
-            text: "<b><center><h2>Thesa "+ThesaVersion+"</h2><br>tryton client qt-qml</b><br>Copyright (C) 2020 Numael Garay <br><br>
+            text: "<b><center><h2>Thesa "+ThesaVersion+"</h2><br>tryton client qt-qml</b><br>Copyright (C) 2020-2021 Numael Garay <br><br>
                     <b><a href=\"https://github.com/numaelis/thesa\">https://github.com/numaelis/thesa</a><b></center>"
             onLinkActivated: Qt.openUrlExternally("https://github.com/numaelis/thesa")
             Image {

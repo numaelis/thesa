@@ -1,9 +1,9 @@
 //this file is part the thesa: tryton client,  PySide2(qml2) based
 //"""MenuList.qml
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
-//__version__ = "1.0"
+//__version__ = "1.1"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -49,7 +49,7 @@ FocusScope {
             delegate: ItemDelegate {
                 id:idele
                 width: listView.width
-                height: 60
+                height: 65
                 text: model.name
                 font.bold: true
                 font.pixelSize: 12
@@ -73,8 +73,8 @@ FocusScope {
                     }
                     Label {
                         id:texto
-                        width: idele.width
-                        height: 20
+                        width: idele.width-6
+                        height: 25
                         fontSizeMode: Text.Fit
                         minimumPixelSize: 8
                         text: idele.text
@@ -85,7 +85,8 @@ FocusScope {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom;bottomMargin: 2}
-                        //wrapMode: Text.Wrap
+                        wrapMode: Text.Wrap
+                        padding: 0
                     }
                 }
 

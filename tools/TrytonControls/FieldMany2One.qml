@@ -1,7 +1,7 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // Many2One
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020"
+//__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
 //__version__ = "1.0.0"
 //__maintainer__ = "Numael Garay"

@@ -48,7 +48,7 @@ class WorkerRequests(QObject):
         
     def _run_(self):
         try:
-            self.result = requests.post(self.url, data=self.params, headers=self.headers)
+            self.result = requests.post(self.url, data=self.params, headers=self.headers, timeout=30)
         except:
             pass
             # self.result = templateResqError()
@@ -127,7 +127,7 @@ class QJsonNetwork(QObject):
         if not self.tempCallData.isEmpty():
             if self.tempCallData.count()==5:
                 if str(self.tempCallData.at(1).toString())=="order":
-                    if self.tempCallData.at(0).toBool()==True: #// call direct obsolete, betterbetter to use recursivecall
+                    if self.tempCallData.at(0).toBool()==True: #// call direct obsolete, better to use recursivecall
                         if not self.tempCallFunctionArgs.isEmpty():
                             nameObject = self.tempCallFunctionArgs.at(0).toString()
                             nameFunction = self.tempCallFunctionArgs.at(1).toString()
@@ -143,7 +143,6 @@ class QJsonNetwork(QObject):
 #                                    https://bugreports.qt.io/browse/PYSIDE-1262
 #                                    Q_ARG missing, invokeMethod doesn't work currently with arguments in PySide2.
 #                                if args.count()==1:
-#                                    print("\nnnn",args.at(0),"\nnnnn")
 #                                    QMetaObject.invokeMethod(object_qml, nameFunction,
 #                                                              QGenericArgument(QByteArray(b'QVariant'), 69))
 #                                

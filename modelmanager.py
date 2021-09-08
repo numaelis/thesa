@@ -44,7 +44,7 @@ class ModelManager(QObject):
         self.m_listModel.append(modeljson)
         self.m_listProxy.append(proxyjson)
         self.m_listProperty.append(model)
-        self.m_listProperty.append(proxy)
+        self.m_listProperty.append(proxy)    
         
         i=0
         idel=-1

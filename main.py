@@ -128,7 +128,7 @@ if __name__ == '__main__':
     engine.addImportPath(mDir + QDir.separator() + "tools")
 	#engine.load(QUrl("qrc:/main.qml"))
     engine.load(QUrl.fromLocalFile('main.qml'))
-    
+
     if not engine.rootObjects():
         msgBox = QMessageBox()
         msgBox.setText("Error rootObjects")
