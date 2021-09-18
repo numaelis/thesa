@@ -81,10 +81,12 @@ Control{
         if(type == "numeric"){
             if(decimal>=1 && decimal <=2){
                 setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
-            }if(decimal>3){
-                setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
             }else{
-                setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
+                if(decimal>3){
+                    setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
+                }else{
+                    setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
+                }
             }
         }
         if(type == "text"){
@@ -164,6 +166,7 @@ Control{
                 anchors.fill: parent
                 visible: !format_text.visible
                 topPadding: 0
+                horizontalAlignment: control.type== "numeric"?TextField.AlignRight:TextField.AlignLeft
 
                 onTextEdited: {
                     isChange=true;
@@ -175,6 +178,7 @@ Control{
                             change(text);
                             changeToParent(fieldName,text);
                         }
+
                     }
                 }
 
