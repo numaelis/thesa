@@ -30,13 +30,17 @@ Control{
     property bool isChange: false
 
     signal change(string text)
-
+    signal accepted(string text)
 //    property bool isParentO2M: false
     property var itemParent: -1
 
     padding: 0
     function _forceActiveFocus(){
         tfield.forceActiveFocus();
+    }
+
+    function selectAll(){
+        tfield.selectAll();
     }
 
     function getValue(){
@@ -82,7 +86,7 @@ Control{
             if(decimal>=1 && decimal <=2){
                 setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
             }else{
-                if(decimal>3){
+                if(decimal>=3){
                     setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
                 }else{
                     setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
@@ -186,6 +190,7 @@ Control{
                     if(type=="numeric"){
                         tfield.focus=false;
                     }
+                    control.accepted(text);
                 }
             }
         }

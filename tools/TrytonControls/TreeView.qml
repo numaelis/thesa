@@ -23,6 +23,7 @@ Control{
     property bool activeStates: false
     property var modelStates: []//[{"name":"draft", "alias":"Borrador"}]
     property var domainState: []
+    property string filterState: "state"
     property bool activeAutoFields: false
     property bool editable: false//... for the moment not supported
     property bool lineOdd: true
@@ -69,8 +70,12 @@ Control{
     Component.onCompleted: {
         for(var i=0,len=listHead.length;i<len;i++){
             fields.push(listHead[i].name);
-            if(listHead[i].type==='numeric'){
-                fieldsFormatDecimal.push(listHead[i].name);
+            if(listHead[i].type==='numeric' || listHead[i].type==='float'){
+                var decimals = 2;
+                if(listHead[i].hasOwnProperty("decimals")){//warning quantity
+                    decimals = listHead[i].decimals;
+                }
+                fieldsFormatDecimal.push([listHead[i].name, decimals]);
             }
             if(listHead[i].type==='many2one'){
                 fields.push(listHead[i].name+".rec_name");
@@ -90,7 +95,7 @@ Control{
         }
         _initModel();
         if(activeStates==true && modelStates.length>0){
-            domainState = modelStates[0].name===""?[]:["state","=",modelStates[0].name];
+            domainState = modelStates[0].name===""?[]:[filterState,"=",modelStates[0].name];
         }
         initOrder = JSON.parse(JSON.stringify(order));
         initTextOrderHead();
@@ -156,6 +161,10 @@ Control{
 
     function loadFieldsFromModel(){
 
+    }
+
+    function _forceActiveFocus(){
+        listview.forceActiveFocus();
     }
 
     function find(data){
@@ -301,7 +310,7 @@ Control{
                     }
                     onClicked: {
                        if(booldife){
-                           domainState = modelData.name===""?[]:["state","=",modelData.name];
+                           domainState = modelData.name===""?[]:[filterState,"=",modelData.name];
 //                           find(filterin._getData());
                            timerfind.restart();
                            booldife=false;
@@ -312,7 +321,7 @@ Control{
             onCurrentIndexChanged: {
                 var mindex = barStates.currentIndex;
                 if (mindex!==-1 && activeStates==true && (modelStates.length > 0)){
-                    domainState = modelStates[mindex].name===""?[]:["state","=",modelStates[mindex].name];
+                    domainState = modelStates[mindex].name===""?[]:[filterState,"=",modelStates[mindex].name];
                     if(_models!=null){
 //                        find(filterin._getData());
                         timerfind.restart();
@@ -827,7 +836,7 @@ Control{
                                             return "";
                                         }
                                         switch(type){
-                                        case 'text':
+                                        case 'text'://
                                             if(typeof myobject[modelData.name] === 'string'||typeof myobject[modelData.name] === 'number'){
                                                 return myobject[modelData.name];
                                             }else{// WARNING this should not happen, use type numeric or date
@@ -841,7 +850,11 @@ Control{
                                                     return "";
                                                 }
                                             }
+                                        case 'int':
+                                            return myobject[modelData.name];
                                         case 'numeric':
+                                            return myobject[modelData.name+"_format"];
+                                        case 'float':
                                             return myobject[modelData.name+"_format"];
                                         case 'datetime':
                                             return myobject[modelData.name+"_format"];

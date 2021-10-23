@@ -88,6 +88,7 @@ TabDesktop {
                 "alias":"Total",
                 "type":"numeric",
                 "width":200,
+                "decimals":2,
                 "align":Label.AlignRight
             },
 

@@ -214,10 +214,16 @@ class ModelJson(QObjectListModel):
                 v = vp[0]
                 if jsonobj.__contains__(v):
                     if jsonobj[v]!= None:
-                        if jsonobj[v].__contains__("decimal"):
-                            jsonobj[v+"_format"] = self.m_locale.toString(float(jsonobj[v]["decimal"]),'f',vp[1])#add suport
+                        if jsonobj[v].__class__ == dict:
+                            if jsonobj[v].__contains__("decimal"):#mejorar
+                                jsonobj[v+"_format"] = self.m_locale.toString(float(jsonobj[v]["decimal"]),'f',vp[1])#add suport
+                            else:
+                                jsonobj[v+"_format"] = ""
                         else:
-                            jsonobj[v+"_format"] = ""
+                            if jsonobj[v].__class__ == float:
+                                jsonobj[v+"_format"] = self.m_locale.toString(jsonobj[v],'f',vp[1])
+                            else:
+                                jsonobj[v+"_format"] = jsonobj[v]
                     else:
                         jsonobj[v+"_format"] = ""
             for v in self.m_fieldsFormatDateTime:

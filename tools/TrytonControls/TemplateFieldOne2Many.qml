@@ -172,6 +172,7 @@ Pane{
         listRecords[currentItem]["action"]="delete";
         isChange = true;
         change(listRecords);
+        //TODO visible line del
     }
 
     function changeToParent(field){
