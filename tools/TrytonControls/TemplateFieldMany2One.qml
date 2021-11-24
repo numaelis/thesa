@@ -42,6 +42,10 @@ Control{
        return fm2o.getValue();
     }
 
+    function getValueName(){
+       return fm2o.valueName;
+    }
+
     function setValue(value){
         fm2o.setValue(value);
         isChange=false;

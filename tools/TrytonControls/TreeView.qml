@@ -36,7 +36,7 @@ Control{
     property real heightFilter: 45
     property real heightStates: 35
     property real widthStates: 150
-   // property real heightStates: 40
+    // property real heightStates: 40
     property bool verticalLine: true
     property bool horizontalLine: true
     property bool multiSelectItems: true
@@ -130,7 +130,7 @@ Control{
 
     function updateRecords(ids){
         _models.model.updateRecords(ids);
-       listview.reloadItem();
+        listview.reloadItem();
     }
 
     function setOrder(headOrder){//{"head":"","type": none, asc, desc
@@ -309,12 +309,12 @@ Control{
                         }
                     }
                     onClicked: {
-                       if(booldife){
-                           domainState = modelData.name===""?[]:[filterState,"=",modelData.name];
-//                           find(filterin._getData());
-                           timerfind.restart();
-                           booldife=false;
-                       }
+                        if(booldife){
+                            domainState = modelData.name===""?[]:[filterState,"=",modelData.name];
+                            //                           find(filterin._getData());
+                            timerfind.restart();
+                            booldife=false;
+                        }
                     }
                 }
             }
@@ -323,7 +323,7 @@ Control{
                 if (mindex!==-1 && activeStates==true && (modelStates.length > 0)){
                     domainState = modelStates[mindex].name===""?[]:[filterState,"=",modelStates[mindex].name];
                     if(_models!=null){
-//                        find(filterin._getData());
+                        //                        find(filterin._getData());
                         timerfind.restart();
                     }
                 }
@@ -383,253 +383,253 @@ Control{
             }
 
             Row {
-            id:mHeaderView
-            z:8
-            height: heightHeader
-            spacing: 1
-            function itemAt(index) { return repeater.itemAt(index) }
-
-            Label{
-                width: multiSelectItems?heightField+1:0
+                id:mHeaderView
+                z:8
                 height: heightHeader
-                visible: multiSelectItems
-                padding: 4
-                text:" "
-                background: Rectangle {color:Qt.lighter(mainroot.Material.accent) }
-                CheckBox {
-                    id: parentBox
-                    checked: false
-                    width: heightField
+                spacing: 1
+                function itemAt(index) { return repeater.itemAt(index) }
+
+                Label{
+                    width: multiSelectItems?heightField+1:0
                     height: heightHeader
-                    checkState: childGroup.checkState
-                    Component.onCompleted: {if(multiSelectItems){childGroup.checkState=parentBox.checkState;}}
-                    anchors.centerIn: parent
-                    onClicked:  {
-                        if(checkState === Qt.Unchecked){
-                            childGroup.checkState=Qt.Unchecked;
-                        }else{
-                            childGroup.checkState=Qt.Checked;
-                        }
-                    }
-                    text: ""
-
-                }
-                Rectangle{
-                    width: 1
-                    height: parent.height
-                    color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
-                    x:parent.width
-                }
-            }
-
-            Repeater {
-                id: repeater
-                Component.onCompleted: _repeaterHead=repeater
-                model: listHead
-                function setTextInitOrder(morder){
-                    for(var i=0, len=listHead.length;i<len;i++){
-                        if (morder.hasOwnProperty(listHead[i].name)){
-                            repeater.itemAt(i).setTextOrder(morder[listHead[i].name])
-                        }else{
-                            repeater.itemAt(i).setTextOrder(null);
-                        }
-                    }
-                }
-                function shadowOff(){
-                    for(var i=0, len=listHead.length;i<len;i++){
-                        repeater.itemAt(i).shadowOff();
-                    }
-                }
-
-                Label {
-                    id:mll
-                    text: modelData.alias
-                    font.bold: true
-                    width:  modelData.width<=20?20:modelData.width
-                    height: heightHeader
-                    elide: Label.ElideRight
+                    visible: multiSelectItems
                     padding: 4
-                    background: Rectangle {color:mainroot.Material.accent }//Qt.lighter(mainroot.Material.accent)
-                    horizontalAlignment: modelData.align
-                    verticalAlignment: Label.AlignVCenter
-                    z:100-index
-                    Component.onCompleted: {
-                        //width = Qt.binding(function(){var it=rep_column.itemAt(index); return it.value})
-                    }
-                    function setTextOrder(htype){
-                        var text = "\uf141";
-                        if(htype == "ASC"){
-                            text = "\uf0d8";
+                    text:" "
+                    background: Rectangle {color:Qt.lighter(mainroot.Material.accent) }
+                    CheckBox {
+                        id: parentBox
+                        checked: false
+                        width: heightField
+                        height: heightHeader
+                        checkState: childGroup.checkState
+                        Component.onCompleted: {if(multiSelectItems){childGroup.checkState=parentBox.checkState;}}
+                        anchors.centerIn: parent
+                        onClicked:  {
+                            if(checkState === Qt.Unchecked){
+                                childGroup.checkState=Qt.Unchecked;
+                            }else{
+                                childGroup.checkState=Qt.Checked;
+                            }
                         }
-                        if(htype == "DESC"){
-                            text = "\uf0d7"
-                        }
-                        tbascdesc.text=text;
-                    }
-                    function shadowOff(){
-                        rec_shadow.visible=false;
-                        rec_view_exp.width=1;
-                    }
+                        text: ""
 
-                    Rectangle{
-                        id:rec_shadow
-                        objectName: "rec_shadow"
-                        anchors.fill: parent
-                        opacity: 0.5
-                        color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"
-                        visible: false
                     }
                     Rectangle{
-                        id:rec_view_exp
                         width: 1
                         height: parent.height
                         color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
                         x:parent.width
                     }
-                    MouseArea{
-                        id:pmap
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onEntered:  {rec_shadow.visible=true;rec_view_exp.width=2}
-                        onExited:  {rec_shadow.visible=false;rec_view_exp.width=1}
-                        cursorShape: isPresedExpand?Qt.SizeHorCursor:Qt.ArrowCursor
+                }
+
+                Repeater {
+                    id: repeater
+                    Component.onCompleted: _repeaterHead=repeater
+                    model: listHead
+                    function setTextInitOrder(morder){
+                        for(var i=0, len=listHead.length;i<len;i++){
+                            if (morder.hasOwnProperty(listHead[i].name)){
+                                repeater.itemAt(i).setTextOrder(morder[listHead[i].name])
+                            }else{
+                                repeater.itemAt(i).setTextOrder(null);
+                            }
+                        }
+                    }
+                    function shadowOff(){
+                        for(var i=0, len=listHead.length;i<len;i++){
+                            repeater.itemAt(i).shadowOff();
+                        }
+                    }
+
+                    Label {
+                        id:mll
+                        text: modelData.alias
+                        font.bold: true
+                        width:  modelData.width<=20?20:modelData.width
+                        height: heightHeader
+                        elide: Label.ElideRight
+                        padding: 4
+                        background: Rectangle {color:mainroot.Material.accent }//Qt.lighter(mainroot.Material.accent)
+                        horizontalAlignment: modelData.align
+                        verticalAlignment: Label.AlignVCenter
+                        z:100-index
+                        Component.onCompleted: {
+                            //width = Qt.binding(function(){var it=rep_column.itemAt(index); return it.value})
+                        }
+                        function setTextOrder(htype){
+                            var text = "\uf141";
+                            if(htype == "ASC"){
+                                text = "\uf0d8";
+                            }
+                            if(htype == "DESC"){
+                                text = "\uf0d7"
+                            }
+                            tbascdesc.text=text;
+                        }
+                        function shadowOff(){
+                            rec_shadow.visible=false;
+                            rec_view_exp.width=1;
+                        }
 
                         Rectangle{
-                            id:rec_right
-                            width: 2
+                            id:rec_shadow
+                            objectName: "rec_shadow"
+                            anchors.fill: parent
+                            opacity: 0.5
+                            color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"
+                            visible: false
+                        }
+                        Rectangle{
+                            id:rec_view_exp
+                            width: 1
                             height: parent.height
-                            color: "grey"
+                            color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
                             x:parent.width
-                            opacity: 0
-                            MouseArea{
-                                id:ma
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape : Qt.SizeHorCursor
-                                onPressed:{isPresedExpand=true}// { map.cursorShape = Qt.SizeHorCursor; pmap.cursorShape = Qt.SizeHorCursor}
-                                onEntered: {rec_right.opacity=1}
-                                onExited: {rec_right.opacity=0}
-                                drag.target: rec_right
-                                drag.axis: Drag.XAxis
-                                drag.minimumX: 20
-                                drag.filterChildren: true
-                                onReleased: {
-                                    modelData.width = rec_right.x;
-                                    mll.width = rec_right.x;
-                                    var pi = rep_column.itemAt(index);
-                                    pi.value = rec_right.x;
-                                    isPresedExpand=false;
+                        }
+                        MouseArea{
+                            id:pmap
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onEntered:  {rec_shadow.visible=true;rec_view_exp.width=2}
+                            onExited:  {rec_shadow.visible=false;rec_view_exp.width=1}
+                            cursorShape: isPresedExpand?Qt.SizeHorCursor:Qt.ArrowCursor
+
+                            Rectangle{
+                                id:rec_right
+                                width: 2
+                                height: parent.height
+                                color: "grey"
+                                x:parent.width
+                                opacity: 0
+                                MouseArea{
+                                    id:ma
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape : Qt.SizeHorCursor
+                                    onPressed:{isPresedExpand=true}// { map.cursorShape = Qt.SizeHorCursor; pmap.cursorShape = Qt.SizeHorCursor}
+                                    onEntered: {rec_right.opacity=1}
+                                    onExited: {rec_right.opacity=0}
+                                    drag.target: rec_right
+                                    drag.axis: Drag.XAxis
+                                    drag.minimumX: 20
+                                    drag.filterChildren: true
+                                    onReleased: {
+                                        modelData.width = rec_right.x;
+                                        mll.width = rec_right.x;
+                                        var pi = rep_column.itemAt(index);
+                                        pi.value = rec_right.x;
+                                        isPresedExpand=false;
+                                    }
+
+                                }
+                            }
+                            Rectangle{
+                                id:rec_view_line
+                                x:rec_right.x
+                                width: 2
+                                height: listview.height
+                                color: "grey"
+                                visible: ma.pressed?1:0
+                            }
+
+                            MiniButton{
+                                id:tbascdesc
+                                anchors{right: parent.right;rightMargin: 2;verticalCenter: parent.verticalCenter}
+                                width: height-12
+                                height: parent.height+ 8
+                                text: "\uf141"
+                                font.pixelSize:16
+                                visible: rec_shadow.visible
+                                ToolTip.visible: false
+                                onClicked: menu_order.open()
+                                Menu {
+                                    id: menu_order
+                                    x: parent.width - width
+                                    y: parent.height
+                                    width: 40
+                                    padding: 0
+                                    transformOrigin: Menu.BottomRight
+                                    MenuItem {
+                                        id: mi1
+                                        width: 40
+                                        height: 30
+                                        contentItem:Text{
+                                            text: "\uf141"
+                                            font.family: fawesome.name
+                                            font.italic: false
+                                            color: mi1.down ? Material.hintTextColor:Material.primaryTextColor
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+
+                                        }
+                                        onTriggered: {
+                                            var virtual = false;
+                                            if (modelData.hasOwnProperty("virtual")){
+                                                virtual = modelData.virtual;
+                                            }
+                                            if(virtual==false){
+                                                setOrder({"head":modelData.name, "type":null});
+                                                mll.setTextOrder(null);
+                                            }
+                                        }
+                                    }
+                                    MenuItem {
+                                        id: mi2
+                                        width: 40
+                                        height: 30
+                                        contentItem:Text{
+                                            text: "\uf0d8 \uf15d"
+                                            font.family: fawesome.name
+                                            font.italic: false
+                                            color: mi2.down ? Material.hintTextColor:Material.primaryTextColor
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+
+                                        }
+                                        onTriggered: {
+                                            var virtual = false;
+                                            if (modelData.hasOwnProperty("virtual")){
+                                                virtual = modelData.virtual;
+                                            }
+                                            var fieldNameg=modelData.name;
+                                            if(modelData.type=="many2one"){
+                                                virtual = true;
+                                            }
+                                            if(virtual==false){setOrder({"head":fieldNameg, "type":"ASC"});mll.setTextOrder("ASC");}
+                                        }
+                                    }
+                                    MenuItem {
+                                        id: mi3
+                                        width: 40
+                                        height: 30
+                                        contentItem:Text{
+                                            text: "\uf0d7 \uf881"
+                                            font.family: fawesome.name
+                                            font.italic: false
+                                            color: mi3.down ? Material.hintTextColor:Material.primaryTextColor
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+
+                                        }
+                                        onTriggered: {
+                                            var virtual = false;
+                                            if (modelData.hasOwnProperty("virtual")){
+                                                virtual = modelData.virtual;
+                                            }
+                                            var fieldNameg=modelData.name;
+                                            if(modelData.type=="many2one"){
+                                                virtual = true;
+                                            }
+                                            if(virtual==false){setOrder({"head":fieldNameg, "type":"DESC"});mll.setTextOrder("DESC");}
+                                        }
+                                    }
                                 }
 
                             }
-                        }
-                        Rectangle{
-                            id:rec_view_line
-                            x:rec_right.x
-                            width: 2
-                            height: listview.height
-                            color: "grey"
-                            visible: ma.pressed?1:0
-                        }
-
-                        MiniButton{
-                            id:tbascdesc
-                            anchors{right: parent.right;rightMargin: 2;verticalCenter: parent.verticalCenter}
-                            width: height-12
-                            height: parent.height+ 8
-                            text: "\uf141"
-                            font.pixelSize:16
-                            visible: rec_shadow.visible
-                            ToolTip.visible: false
-                            onClicked: menu_order.open()
-                            Menu {
-                                id: menu_order
-                                x: parent.width - width
-                                y: parent.height
-                                width: 40
-                                padding: 0
-                                transformOrigin: Menu.BottomRight
-                                MenuItem {
-                                    id: mi1
-                                    width: 40
-                                    height: 30
-                                    contentItem:Text{
-                                        text: "\uf141"
-                                        font.family: fawesome.name
-                                        font.italic: false
-                                        color: mi1.down ? Material.hintTextColor:Material.primaryTextColor
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-
-                                    }
-                                    onTriggered: {
-                                        var virtual = false;
-                                        if (modelData.hasOwnProperty("virtual")){
-                                            virtual = modelData.virtual;
-                                        }
-                                        if(virtual==false){
-                                            setOrder({"head":modelData.name, "type":null});
-                                            mll.setTextOrder(null);
-                                        }
-                                    }
-                                }
-                                MenuItem {
-                                    id: mi2
-                                    width: 40
-                                    height: 30
-                                    contentItem:Text{
-                                        text: "\uf0d8 \uf15d"
-                                        font.family: fawesome.name
-                                        font.italic: false
-                                        color: mi2.down ? Material.hintTextColor:Material.primaryTextColor
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-
-                                    }
-                                    onTriggered: {
-                                        var virtual = false;
-                                        if (modelData.hasOwnProperty("virtual")){
-                                            virtual = modelData.virtual;
-                                        }
-                                        var fieldNameg=modelData.name;
-                                        if(modelData.type=="many2one"){
-                                            virtual = true;
-                                        }
-                                        if(virtual==false){setOrder({"head":fieldNameg, "type":"ASC"});mll.setTextOrder("ASC");}
-                                    }
-                                }
-                                MenuItem {
-                                    id: mi3
-                                    width: 40
-                                    height: 30
-                                    contentItem:Text{
-                                        text: "\uf0d7 \uf881"
-                                        font.family: fawesome.name
-                                        font.italic: false
-                                        color: mi3.down ? Material.hintTextColor:Material.primaryTextColor
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-
-                                    }
-                                    onTriggered: {
-                                        var virtual = false;
-                                        if (modelData.hasOwnProperty("virtual")){
-                                            virtual = modelData.virtual;
-                                        }
-                                        var fieldNameg=modelData.name;
-                                        if(modelData.type=="many2one"){
-                                            virtual = true;
-                                        }
-                                        if(virtual==false){setOrder({"head":fieldNameg, "type":"DESC"});mll.setTextOrder("DESC");}
-                                    }
-                                }
-                            }
-
                         }
                     }
                 }
             }
-        }
             Rectangle{
                 width: multiSelectItems?0:1
                 height: heightHeader
@@ -721,6 +721,9 @@ Control{
                             height: heightField
                             visible: multiSelectItems
                             text: ""
+                            onClicked: {
+                                listview.currentIndex = index;
+                            }
                             onCheckedChanged: {
                                 if(checked){
                                     selectItem=true;

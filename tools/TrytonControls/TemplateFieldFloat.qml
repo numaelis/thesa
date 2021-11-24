@@ -15,6 +15,6 @@ import thesatools 1.0
 import TrytonControls 1.0
 
 TemplateFieldChar {
-    type:"numeric"
+    type:"float"
     decimal: 2
 }

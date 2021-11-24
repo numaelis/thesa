@@ -16,4 +16,6 @@ TemplateFieldOne2Many 1.0 TemplateFieldOne2Many.qml
 TemplateFieldMany2One 1.0 TemplateFieldMany2One.qml
 TemplateFieldText 1.0 TemplateFieldText.qml
 TemplateFieldDate 1.0 TemplateFieldDate.qml
+TemplateFieldInteger 1.0 TemplateFieldInteger.qml
+TemplateFieldFloat 1.0 TemplateFieldFloat.qml
 

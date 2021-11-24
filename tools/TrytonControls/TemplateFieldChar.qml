@@ -47,6 +47,18 @@ Control{
         if(type=="numeric"){
             return decimalSchema(tfield.text);
         }
+        if(type=="float"){
+            if(tfield.text==""){
+                return null;
+            }
+            return parseFloat(tfield.text);
+        }
+        if(type=="integer"){
+            if(tfield.text==""){
+                return null;
+            }
+            return parseInt(tfield.text);
+        }
         return tfield.text;
     }
 
@@ -82,7 +94,7 @@ Control{
 
     Component.onCompleted: {
         control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
-        if(type == "numeric"){
+        if(type == "numeric" || type == "float"){
             if(decimal>=1 && decimal <=2){
                 setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
             }else{
@@ -93,6 +105,11 @@ Control{
                 }
             }
         }
+        if(type == "integer"){
+            decimal = 0;
+            setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
+        }
+
         if(type == "text"){
             if(password){
                 tfield.echoMode = TextInput.Password;
@@ -121,7 +138,18 @@ Control{
     function changeToParent(name, value){
         if(itemParent!=-1){
             if(itemParent.type=="one2many"){
-               itemParent.changeField(name, value);
+                var _value=value;
+                if(type=="numeric"){
+                    _value = decimalSchema(value);
+                }
+                if(type=="float"){
+                    _value = parseFloat(value)
+                }
+                if(type=="integer"){
+                   _value = parseInt(value)
+                }
+
+               itemParent.changeField(name, _value);
             }
         }
     }
@@ -170,7 +198,7 @@ Control{
                 anchors.fill: parent
                 visible: !format_text.visible
                 topPadding: 0
-                horizontalAlignment: control.type== "numeric"?TextField.AlignRight:TextField.AlignLeft
+                horizontalAlignment: control.type== "text"?TextField.AlignLeft:TextField.AlignRight
 
                 onTextEdited: {
                     isChange=true;

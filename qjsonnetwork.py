@@ -330,6 +330,7 @@ class QJsonNetwork(QObject):
         thread.start()
         connection_loop.exec_()
         response = obj_requests.getResult()
+        #del obj_requests
         return response
         
     def data_request(self, request, bparams):

@@ -212,6 +212,20 @@ TabDesktop {
                 Layout.fillWidth: true
                 oneItemDefault: true
                 //paramsPlusCreate: {"type":"phone"}
+                activeMenu: true
+                listHead: [{
+                        "alias":"Tipo",
+                        "name":"type",
+                        "type":"text",
+                        "width":70,
+                        "align":Label.AlignLeft
+                    },{
+                        "alias":"Telefono",
+                        "name":"value",
+                        "type":"text",
+                        "width":200,
+                        "align":Label.AlignLeft
+                    }]
                 contentItemForm: RowLayout{
                     TemplateFieldSelection{
                         labelAlias: "tipo"

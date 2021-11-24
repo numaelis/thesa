@@ -1,4 +1,4 @@
-//this file is part of Tessa
+//this file is part of Thesa
 //author Numael Garay
 var msj;
 

@@ -22,7 +22,7 @@ Control{
     property int countSearch: 0
     property bool textFit: true
     property int valueId: -1
-    property string valueName
+    property string valueName: ""
     property bool boolSearch: true
     property alias textSearch: tfsearch.text
     property real heightDelegate: height
