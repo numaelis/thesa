@@ -195,6 +195,26 @@ Control{
         }
     }
 
+    function removeItems(){
+        var ids = getIds();
+        if(ids.length>0){
+            openBusy();
+            var data = QJsonNetworkQml.recursiveCall("remove","model."+modelName+".delete",
+                                                     [
+                                                         ids,
+                                                         preferences
+                                                     ]);
+            closeBusy();
+            if(data.data!=="error"){
+                MessageLib.showToolTip(qsTr("Removed"),16,3000,"white","red", mainroot);
+                _models.model.removeItems(ids);
+
+            }
+        }else{
+            MessageLib.showMessage(qsTr("no items selected"), mainroot);
+        }
+    }
+
     function getIds(){
         var ids=[];
         var cindex = listview.currentIndex;
@@ -592,7 +612,7 @@ Control{
                                                 virtual = modelData.virtual;
                                             }
                                             var fieldNameg=modelData.name;
-                                            if(modelData.type=="many2one"){
+                                            if(modelData.type=="many2one" || modelData.type=="one2many"){
                                                 virtual = true;
                                             }
                                             if(virtual==false){setOrder({"head":fieldNameg, "type":"ASC"});mll.setTextOrder("ASC");}
@@ -617,7 +637,7 @@ Control{
                                                 virtual = modelData.virtual;
                                             }
                                             var fieldNameg=modelData.name;
-                                            if(modelData.type=="many2one"){
+                                            if(modelData.type=="many2one" || modelData.type=="one2many"){
                                                 virtual = true;
                                             }
                                             if(virtual==false){setOrder({"head":fieldNameg, "type":"DESC"});mll.setTextOrder("DESC");}
@@ -723,6 +743,7 @@ Control{
                             text: ""
                             onClicked: {
                                 listview.currentIndex = index;
+                                control.clicked(myobject.id);
                             }
                             onCheckedChanged: {
                                 if(checked){
@@ -853,7 +874,7 @@ Control{
                                                     return "";
                                                 }
                                             }
-                                        case 'int':
+                                        case 'integer':
                                             return myobject[modelData.name];
                                         case 'numeric':
                                             return myobject[modelData.name+"_format"];

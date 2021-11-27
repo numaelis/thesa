@@ -43,6 +43,7 @@ Dialog {
         if (dialogSearch!=null){
             dialogSearch.updateRecords([fields.id]);
         }
+        updated([fields.id]);
     }
     function acceptDialogSearch(fields){
         if (dialogSearch!=null){

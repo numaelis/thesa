@@ -61,6 +61,7 @@ Pane{
     property string defaultFormatDatetime: "dd/MM/yy hh:mm:ss"
     property string defaultFormatDate: "dd/MM/yy"
     property int typelogin: 1
+    property bool hasItems: false
     property var paramsPlusCreate: ({})
     padding: 0
 
@@ -178,6 +179,18 @@ Pane{
                 font.bold: true
                 font.italic: true
                 color: "grey"
+                elide: Label.ElideRight
+                fontSizeMode: Label.Fit
+            }
+            Label{
+                text:"  <"+qsTr("No items")+">  "
+                visible: mode=="form"?hasItems?false:true:false
+                Layout.preferredHeight: 15
+                font.bold: true
+                font.italic: true
+                color: "grey"
+                elide: Label.ElideRight
+                fontSizeMode: Label.Fit
             }
             Item {//TODO MENU
                 id: itoolmenu
@@ -219,6 +232,7 @@ Pane{
                         textToolTip: qsTr("back")
                         Layout.preferredWidth: 30
                         Layout.preferredHeight: 35
+                        enabled: hasItems
                         Material.foreground: mainroot.Material.accent
                         font.pixelSize: 18
                         onClicked: {
@@ -241,6 +255,7 @@ Pane{
                         textToolTip: qsTr("forward")
                         Layout.preferredWidth: 30
                         Layout.preferredHeight: 35
+                        enabled: hasItems
                         Material.foreground: mainroot.Material.accent
                         font.pixelSize: 18
                         onClicked: {
@@ -290,7 +305,6 @@ Pane{
                             }else{
                                 clearItemsForm();
                             }
-
                             addRecordBlank(true);
                         }
                     }
@@ -301,6 +315,7 @@ Pane{
                         textToolTip: qsTr("remove")
                         Layout.preferredWidth: 30
                         Layout.preferredHeight: 35
+                        enabled: hasItems
                         Material.foreground: mainroot.Material.accent
                         font.pixelSize: 18
                         onClicked: {
@@ -804,24 +819,6 @@ Pane{
                     visible: horizontalLine
                     anchors.bottom: parent.bottom
                 }
-                function myformatDecimal(numero){
-                    return myformatDecimalPlaces(numero,2);
-                }
-                function myformatDecimalPlaces(value, mplaces){
-                    var number = parseFloat(value);
-                    if (isNaN(number)){
-                        number = 0;
-                    }
-                    var places = mplaces;
-                    var symbol = ""; //$
-                    var thousand =  thousands_sep;
-                    var decimal = decimal_point;
-                    var negative = number < 0 ? "-" : "",
-                    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-                    j = (j = i.length) > 3 ? j % 3 : 0;
-                    return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
-                }
-
             }
             highlighted: ListView.isCurrentItem
             onClicked: {
@@ -916,6 +913,7 @@ Pane{
 
     function clearValues(){
         listRecords=[];
+        hasItems=false
         modelLinesOM.clear();
         clearItemsForm();
         if(oneItemDefault){
@@ -933,6 +931,7 @@ Pane{
         for(var i=0,len=itemsField.length;i<len;i++){
             itemsField[i].enabled=active;
         }
+        hasItems = active;
     }
 
     function addRecordBlank(echange){
@@ -1030,6 +1029,7 @@ Pane{
             }
         }else{
             currentIndex = -1;
+            hasItems=false;
             if(mode=="form"){
                 enabledFields(false);
                 clearItemsForm();
@@ -1067,6 +1067,7 @@ Pane{
                 }
             }else{
                 currentIndex = -1;
+                hasItems=false;
                 if(mode=="form"){
                     enabledFields(false);
                     clearItemsForm();
@@ -1099,6 +1100,9 @@ Pane{
             _read(ids);
         }else{
             setValue([]);
+        }
+        if(modelLinesOM.count>0){
+            hasItems=true;
         }
     }
 
@@ -1141,7 +1145,7 @@ Pane{
             if(mode=="form"){
                 setCurrentIndexForm();
             }else{
-                //TODO tree
+                hasItems=true;
             }
             viewLinesOM.currentIndex=currentIndex;
             childGroup.checkState=Qt.Unchecked;
@@ -1158,36 +1162,48 @@ Pane{
         }
 
     }
+    function _forceActiveFocus(){
+        focusFieldForm();
+    }
+
+    function focusFieldForm(){
+        if(itemsField.length>0){
+            itemsField[0]._forceActiveFocus();
+        }
+    }
 
     function setCurrentIndexForm(){
         if(modelLinesOM.count>0){
             enabledFields(true);
             checkOnlyCurrentIndex();
+            var datacurrentIndex = listRecords[findIndexReal(currentIndex)];
+            for(var i = 0, len=itemsField.length;i<len;i++){
+                if(itemsField[i].type==="many2one"){
+                    if(datacurrentIndex[itemsField[i].fieldName]!==null){
+                        if(setting.typelogin==0){//Tryton 4
+                            itemsField[i].setValue({"id":datacurrentIndex[itemsField[i].fieldName],"name":datacurrentIndex[itemsField[i].fieldName+".rec_name"]});
+                        }else{
+                            itemsField[i].setValue({"id":datacurrentIndex[itemsField[i].fieldName+"."]["id"],"name":datacurrentIndex[itemsField[i].fieldName+"."]["rec_name"]});
+                        }
+                    }else{
+                        itemsField[i].setValue({"id":-1,"name":""})
+                    }
+
+                }else{
+
+                    if(itemsField[i].fieldName.indexOf(".")===-1){
+                        itemsField[i].setValue(datacurrentIndex[itemsField[i].fieldName]);
+                    }else{
+                        //TODO
+                    }
+                }
+            }
+            focusFieldForm();
+
         }else{
             enabledFields(false);
         }
-        var datacurrentIndex = listRecords[findIndexReal(currentIndex)];
-        for(var i = 0, len=itemsField.length;i<len;i++){
-            if(itemsField[i].type==="many2one"){
-                if(datacurrentIndex[itemsField[i].fieldName]!==null){
-                    if(setting.typelogin==0){//Tryton 4
-                        itemsField[i].setValue({"id":datacurrentIndex[itemsField[i].fieldName],"name":datacurrentIndex[itemsField[i].fieldName+".rec_name"]});
-                    }else{
-                        itemsField[i].setValue({"id":datacurrentIndex[itemsField[i].fieldName+"."]["id"],"name":datacurrentIndex[itemsField[i].fieldName+"."]["rec_name"]});
-                    }
-                }else{
-                    itemsField[i].setValue({"id":-1,"name":""})
-                }
 
-            }else{
-
-                if(itemsField[i].fieldName.indexOf(".")===-1){
-                    itemsField[i].setValue(datacurrentIndex[itemsField[i].fieldName]);
-                }else{
-                    //TODO
-                }
-            }
-        }
     }
 
     function getValue(){

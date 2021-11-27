@@ -24,6 +24,7 @@ Dialog {
     property bool activeActionEdit: true
     property bool activeActionNew: true
     property bool activeActionCancel: true
+    property bool activeActionRemove: false
     //property var myForm: -1
     property string _title: ""
     property var listHead: []
@@ -122,6 +123,35 @@ Dialog {
                     if (event.key === Qt.Key_Enter ) {
                         event.accepted = true;
                         dialogTsearch.reject();
+                    }
+                }
+            }
+            ToolButton {
+                id:bclirem
+                text: qsTr("Remove")
+                implicitHeight: 34
+                visible: dialogTsearch.activeActionRemove
+                onClicked: {
+                     MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
+
+                }
+                contentItem: Text {
+                    text: bclirem.text
+                    font: bclirem.font
+                    opacity: enabled ? 1.0 : 0.3
+                    color: mainroot.Material.accent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                Keys.onPressed: {
+                    if (event.key === Qt.Key_Return ) {
+                        event.accepted = true;
+                         MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
+                    }
+                    if (event.key === Qt.Key_Enter ) {
+                        event.accepted = true;
+                        MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
                     }
                 }
             }
@@ -258,6 +288,7 @@ Dialog {
                 }
                 dialogTsearch.accept();
             }
+
             listHead: dialogTsearch.listHead;
         }
     }

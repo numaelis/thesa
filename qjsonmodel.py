@@ -313,12 +313,33 @@ class ModelJson(QObjectListModel):
             self.m_qjsonnetwork.call("updateRecords"+self.objectName(), self.m_model_method_search+".read" ,params)
     
     @Slot(int)
-    def removeItem(self, mid):# elimina solo en memory, no afecta a base datos
+    def removeItem(self, mid):# elimina solo en memoria, no afecta a base datos
         index = self.indexisOfId(mid)
         if index!=-1:
-            self.m_hasIndexOfId.pop(mid)
             self.removeAt(index)
+            self.updateIndexs()
     
+    def updateIndexs(self):
+        self.m_hasIndexOfId = {}
+        index=0
+        for item in self.m_objects:
+            mid = item.property("id")
+            self.m_hasIndexOfId[mid]=index
+            index+=1
+            
+    @Slot(QJsonArray)
+    def removeItems(self, mids):# elimina solo en memoria, no afecta a base datos
+        #for mid in mids.toVariantList():
+        #    self.removeItem(mid)
+        indexs=[]
+        for mid in mids.toVariantList():
+            indexs.append(self.indexisOfId(mid))
+        indexs.sort(reverse=True)
+        for index in indexs:
+            if index!=-1:
+                self.removeAt(index)
+        self.updateIndexs()
+            
     @Slot(QJsonArray)
     def addFieldFormatDecimal(self, fields):
         #ModelArticulo.addFieldFormatDecimal(['total_amount']);

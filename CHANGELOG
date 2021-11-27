@@ -42,4 +42,5 @@ Version 1.8
 * add Python requests library, option by default
 * add type float, integer in TreeView and decimals length
 * add TrytonControls: Integer Float
+* TrytonControls/TreeView: add function remove item
 

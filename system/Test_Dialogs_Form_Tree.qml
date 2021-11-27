@@ -71,6 +71,7 @@ TabDesktop {
         title: "Search Party"
         anchors.centerIn: parent
         dialogEdit: diaNewEditParty
+        activeActionRemove:true
         modelName:"party.party"
         // domain:[['categories', '=', 'Clientes']]
         order:[['name','ASC']]
