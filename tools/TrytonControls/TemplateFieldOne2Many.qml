@@ -62,6 +62,7 @@ Pane{
     property string defaultFormatDate: "dd/MM/yy"
     property int typelogin: 1
     property bool hasItems: false
+    property int total_count: modelLinesOM.count
     property var paramsPlusCreate: ({})
     padding: 0
 
@@ -248,6 +249,12 @@ Pane{
 
                         }
                     }
+                    Label{
+                        text: (currentIndex + 1).toString()+"/"+total_count.toString()
+                        padding: 0
+                        color: "grey"
+                        fontSizeMode: Label.Fit
+                    }
                     ButtonAwesome{
                         id:buttonright
                         flat: true
@@ -270,6 +277,7 @@ Pane{
                             }
                         }
                     }
+
                     ButtonAwesome{
                         id:buttonopen
                         flat: true
@@ -673,6 +681,10 @@ Pane{
                                         return myformatDecimalPlaces(value,2);
                                     }
                                     function myformatDecimalPlaces(value, mplaces){
+//                                        if(value==null){
+//                                            return "";
+//                                        }
+
                                         var number = parseFloat(value);
                                         if (isNaN(number)){
                                             number = 0;
@@ -711,7 +723,7 @@ Pane{
                                     }
 
                                     function parseData(type){
-                                        if(myobject[modelData.name]===null){
+                                        if(myobject[modelData.name]==null){
                                             return "";
                                         }
                                         switch(type){
@@ -912,6 +924,7 @@ Pane{
     }
 
     function clearValues(){
+        currentIndex = -1;
         listRecords=[];
         hasItems=false
         modelLinesOM.clear();
@@ -964,7 +977,7 @@ Pane{
                     _values[nfield] = "";
                 }
                 if(type ==="integer" || type ==="float"){
-                    _values[nfield] = 0;
+                    _values[nfield] = null;
                 }
                 if(type==="numeric"){
                     _values[nfield] = {"__class__":"Decimal","decimal":""}
@@ -1375,6 +1388,13 @@ Pane{
                 for(var j=0,lenj=listRecords.length;j<lenj;j++){
                     var value = listRecords[j][itemsField[i].fieldName]
                     if(value === "" || value === -1 || value === null){
+                        currentIndex=j;
+                        viewLinesOM.currentIndex=currentIndex;
+                        childGroup.checkState=Qt.Unchecked;
+                        tcheckitem.restart();
+                        mode="form";
+                        setCurrentIndexForm();
+                        itemsField[i]._forceActiveFocus();
                         MessageLib.showMessage(itemsField[i].labelAlias+ " "+qsTr("required"), mainroot);
                         return false;
                     }

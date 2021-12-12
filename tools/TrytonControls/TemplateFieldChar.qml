@@ -45,6 +45,9 @@ Control{
 
     function getValue(){
         if(type=="numeric"){
+            if(tfield.text==""){
+                return null;
+            }
             return decimalSchema(tfield.text);
         }
         if(type=="float"){
@@ -140,13 +143,13 @@ Control{
             if(itemParent.type=="one2many"){
                 var _value=value;
                 if(type=="numeric"){
-                    _value = decimalSchema(value);
+                    _value = value != ""?decimalSchema(value):null;
                 }
                 if(type=="float"){
-                    _value = parseFloat(value)
+                    _value = value != ""?parseFloat(value):null;
                 }
                 if(type=="integer"){
-                   _value = parseInt(value)
+                   _value = value != ""?parseInt(value):null;
                 }
 
                itemParent.changeField(name, _value);
