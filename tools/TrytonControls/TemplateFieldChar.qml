@@ -99,18 +99,18 @@ Control{
         control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
         if(type == "numeric" || type == "float"){
             if(decimal>=1 && decimal <=2){
-                setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
+                setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^\-?(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]))$/ }');
             }else{
                 if(decimal>=3){
-                    setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
+                    setValidator('import QtQuick 2.5;RegExpValidator { regExp:/^\-?(0|[1-9][0-9]*|0\\.([1-9][0-9]|[0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])|[1-9][0-9]*\\.([0-9][0-9]|[0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9]))$/ }');
                 }else{
-                    setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
+                    setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^\-?(0|[1-9][0-9]*)$/}');
                 }
             }
         }
         if(type == "integer"){
             decimal = 0;
-            setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^(0|[1-9][0-9]*)$/}');
+            setValidator('import QtQuick 2.9;RegExpValidator { regExp:/^\-?(0|[1-9][0-9]*)$/}');
         }
 
         if(type == "text"){

@@ -1011,6 +1011,9 @@ ApplicationWindow {
     }
 
     function dateTimeFromSchema(dateSchema){
+        if(dateSchema==null){
+            return null;
+        }
         if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("year")){
             if(dateSchema.__class__==="date"){
                 return new Date(dateSchema.year, dateSchema.month-1, dateSchema.day);
@@ -1026,6 +1029,9 @@ ApplicationWindow {
     }
 
     function dateSchemaFromDate(date){
+        if(date==null){
+            return null;
+        }
         return {'__class__': 'date',
             'year': date.getFullYear(),
             'month': date.getMonth()+1,
@@ -1040,13 +1046,19 @@ ApplicationWindow {
     }
 
     function decimalSchema(value){
+        if(value==null){
+            return null;
+        }
         return {'__class__': 'Decimal','decimal':value.toString()}
     }
 
-    function decimalFromSchema(dateSchema){
-        if(dateSchema.hasOwnProperty("__class__") && dateSchema.hasOwnProperty("decimal")){
-            if(dateSchema.__class__==="Decimal"){
-                return dateSchema.decimal;
+    function decimalFromSchema(decimalSchema){
+        if(decimalSchema==null){
+            return null;
+        }
+        if(decimalSchema.hasOwnProperty("__class__") && decimalSchema.hasOwnProperty("decimal")){
+            if(decimalSchema.__class__==="Decimal"){
+                return decimalSchema.decimal;
             }
         }
         return "";
