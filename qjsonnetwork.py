@@ -314,9 +314,13 @@ class QJsonNetwork(QObject):
             headers = {'content-type': 'application/json', 'authorization': auth}
         else:
             headers = {'content-type': 'application/json'}
+        if self.mparams.__class__()==[]:
+            params = self.mparams
+        else:
+            params = self.mparams.toVariantList()
         params=json.dumps({
                 "method": self.mmethod,
-                "params": self.mparams.toVariantList(),
+                "params": params,#self.mparams.toVariantList(),
                 "id": self.getId()
                 })
         obj_requests = WorkerRequests()
