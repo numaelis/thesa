@@ -199,6 +199,7 @@ Control{
             TextField{
                 id:tfield
                 anchors.fill: parent
+                selectByMouse: !isMobile
                 visible: !format_text.visible
                 topPadding: 0
                 horizontalAlignment: control.type== "text"?TextField.AlignLeft:TextField.AlignRight

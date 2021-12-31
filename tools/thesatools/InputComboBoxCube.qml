@@ -60,11 +60,7 @@ Rectangle {
     ComboBox{
         id:tf1
         width: parent.width - (2*ien.padding)
-        //height: parent.height - heightLabel - (2*ien.padding)//heightContent
-
         font.pixelSize: fontSize
-        //onTextChanged: console.log(contentHeight, height, font.pixelSize, tf1.bottomPadding, tf1.topPadding)
-
         anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: 0}//ien.padding
 
     }

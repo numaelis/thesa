@@ -31,7 +31,6 @@ Control{
     signal change(string text)
     implicitHeight: 100
 
-    //    property bool isParentO2M: false
     property var itemParent: -1
 
     padding: 0
@@ -87,8 +86,8 @@ Control{
                 id:tfield
                 clip: true
                 wrapMode: TextArea.WordWrap
-                textFormat: richText?TextArea.PlainText:TextArea.RichText
-                selectByMouse: true//!boolMovil
+                textFormat: richText?TextArea.RichText:TextArea.PlainText
+                selectByMouse: !isMobile
                 onTextChanged: {
                     isChange=true;
                 }

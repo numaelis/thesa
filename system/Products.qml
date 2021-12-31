@@ -130,7 +130,7 @@ TabDesktop {
                             id:ffind
                             width: parent.width - bfind.width - 8 - brecarga.width
                             height: parent.height
-                            selectByMouse: !boolMovil
+                            selectByMouse: !isMobile
                             anchors{left: parent.left}
                             placeholderText: qsTr("search by name")
                             Keys.onPressed: {
@@ -280,7 +280,9 @@ TabDesktop {
     }
     Dialog {
         id: dialog_price
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
        // width: 300
         modal: true
         focus: true

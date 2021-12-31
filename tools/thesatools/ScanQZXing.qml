@@ -17,7 +17,9 @@ import QZXing 2.3
 
 Dialog {
     id: dialog
-    anchors.centerIn: parent
+    //anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - (height))/ 2
     title: qsTr("Scan")
 
     width: maxWidthDialog

@@ -73,7 +73,7 @@ TabDesktop {
                             id:ffind
                             width: parent.width - bfind.width - 8 - brecarga.width
                             height: parent.height
-                            selectByMouse: !boolMovil
+                            selectByMouse: !isMobile
                             anchors{left: parent.left}
                             placeholderText: qsTr("search by name")
                             Keys.onPressed: {

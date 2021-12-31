@@ -184,7 +184,7 @@ Pane{
                 fontSizeMode: Label.Fit
             }
             Label{
-                text:"  <"+qsTr("No items")+">  "
+                text:isMobile?"":"  <"+qsTr("No items")+">  "
                 visible: mode=="form"?hasItems?false:true:false
                 Layout.preferredHeight: 15
                 font.bold: true
@@ -193,16 +193,16 @@ Pane{
                 elide: Label.ElideRight
                 fontSizeMode: Label.Fit
             }
-            Item {//TODO MENU
+            Flickable {//TODO MENU
                 id: itoolmenu
                 visible: activeMenu
                 Layout.fillWidth: true
                 Layout.preferredHeight: 35
+                clip: true
+                contentWidth: rww.width
+                boundsBehavior: Flickable.StopAtBounds
                 RowLayout{
-                    anchors.fill: parent
-                    Item{
-                        Layout.fillWidth: true
-                    }
+                    id:rww
                     ButtonAwesome{
                         id:buttonsw
                         flat: true
@@ -364,9 +364,9 @@ Pane{
             delegate: pdelegate
             ScrollBar.vertical: ScrollBar {policy: viewLinesOM.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
             ScrollBar.horizontal: ScrollBar {policy: viewLinesOM.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
-            flickableDirection: Flickable.AutoFlickIfNeeded
+            flickableDirection: isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
             contentWidth: headerItem.width
-            headerPositioning:ListView.OverlayHeader
+            headerPositioning:isMobile?ListView.InlineHeader:ListView.OverlayHeader
 
             function getId(){
                 if(currentIndex!=-1){

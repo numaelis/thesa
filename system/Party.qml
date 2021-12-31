@@ -109,7 +109,7 @@ TabDesktop {
                             id:ffind
                             width: parent.width - bfind.width - 8 - brecarga.width
                             height: parent.height
-                            selectByMouse: !boolMovil
+                            selectByMouse: !isMobile
                             anchors{left: parent.left}
                             placeholderText: qsTr("search by name")
                             Keys.onPressed: {
@@ -248,9 +248,11 @@ TabDesktop {
     }
     Dialog {
         id: dialog_party
-        anchors.centerIn: parent
-        width: parent.width-10
-        height: parent.height-10
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
+        width: parent.width-30
+        height: parent.height-30
         modal: true
         focus: true
         standardButtons: Dialog.Ok
@@ -265,7 +267,7 @@ TabDesktop {
                 ScrollBar.vertical: ScrollBar { }
                 model:myModelPhone
                 delegate: Item{
-                    width: parent.width
+                    width: listViewPhone2.width
                     height: 40
                     RowLayout{
                         anchors.fill: parent

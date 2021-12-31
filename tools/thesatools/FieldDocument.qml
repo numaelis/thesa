@@ -107,7 +107,6 @@ Item {
     function formatCuit(numero){
         var textformat = numero;
         if(numero.length===11){
-            //console.log(l.slice(0,2),l.slice(2,10),l.slice(10,11))
             textformat = numero.slice(0,2)+"-"+numero.slice(2,10)+"-"+numero.slice(10,11);
         }else{
             //mensajeAdvertencia();
@@ -173,7 +172,7 @@ Item {
         anchors.fill: parent
         topPadding: 0
         mouseSelectionMode: TextInput.SelectWords
-        selectByMouse: !boolMovil
+        selectByMouse: !isMobile
         readOnly: true
         visible: tfdoc.focus==false?typeDocument=="DECUP"?false:true:false
         horizontalAlignment: TextField.AlignRight
@@ -294,7 +293,7 @@ Item {
         topPadding: 0
         anchors{horizontalCenter: parent.horizontalCenter}
         mouseSelectionMode: TextInput.SelectWords
-        selectByMouse: !boolMovil
+        selectByMouse: !isMobile
         opacity: focus==true?1:0
         onTextEdited: {
             mainfd.fieldTextEdited();

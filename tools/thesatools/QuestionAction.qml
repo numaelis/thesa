@@ -7,7 +7,9 @@ import QtQuick.Layouts 1.12
 
 Dialog {
     id: dialog
-    anchors.centerIn: parent
+    //anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - (height))/ 2
     title: qsTr("Question")
 
     width: 300

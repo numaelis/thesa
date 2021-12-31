@@ -17,8 +17,10 @@ import TrytonControls 1.0
 Dialog {
     id:dialogTedit
     //standardButtons: Dialog.Ok|Dialog.Cancel
-    width: 500
-    anchors.centerIn: parent
+    width: maxWidthDialog//boolShortWidth135?maxWidthDialog-20:500
+    //anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - (height))/ 2
     property string type: "dialogedit"
     property int idRecord: -1
     property string modelName: ""
@@ -38,6 +40,11 @@ Dialog {
     signal emitActionCancel()
     signal emitActionOk()
 
+    Component.onCompleted: {
+        if(isMobile){
+            padding=8;
+        }
+    }
 
     function updateTreeView(fields){
         if (dialogSearch!=null){
@@ -109,7 +116,8 @@ Dialog {
             spacing: 8
             ToolButton {
                 id:bcandcli
-                text: qsTr("Cancel")
+                text: isMobile?"\uf05e":qsTr("Cancel")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTedit.actionCancel
                 onClicked: {
@@ -137,7 +145,8 @@ Dialog {
             }
             ToolButton {
                 id:bokdcli
-                text: qsTr("Ok")
+                text: isMobile?"\uf00c":qsTr("Ok")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 visible:dialogTedit.actionOK
                 implicitHeight: 34
                 onClicked: {

@@ -45,13 +45,13 @@ Rectangle {
         anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: 0}
         clip: true
         focus: true
-        ScrollBar.vertical.policy: boolMovil?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff
+        ScrollBar.vertical.policy: isMobile?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff
         TextArea{
             id:tf1
             clip: true
             text: ""
             wrapMode: TextArea.WordWrap
-            selectByMouse: true//!boolMovil
+            selectByMouse: !isMobile
             font.pixelSize: 20
         }
     }

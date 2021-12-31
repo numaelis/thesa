@@ -16,8 +16,10 @@ import TrytonControls 1.0
 
 Dialog {
     id:dialogTsearch
-    width: 500
-    anchors.centerIn: parent
+    width: maxWidthDialog//500
+    //anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - (height))/ 2
     property int idRecordSearch: -1
     property string modelName: ""
     property bool activeActionSelect: true
@@ -41,9 +43,13 @@ Dialog {
     signal actionSelect(int _id, var fields)
     signal actionEdit(int index)
     signal actionNew()
-
     modal: true
     focus: true
+    Component.onCompleted: {
+        if(isMobile){
+            padding=8;
+        }
+    }
 
     onActionEdit:{
         if(dialogEdit != null){
@@ -100,7 +106,8 @@ Dialog {
             spacing: 8
             ToolButton {
                 id:bclican
-                text: qsTr("Cancel")
+                text: isMobile?"\uf05e":qsTr("Cancel")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionCancel
                 onClicked: {
@@ -128,7 +135,8 @@ Dialog {
             }
             ToolButton {
                 id:bclirem
-                text: qsTr("Remove")
+                text: isMobile?"\uf2ed":qsTr("Remove")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionRemove
                 onClicked: {
@@ -157,7 +165,8 @@ Dialog {
             }
             ToolButton {
                 id:bcliedit
-                text: qsTr("Edit")
+                text: isMobile?"\uf044":qsTr("Edit")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionEdit
                 enabled: idRecordSearch!==-1?true:false
@@ -186,7 +195,8 @@ Dialog {
             }
             ToolButton {
                 id:bclinew
-                text: qsTr("New")
+                text: isMobile?"\uf067":qsTr("New")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionNew
                 onClicked: {
@@ -214,7 +224,8 @@ Dialog {
             }
             ToolButton {
                 id:bcliselect
-                text: qsTr("Select")
+                text: isMobile?"\uf00c":qsTr("Select")
+                Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionSelect
                 enabled: idRecordSearch!==-1?true:false

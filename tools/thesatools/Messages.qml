@@ -10,8 +10,7 @@ Dialog {
     x: (mainroot.width - width) / 2
     y: (mainroot.height - (height))/ 2
     title: qsTr("Message")
-
-    width: 300
+    width: boolShortWidth135?maxWidthDialog-20:300
     property string mtext: "..."
     modal: true
     focus: true

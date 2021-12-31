@@ -34,8 +34,8 @@ ApplicationWindow {
     property int maxWidthDialog: Screen.desktopAvailableWidth<600?Screen.desktopAvailableWidth:600
     property int maxHeightDialog: 500
 
-    property bool boolMovil: false //textArea textfield for android movil = true, only module
-    property bool boolqrclocal: false //for android = true and drawer=true
+    property bool isMobile: false//false //textArea textfield for android movil = true, only module
+    property bool boolqrclocal: false//false //for android = true and drawer=true
 
     property real miradius: 2
 
@@ -174,7 +174,7 @@ ApplicationWindow {
             Label{
                 text:boolShortWidth?"":"  "
                 Layout.fillWidth: true
-                visible:!boolShortWidth16
+                visible:tabModel.count<2
             }
             TabBar {
                 id: barroot
@@ -545,7 +545,6 @@ ApplicationWindow {
         }
 
         if(pid==="open@"){
-            //console.log(data.data.result)
             var jsonDataOpen=data;
             if(option===1){
                 console.log("se redirecciona...");
@@ -930,7 +929,9 @@ ApplicationWindow {
     Dialog{
         id:diblock
         modal: true
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
         width: 240
         height: 120
         visible: boolBlocking
@@ -1182,7 +1183,7 @@ ApplicationWindow {
         property bool boolBackground: true
         property int typelogin: 1//"4":0,"5":1
         property bool typesysmodule: false//"local":false, "module":true
-        property bool boolDrawer: false
+        property bool boolDrawer: false//false
         property string translate
     }
 
@@ -1192,7 +1193,9 @@ ApplicationWindow {
         // title: qsTr("about")
         //standardButtons: Dialog.Ok
         closePolicy: Dialog.NoAutoClose
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
         Label {
             textFormat: Label.RichText
             text: "<b><center><h2>Thesa "+ThesaVersion+"</h2><br>tryton client qt-qml</b><br>Copyright (C) 2020-2021 Numael Garay <br><br>
@@ -1285,7 +1288,9 @@ ApplicationWindow {
         height: 200
         //title: "close"
         closePolicy: Dialog.NoAutoClose
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
         onAccepted: preThesaClosing();
         modal: true
         Label {
@@ -1301,7 +1306,9 @@ ApplicationWindow {
         id:dcredits
         standardButtons: Dialog.Ok
         closePolicy: Dialog.NoAutoClose
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
         Label {
             textFormat: Label.RichText
             text: "<b><center><h2>Credits</h2></b><br>Numael Garay -  mantrixsoft@gmail.com<br><br></center>"
@@ -1310,11 +1317,13 @@ ApplicationWindow {
     Dialog {
         id:dlicense
         implicitWidth: boolShortWidth135?parent.width-10:620
-        implicitHeight: mainroot.height-10
+        implicitHeight: mainroot.height-20
         title: "License"
         standardButtons: Dialog.Ok
         closePolicy: Dialog.NoAutoClose
-        anchors.centerIn: parent
+        //anchors.centerIn: parent
+        x: (parent.width - width) / 2
+        y: (parent.height - (height))/ 2
         contentItem: Pane{
             ScrollView{
                 clip:true

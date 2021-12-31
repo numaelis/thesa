@@ -368,7 +368,7 @@ Control{
         delegate: pdelegate
         ScrollBar.vertical: ScrollBar {policy: listview.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
         ScrollBar.horizontal: ScrollBar {policy: listview.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
-        flickableDirection: Flickable.AutoFlickIfNeeded
+        flickableDirection: isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
         contentWidth: headerItem.width
         //keyNavigationWraps: true
 
@@ -657,7 +657,8 @@ Control{
                 color: mainroot.Material.accent
             }
         }
-        headerPositioning:ListView.OverlayHeader
+        headerPositioning:isMobile?ListView.InlineHeader:ListView.OverlayHeader
+        //TODO: create new header for mobile
         onContentYChanged: {
             if (atYEnd){
                 if(parseFloat(contentY).toFixed(5) == contentHeight - (height+heightHeader)){

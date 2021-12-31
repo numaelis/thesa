@@ -96,7 +96,7 @@ Control{
             id:tffilters
             Layout.fillWidth: true
             Layout.fillHeight: true
-            selectByMouse: !boolMovil
+            selectByMouse: !isMobile
             visible: !filterTagActive
             Keys.onPressed: {
                 if (event.key === Qt.Key_Down ) {
@@ -233,7 +233,7 @@ Control{
     Dialog {
         id:dcreatetag
         standardButtons: Dialog.Ok|Dialog.Cancel
-        width: 360
+        width: boolShortWidth135?maxWidthDialog-20:360
         title: qsTr("Add Filter")
         closePolicy: Dialog.CloseOnEscape
         focus: true

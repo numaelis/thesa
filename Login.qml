@@ -3,7 +3,7 @@
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020"
 //__license__ = "GPL"
-//__version__ = "1.4"
+//__version__ = "1.8"
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
@@ -20,10 +20,12 @@ Dialog {
     property var listTryVersion: ["4","5"]
     property bool boolBackLogin: false
     property real _height
-    anchors.centerIn: parent
-
+    property real _dheight
+    //anchors.centerIn: parent
+    x: (parent.width - width) / 2
+    y: (parent.height - (height))/ 2
     focus: true
-    width: boolExpand?maxWidthDialog:boolShortWidth135?maxWidthDialog-14:maxWidthDialog-200
+    width: boolExpand?boolShortWidth135?maxWidthDialog-20:maxWidthDialog:boolShortWidth135?maxWidthDialog-20:maxWidthDialog-200
     closePolicy: Dialog.NoAutoClose
     //standardButtons: Dialog.Ok | Dialog.Cancel
     onVisibleChanged: {
@@ -48,6 +50,7 @@ Dialog {
     }
     Component.onCompleted: {
         _height=contentItem.height;
+        _dheight = diLogin.height;
     }
 
     header:Item{
@@ -254,8 +257,12 @@ Dialog {
                         if(boolExpand){
                             boolExpand = false;
                             mp.height=_height;
+                            diLogin.height=_dheight;
                         }else{
                             boolExpand = true;
+                            if(boolShortWidth135){
+                                diLogin.height=container.height-20;
+                            }
                         }
 
                     }
@@ -311,13 +318,13 @@ Dialog {
                         }
                         InputComboBoxCube{
                             id:itypesystem
-                            enabled: boolMovil?false:!mainroot.boolSession
+                            enabled: isMobile?false:!mainroot.boolSession
                             width: parent.width
                             label: qsTr("Type System:")
                             model: ["Local","Module"]
                             boolOnDesk: boolBackLogin
                             Component.onCompleted: {
-                                if(boolMovil){
+                                if(isMobile){
                                     index=1;//movil only module
                                 }
                             }

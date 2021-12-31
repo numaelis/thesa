@@ -71,16 +71,12 @@ Rectangle {
         width: parent.width - (2*ien.padding)
         //height: 30
         //height: parent.height - heightLabel - (2*ien.padding)//heightContent
-        selectByMouse: !boolMovil
+        selectByMouse: !isMobile
         onAccepted: {
             ien.accepted();
         }
-
-        //mouseSelectionMode:
         font.pixelSize: 16
-        //onTextChanged: console.log(contentHeight, height, font.pixelSize, tf1.bottomPadding, tf1.topPadding)
-
-        anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: 0}//ien.padding
+        anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom; bottomMargin: 0}
 
     }
 

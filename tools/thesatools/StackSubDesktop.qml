@@ -27,7 +27,6 @@ StackLayout {
         }
     }
     function clickTab(){
-//        console.log("index debug", currentIndex);
         if (currentIndex!=-1){
             children[currentIndex].selectMyTab();
             postTitle = " "+children[currentIndex].getPostTitle();
