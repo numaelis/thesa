@@ -176,7 +176,10 @@ class SystemNet(QObject):
                         print("error",filename,qfile.errorString())
                     else:
                         print("update",file["filename"])
-                        bafile= QByteArray.fromBase64(file["filebinary"]["base64"].encode())
+                        if file["filebinary"].__class__()=={}:
+                            bafile= QByteArray.fromBase64(file["filebinary"]["base64"].encode())
+                        else:
+                            bafile = QByteArray(str.encode(file["filebinary"]))
                         qfile.write(bafile)
                         qfile.close()
             if len(errors)>0:

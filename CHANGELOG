@@ -25,7 +25,7 @@ Version 1.6 - 2020-10-30
 * add support for thesamodule 1.2, multiple folders are allowed for users selection.
 * fix menu tabs, small screen
 
-Version 1.8
+Version 1.8 - 2022-01-02
 * TrytonControls/TreeView: add expandable columns
 * TrytonControls/TreeView: add sortable columns None, ASC DESC
 * TrytonControls/TreeView: add type field Image (Binary field)

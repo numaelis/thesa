@@ -34,8 +34,8 @@ ApplicationWindow {
     property int maxWidthDialog: Screen.desktopAvailableWidth<600?Screen.desktopAvailableWidth:600
     property int maxHeightDialog: 500
 
-    property bool isMobile: false//false //textArea textfield for android movil = true, only module
-    property bool boolqrclocal: false//false //for android = true and drawer=true
+    property bool isMobile: false //textArea textfield for android movil = true, only module
+    property bool boolqrclocal: false //for android = true and drawer=true
 
     property real miradius: 2
 
@@ -1183,7 +1183,7 @@ ApplicationWindow {
         property bool boolBackground: true
         property int typelogin: 1//"4":0,"5":1
         property bool typesysmodule: false//"local":false, "module":true
-        property bool boolDrawer: false//false
+        property bool boolDrawer: false
         property string translate
     }
 

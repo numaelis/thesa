@@ -128,6 +128,10 @@
         <source>Message</source>
         <translation>Mensaje</translation>
     </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ok</translation>
+    </message>
 </context>
 <context>
     <name>MessagesLog</name>
@@ -152,6 +156,14 @@
     <message>
         <source>Question</source>
         <translation>Pregunta</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -202,12 +214,48 @@
         <source>Select</source>
         <translation>Seleccionar</translation>
     </message>
+    <message>
+        <source>Remove</source>
+        <translation>Eliminar</translation>
+    </message>
+    <message>
+        <source>¿Remove Items?</source>
+        <translation>¿Eliminar Items?</translation>
+    </message>
 </context>
 <context>
     <name>TemplateFieldOne2Many</name>
     <message>
         <source>required</source>
         <translation>requerido</translation>
+    </message>
+    <message>
+        <source>No items</source>
+        <translation>Sin items</translation>
+    </message>
+    <message>
+        <source>switch</source>
+        <translation>cambiar vista</translation>
+    </message>
+    <message>
+        <source>back</source>
+        <translation>atrás</translation>
+    </message>
+    <message>
+        <source>forward</source>
+        <translation>adelante</translation>
+    </message>
+    <message>
+        <source>open</source>
+        <translation>abrir</translation>
+    </message>
+    <message>
+        <source>new</source>
+        <translation>nuevo</translation>
+    </message>
+    <message>
+        <source>remove</source>
+        <translation>eliminar</translation>
     </message>
 </context>
 <context>
@@ -238,6 +286,17 @@
     <message>
         <source>error loading componet Thesa QZXing: </source>
         <translation>error al cargar el componente Thesa QZXing</translation>
+    </message>
+</context>
+<context>
+    <name>TreeView</name>
+    <message>
+        <source>Removed</source>
+        <translation>Eliminado</translation>
+    </message>
+    <message>
+        <source>no items selected</source>
+        <translation>no hay items seleccionados</translation>
     </message>
 </context>
 <context>
