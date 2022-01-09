@@ -257,7 +257,9 @@ Dialog {
                         if(boolExpand){
                             boolExpand = false;
                             mp.height=_height;
-                            diLogin.height=_dheight;
+                            if(boolShortWidth135){
+                                diLogin.height=_dheight;
+                            }
                         }else{
                             boolExpand = true;
                             if(boolShortWidth135){
