@@ -7,12 +7,12 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
 
-Item{
+Control{
     id:mainCa
     width: inputDay.width+sepa1.width+inputMonth.width+sepa2.width+inputYear.width+ bcalendar.width + 6
     height: inputDay.height
@@ -285,7 +285,7 @@ Item{
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        bottomPadding: dpis*2
+        bottomPadding: 4*2
         text:"/"
         MouseArea{
             anchors.fill: parent
@@ -401,7 +401,7 @@ Item{
         font.pixelSize: pixelFont
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
-        bottomPadding: dpis*2
+        bottomPadding: 4*2
         text:"/"
         MouseArea{
             anchors.fill: parent
@@ -512,7 +512,7 @@ Item{
         id:bcalendar
         width: height - 20
         height: parent.height
-        anchors{left: inputYear.right; top:parent.top;leftMargin: dpis}
+        anchors{left: inputYear.right; top:parent.top;leftMargin: 4}
         //display: Button.TextOnly
         font.family: fawesome.name
         font.italic: false
@@ -522,12 +522,13 @@ Item{
         hoverEnabled: true
         onClicked: {
             buildCalenDesk()
+
         }
     }
 
 
     function buildCalenDesk(){
-        var tmens= "import QtQuick 2.9;import QtQuick.Controls 2.2;import QtQuick.Layouts 1.3;"+
+        var tmens= "import QtQuick 2.15;import QtQuick.Controls 2.15;import QtQuick.Layouts 1.15;"+
                 "Dialog {"+
                 "id:dicalen;"+
                 "modal: true;"+
@@ -538,9 +539,11 @@ Item{
                 "contentHeight: calendesk.height;"+
                 "visible: true;"+
                 "focus: true;"+
+                "padding: 8;"+
                 //"closePolicy: Dialog.NoAutoClose;"+
                 //calendesk.forceF();
-                "function openis(){visible=true;calendesk.setDate(currentYear,currentMonth);calendesk.forceActiveFocus();}"+
+                "function openis(){visible=true;calendesk.setDate("+currentYear+","+currentMonth+","+currentDay+");calendesk.forceActiveFocus();}"+
+                "function setDate(year, month,day){calendesk.setDate(year,month,day)}"+
                 "Timer{"+
                 "id:tcloseAll;"+
                 "interval: 800;"+
@@ -549,6 +552,7 @@ Item{
 
                 //"onAccepted: {tcerraris.start()}"+
                 "onRejected: {tcloseAll.start();}"+
+//                "header:ToolBar{implicitHeight: 0;}"+
                 "contentItem:Calendar{"+
                 "id:calendesk;"+
                 "fontPixel: pixelFont;"+
@@ -564,8 +568,10 @@ Item{
                 "}"+
                 "}"+
                 "}"
+//        calendesk.setDate(currentYear,currentMonth)
         var object=Qt.createQmlObject(tmens, mainroot, "dynamicSnippet1");
-        object.open();
+//        object.open();
+        object.openis();
     }
 
     function setDate(data){
@@ -588,6 +594,9 @@ Item{
     }
 
     function getDate(){
+        inputDay.focus=false;
+        inputMonth.focus=false;
+        inputYear.focus=false;
         if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
             return null;
         }
@@ -596,6 +605,9 @@ Item{
     }
 
     function getDateTime(){//TODO add inputs Hours and Minutes
+        inputDay.focus=false;
+        inputMonth.focus=false;
+        inputYear.focus=false;
         if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
             return null;
         }

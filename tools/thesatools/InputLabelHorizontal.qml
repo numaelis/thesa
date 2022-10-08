@@ -32,7 +32,7 @@ Rectangle {
     TextField{
         id:tf1
         width: parent.width- label1.width - (3*ien.padding)
-        selectByMouse: !boolMovil
+        selectByMouse: !isMobile
         font.pixelSize: 14
 
         anchors{right: parent.right;rightMargin: ien.padding; verticalCenter: parent.verticalCenter}

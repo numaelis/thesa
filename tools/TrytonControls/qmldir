@@ -18,4 +18,6 @@ TemplateFieldText 1.0 TemplateFieldText.qml
 TemplateFieldDate 1.0 TemplateFieldDate.qml
 TemplateFieldInteger 1.0 TemplateFieldInteger.qml
 TemplateFieldFloat 1.0 TemplateFieldFloat.qml
-
+TemplateFieldBinary 1.0 TemplateFieldBinary.qml
+TemplateFieldBoolean 1.0 TemplateFieldBoolean.qml
+TemplateMenu 1.0 TemplateMenu.qml

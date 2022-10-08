@@ -7,15 +7,17 @@ tools functions help
 """
 
 __author__ = "Numael Garay"
-__copyright__ = "Copyright 2020"
+__copyright__ = "Copyright 2020-2021"
 __license__ = "GPL"
-__version__ = "1.6" 
+__version__ = "1.8" 
 __maintainer__ = "Numael Garay" 
 __email__ = "mantrixsoft@gmail.com"
 
 from PySide2.QtCore import QObject, QJsonArray, Slot, Signal, QDate, QFileInfo, QDir, QIODevice, QFile, Qt, QSettings, QTranslator, QLocale, QUrl
 from PySide2.QtWidgets import QFileDialog
 from PySide2.QtGui import QImage, QImageWriter, QDesktopServices
+from PySide2.QtNetwork import QSslSocket
+import json
 
 class Tools(QObject):
     def __init__(self, parent = None):
@@ -272,4 +274,31 @@ class Tools(QObject):
                         self.mApp.installTranslator(translator)
                     
         
+    @Slot(str, str, bool, bool, result='QJsonObject')
+    def executeQuerySqlite(self, dbname, query, iscommit, isselect):
+        print(query)
+        try:
+            myresult = {'status':True, 'result': ''}
+            import sqlite3
+            con = sqlite3.connect(self.mDir + QDir.separator() + dbname)
+            cur = con.cursor()
+            cur.execute(query)
+           # cur.execute('''CREATE TABLE stocks
+           #    (date text, trans text, symbol text, qty real, price real)''')
+            #CREATE TABLE IF NOT EXISTS some_table (id INTEGER PRIMARY KEY AUTOINCREMENT, ...);
+            #cur.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+            
+            if iscommit:
+                con.commit()
+            
+            if isselect:
+                myresult['result']=json.loads(json.dumps(cur.fetchall()))
+                print(myresult)
+            con.close()
+            return myresult
+        except:
+            return {'status':False, 'result': ''}
     
+    @Slot(result=bool)
+    def supportsSsl(self):
+        return QSslSocket.supportsSsl()

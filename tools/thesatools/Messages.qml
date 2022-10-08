@@ -9,8 +9,8 @@ Dialog {
     id: dialog
     x: (mainroot.width - width) / 2
     y: (mainroot.height - (height))/ 2
-    title: qsTr("Message")
-    width: boolShortWidth135?maxWidthDialog-20:300
+//    title: qsTr("Message")
+    width: 300
     property string mtext: "..."
     modal: true
     focus: true
@@ -21,7 +21,26 @@ Dialog {
     Component.onCompleted: {
         baccaply.forceActiveFocus();
     }
+    header: ToolBar{
+        implicitHeight: 35
+        Material.foreground: Qt.darker(mainroot.Material.accent)
+        Item{
+            id:mh
+            anchors.fill: parent
+            implicitHeight: 35
+            Label{
+                text:qsTr("Message")
+                height: 25
+                anchors.centerIn: parent
+                font.pixelSize: 20
+                font.bold: true
+                verticalAlignment: Label.AlignVCenter
+                horizontalAlignment: Label.AlignHCenter
+            }
 
+        }
+
+    }
     footer: ToolBar {
         implicitHeight: 42
         background: Rectangle {
@@ -34,6 +53,7 @@ Dialog {
             ToolButton {
                 id:baccaply
                 text: qsTr("Ok")
+                font.bold: true
 //                highlighted: true
                 implicitHeight: 34
 

@@ -68,7 +68,7 @@ TabDesktop {
             {
                 "name":"invoice_date",
                 "alias":"Fecha",
-                "type":"datetime",
+                "type":"date",
                 "format":"dd/MM/yyyy",
                 "width":120,
                 "align":Label.AlignHCenter

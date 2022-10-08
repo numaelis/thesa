@@ -9,8 +9,8 @@ Dialog {
     id: dialog
     x: (mainroot.width - width) / 2
     y: (mainroot.height - (height))/ 2
-    title: qsTr("Message")
-    width: boolShortWidth135?maxWidthDialog-20:380
+//    title: qsTr("Message")
+    width: 400
     height: 380
     property string mtext: "..."
     modal: true
@@ -19,6 +19,28 @@ Dialog {
     closePolicy: Dialog.CloseOnEscape
     onAccepted: {tcloseAll.start()}
     onRejected: {tcloseAll.start()}
+
+    header: ToolBar{
+        implicitHeight: 35
+        Material.foreground: Qt.darker(mainroot.Material.accent)
+        Item{
+            id:mh
+            anchors.fill: parent
+            implicitHeight: 35
+            Label{
+                text:qsTr("Message")
+                height: 25
+                anchors.centerIn: parent
+                font.pixelSize: 20
+                font.bold: true
+                verticalAlignment: Label.AlignVCenter
+                horizontalAlignment: Label.AlignHCenter
+            }
+
+        }
+
+    }
+
     Timer{
         id:tcloseAll
         interval: 800

@@ -1,5 +1,5 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
-// template field text
+// template field date
 //__author__ = "Numael Garay"
 //__copyright__ = "Copyright 2020-2021"
 //__license__ = "GPL"
@@ -17,42 +17,42 @@ import "../TrytonControls"
 Control{
     id:control
     property bool tryton: true
-    property string labelAlias: ""
     property string fieldName: ""
-    property string type: "many2one"
+    property string type: "boolean"
+    property string labelAlias: ""
     property bool required: false
     property bool readOnly: false
     enabled: !readOnly
-    property string modelName: ""
-    property var domain:[]
-    property var order:[]
-    property int limit: 200
-    property bool boolLastCall: false
-    property alias buttonSelection: fm2o.buttonSelection
+    property alias item_field: tfield
     property bool isChange: false
-    signal change(int id, string name)
     property var itemParent: -1
+    signal change(bool value)
+
     padding: 0
 
     function _forceActiveFocus(){
-        fm2o.forceActiveFocus();
+        tfield._forceActiveFocus();
     }
 
     function getValue(){
-       return fm2o.getValue();
-    }
-
-    function getValueName(){
-       return fm2o.valueName;
+        var value = tfield.checked;
+        return value;
     }
 
     function setValue(value){
-        fm2o.setValue(value);
+        if(value==null){
+            tfield.checked=false;
+        }
+        if(value == false || value == true){
+            tfield.checked=value;
+        }else{
+            tfield.checked=false;
+        }
         isChange=false;
     }
 
     function clearValue(){
-        fm2o.clearValue();
+        tfield.checked=false;
         isChange=false;
     }
 
@@ -63,18 +63,13 @@ Control{
     function changeToParent(name, value){
         if(itemParent!=-1){
             if(itemParent.type=="one2many"){
-               itemParent.changeField(name, value);
+                itemParent.changeField(name, value);
             }
         }
     }
 
     Component.onCompleted: {
         control.objectName="tryton_"+fieldName+"_"+_getNewNumber();
-        fm2o.fieldName = fieldName;
-        fm2o.modelName = modelName;
-        fm2o.order = order;
-        fm2o.domain = domain;
-        fm2o.limit = limit;
     }
 
     LabelCube{
@@ -83,14 +78,29 @@ Control{
         label: labelAlias
         labelcolor:"grey"
         boolBack:false
-        FieldMany2One{
-            id:fm2o
-            onValueChanged: {
-                isChange=true;
-                change(id, name);
-                changeToParent(fieldName,id);
-            }
 
+        CheckBox {
+            id:tfield
+            //            checked: selectItem
+            width: height
+            height: 35
+            anchors{horizontalCenter: parent.horizontalCenter;bottom: parent.bottom}
+            text: ""
+            onClicked: {
+                //                isChange=true;
+            }
+            onCheckedChanged: {
+                isChange=true;
+                change(tfield.checked);
+                changeToParent(fieldName,tfield.checked);
+                //                if(checked){
+                //                    selectItem=true;
+                //                }else{
+                //                    selectItem=false;
+                //                }
+            }
         }
+
+
     }
 }

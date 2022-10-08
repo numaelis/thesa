@@ -15,4 +15,5 @@ Button{
     ToolTip.timeout: 3000
     ToolTip.visible: hovered
     ToolTip.text: textToolTip
+
 }

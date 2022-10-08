@@ -7,10 +7,10 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.12
-import QtQuick.Controls 2.5
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
 import "../thesatools"
 //TODO add filter datetime, ...
 //
@@ -233,8 +233,8 @@ Control{
     Dialog {
         id:dcreatetag
         standardButtons: Dialog.Ok|Dialog.Cancel
-        width: boolShortWidth135?maxWidthDialog-20:360
-        title: qsTr("Add Filter")
+        width: 360
+//        title: qsTr("Add Filter")
         closePolicy: Dialog.CloseOnEscape
         focus: true
         //anchors.centerIn: parent
@@ -246,6 +246,25 @@ Control{
         property bool isDate: false
         property bool isDateTime: false
         property bool isSelection: false
+        header: ToolBar{
+            Material.foreground: Qt.darker(mainroot.Material.accent)
+            Item{
+                id:mh
+                anchors.fill: parent
+                implicitHeight: 30
+                Label{
+                    text:qsTr("Agregar Filtro")
+                    height: 30
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                    font.bold: true
+                    verticalAlignment: Label.AlignVCenter
+                    horizontalAlignment: Label.AlignHCenter
+                }
+
+            }
+
+        }
 
         onAccepted: {
             if(newfiltre.type==="numeric"){

@@ -65,6 +65,9 @@ ApplicationWindow {
     property var generalPurpose: ({})
     property string myCompany: ""
     property string postTitle: ""
+    property int mid: 0
+    property string methodLogin: "common.db.login"
+    property string sessionToken: ""
 
     visibility:  Window.Maximized
     title: qsTr("thesa mushroom [tryton]  -  "+ myCompany)
@@ -498,6 +501,7 @@ ApplicationWindow {
         checkClosable();//warning: must be synchronous <<function preClosing in tab>>
         boolLogin=false;
         boolSession=false;
+        sessionToken = "";
         bool403=false;
         bool401=false;
         psignature="";
@@ -554,6 +558,7 @@ ApplicationWindow {
                     if(jsonDataOpen.credentials===true){
                         myLogin.saveSettings();
                         boolLogin=true;
+                        sessionToken=jsonDataOpen.sessionToken;
                         if (bool403){
                             timerLastCall.start();//deprecate
                         }else{
@@ -607,7 +612,7 @@ ApplicationWindow {
         }
 
         if(option===2){
-            //cath timeout
+            //catch timeout
             var jsonData=data.data;
             if(jsonData.hasOwnProperty("error")){ //catch errors de user
                 if(Array.isArray(jsonData.error)){
@@ -1168,6 +1173,87 @@ ApplicationWindow {
         return _intCountModels;
     }
 
+    function getId(){
+        mid+=1;
+        return mid;
+    }
+
+    function prepareParamsLocal(method, params){
+            var newid = getId();
+            return {"method": method,
+                "params": params,
+                "id": newid}
+        }
+
+    function getUrl(){
+        var murl = setting.host+":"+setting.port+"/";
+        if(murl==""){
+            var re_murl = Misc.getUrlTryton();
+            if(re_murl=="" || re_murl==null || re_murl=="undefined"){
+                MessageLib.showMessage("Url error", mainroot);
+                murl = "";
+            }else{
+                murl = re_murl;
+            }
+        }
+
+        return murl + setting.dbase + "/";
+    }
+
+    function getHttpRequest(url, params, method){
+        var http = new XMLHttpRequest();
+        http.open("POST", url, true);
+        http.withCredentials=true;
+        //"User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0")
+        //        http.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        //        http.setRequestHeader("Content-length", params.length);
+        //        http.setRequestHeader("Connection", "close");
+        http.setRequestHeader("Content-type", "application/json");
+        if(method!=methodLogin){
+            http.setRequestHeader('Authorization', sessionToken);
+        }
+        return http;
+    }
+
+    function analizeErrorsStatus(status){
+        MessageLib.showMessage("error: "+status,mainroot);
+    }
+
+    function analizeErrors(response){
+        if(response.hasOwnProperty("error")){
+            console.log("wsi", JSON.stringify(response));
+            var error = response["error"];
+            if(error[0].startsWith("403")){
+
+                boolLogin=false;
+                if(boolSession){
+
+                    bool403=true;
+                }
+            }else{
+                if(error[0].startsWith('401')){//Authorization Required
+                    MessageLib.showMessage("Autorización Requerida, status: 401", mainroot);
+                    boolLogin=false;
+                    bool401=true;
+                    if(boolSession){
+                        //                        QJsonNetworkQml.saveLastCall();
+                    }
+                }else{
+                    if(error[0] == "UserError"){
+                        MessageLib.showMessageLog("error: "+JSON.stringify(error[1][0]),mainroot);
+                    }else{
+                        if(error[0] == "ConcurrencyException"){
+                            MessageLib.showMessageLog("error:\n Error de concurrencia, Este registro ha sido modificado mientras lo editaba, por favor actualice el registro antes de guardar",mainroot);
+                        }else{
+
+                            MessageLib.showMessageLog("error:\n "+error[0],mainroot);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
     Settings {
         id: setting
         //property string style: "Default"

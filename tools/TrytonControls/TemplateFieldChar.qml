@@ -7,12 +7,12 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
-import thesatools 1.0
-import TrytonControls 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
+import "../thesatools"
+import "../TrytonControls"
 
 Control{
     id:control
@@ -23,7 +23,9 @@ Control{
     property bool required: false
     property bool password: false
     property int decimal: 0
+    property real fontPixelSizeContent: 18
     property bool readOnly: false
+    property alias fixHorizontalAlignment: tfield.horizontalAlignment
     enabled: !readOnly
     property alias item_field: tfield
 
@@ -63,6 +65,10 @@ Control{
             return parseInt(tfield.text);
         }
         return tfield.text;
+    }
+    function setValueNumeric(value){
+        tfield.text=value;
+        isChange=false;
     }
 
     function setValue(value){
@@ -117,6 +123,9 @@ Control{
             if(password){
                 tfield.echoMode = TextInput.Password;
             }
+        }
+        if(readOnly){
+            enabled=false;
         }
     }
 
@@ -202,6 +211,7 @@ Control{
                 selectByMouse: !isMobile
                 visible: !format_text.visible
                 topPadding: 0
+                font.pixelSize:fontPixelSizeContent
                 horizontalAlignment: control.type== "text"?TextField.AlignLeft:TextField.AlignRight
 
                 onTextEdited: {

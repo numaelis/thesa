@@ -7,12 +7,12 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
-import thesatools 1.0
-import TrytonControls 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
+import "../thesatools"
+import "../TrytonControls"
 
 Pane{
     id:templateO2M
@@ -36,7 +36,47 @@ Pane{
 
     property bool oneItemDefault: false
     property bool activeMenu: false
+    //menu
+    property bool isMenuSwitch: true
+    property bool isMenuOpen: true
+    property bool isMenuRemove: true
+    property bool isMenuNew: true
+    property bool noItemAdd: false
+    property bool isMenuBackForward: true
+    property bool isOpenDialogEdit: false
 
+    property bool readOnlyChild: false
+    property bool visiblePaneColButton: false
+    property real paneColButtonWidth: 150
+    property bool visibleHeader: true
+    property bool visiblePanelButtonDownload: false
+    property bool visiblePanelButtonRemove: false
+    property bool visibleButtonAddShop: false
+    property string textButtonAddShop: "Nuevo"
+    signal clickPanelButtons(int id, string btype)
+    signal clickButtonAddShop()
+
+
+    onReadOnlyChildChanged: {
+        checkReadOnlyChild()
+    }
+    function checkReadOnlyChild(){
+        if(readOnlyChild){
+            isMenuSwitch=false;
+            isMenuOpen=false;
+            isMenuRemove=false;
+            isMenuNew=false;
+            mode="tree";
+        }else{
+            isMenuSwitch=true;
+            isMenuOpen=true;
+            isMenuRemove=true;
+            if(!noItemAdd){
+                isMenuNew=true;
+            }
+        }
+    }
+    property QtObject dialogForm
     property var listRecords: []// lines json
     //    property real heightField: 60
     property int currentIndex: -1
@@ -53,6 +93,7 @@ Pane{
     property real heightHeader: 30
     property int maximumLineCount: 2
     property bool isPresedExpand: false
+    property bool isShadowExpand: false
     property bool verticalLine: true
     property bool multiSelectItems: true
     property bool lineOdd: true
@@ -64,6 +105,11 @@ Pane{
     property bool hasItems: false
     property int total_count: modelLinesOM.count
     property var paramsPlusCreate: ({})
+    property bool addMemoryFields: true
+    property var fieldsConfig: []
+    property var order:[]
+    signal doubleClick(int id)
+    signal clicked(int id)
     padding: 0
 
     ListModel{
@@ -79,6 +125,18 @@ Pane{
         templateO2M.objectName="tryton_"+fieldName+"_"+_getNewNumber();
         _initFields();
         clearValues();
+        checkReadOnlyChild();
+        if(noItemAdd){
+            isMenuNew=false;
+        }
+    }
+
+    function getWidthContentView(){
+        var w = 0.0;
+        for(var i=0, len = listHead.length;i<len;i++){
+            w+=listHead[i].width;
+        }
+        return w
     }
 
     function _initFields(){
@@ -172,142 +230,208 @@ Pane{
     }
 
     contentItem: ColumnLayout{
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         RowLayout{
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 20
+//            width: parent.width
             Label{
+                id:lbtitle
                 text:title
                 visible: title==""?false:true
-                Layout.preferredHeight: 15
+                Layout.preferredHeight: 20
                 font.bold: true
                 font.italic: true
                 color: "grey"
                 elide: Label.ElideRight
-                fontSizeMode: Label.Fit
+                //                fontSizeMode: Label.Fit
+                Layout.fillWidth: true
+                //                Layout.preferredWidth: paintedWidth
             }
             Label{
+                id:lbitem
                 text:isMobile?"":"  <"+qsTr("No items")+">  "
                 visible: mode=="form"?hasItems?false:true:false
-                Layout.preferredHeight: 15
+                Layout.preferredHeight: 20
                 font.bold: true
                 font.italic: true
                 color: "grey"
                 elide: Label.ElideRight
-                fontSizeMode: Label.Fit
-            }
-            Flickable {//TODO MENU
-                id: itoolmenu
-                visible: activeMenu
+                //                fontSizeMode: Label.Fit
                 Layout.fillWidth: true
+                //                Layout.preferredWidth: paintedWidth
+
+            }
+            Button{
+//                                                     Layout.preferredWidth: 70
                 Layout.preferredHeight: 35
-                clip: true
-                contentWidth: rww.width
-                boundsBehavior: Flickable.StopAtBounds
-                RowLayout{
-                    id:rww
-                    ButtonAwesome{
-                        id:buttonsw
-                        flat: true
-                        text: "\uf065"
-                        textToolTip: qsTr("switch")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
-                            if(mode==="form"){
-                                mode="tree";
-                            }else{
-                                mode="form";
-                                if(currentIndex>=0){
-                                    setCurrentIndexForm();
-                                }else{
-                                    enabledFields(false);
-                                    clearItemsForm();
-                                }
-                            }
-                        }
-                    }
-                    ButtonAwesome{
-                        id:buttonleft
-                        flat: true
-                        text: "\uf053"
-                        textToolTip: qsTr("back")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        enabled: hasItems
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
-                            if(currentIndex>0){
-                                currentIndex-=1;
-                                viewLinesOM.currentIndex=currentIndex;
-                                childGroup.checkState=Qt.Unchecked;
-                                tcheckitem.restart();
-                                if(mode=="form"){
-                                    setCurrentIndexForm();
-                                }
-                            }
-
-                        }
-                    }
-                    Label{
-                        text: (currentIndex + 1).toString()+"/"+total_count.toString()
+                visible: visibleButtonAddShop
+                enabled: isMenuNew
+                Material.background: setting.accent//Material.Green//setting_accent
+                onClicked: {
+                    clickButtonAddShop()
+                }
+                topPadding:0
+                bottomPadding:0
+                contentItem: RowLayout{
+                    Text {
+                        text: "\uf067"
+                        font.family:fawesome.name
+                        font.bold: false
+                        font.italic: false
+                        opacity: enabled ? 1.0 : 0.3
+                        color: Qt.darker(mainroot.Material.accent)
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
                         padding: 0
-                        color: "grey"
-                        fontSizeMode: Label.Fit
                     }
-                    ButtonAwesome{
-                        id:buttonright
-                        flat: true
-                        text: "\uf054"
-                        textToolTip: qsTr("forward")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        enabled: hasItems
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
-                            if(currentIndex<modelLinesOM.count-1){
-                                currentIndex+=1;
-                                viewLinesOM.currentIndex=currentIndex;
-                                childGroup.checkState=Qt.Unchecked;
-                                tcheckitem.restart();
-                                if(mode=="form"){
-                                    setCurrentIndexForm();
-                                }
-                            }
-                        }
+                    Text {
+                        text: textButtonAddShop
+                        opacity: enabled ? 1.0 : 0.3
+                        color: Qt.darker(mainroot.Material.accent)
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        padding: 0
                     }
+                }
+            }
 
-                    ButtonAwesome{
-                        id:buttonopen
-                        flat: true
-                        text: "\uf35d"
-                        textToolTip: qsTr("open")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
-                            mode="form";
+            RowLayout{
+                id:rww
+                //                    width: buttonsw.width *6
+                visible: activeMenu
+                width: 30*6
+//                Layout.alignment: Qt.AlignRight
+                ButtonAwesome{
+                    id:buttonsw
+                    flat: true
+                    text: "\uf065"
+                    textToolTip: qsTr("switch")
+                    enabled: isMenuSwitch
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+
+                    onClicked: {
+                        if(mode==="form"){
+                            mode="tree";
+                        }else{
+                            if(modelLinesOM.count>0){
+                                mode="form";
+                            }
                             if(currentIndex>=0){
                                 setCurrentIndexForm();
                             }else{
                                 enabledFields(false);
                                 clearItemsForm();
                             }
-
                         }
                     }
-                    ButtonAwesome{
-                        id:buttonnew
-                        flat: true
-                        text: "\uf067"
-                        textToolTip: qsTr("new")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
+                }
+                ButtonAwesome{
+                    id:buttonleft
+                    flat: true
+                    text: "\uf053"
+                    textToolTip: qsTr("back")
+                    visible: isMenuBackForward
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
+                    enabled: hasItems
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+                    onClicked: {
+                        if(currentIndex>0){
+                            currentIndex-=1;
+                            viewLinesOM.currentIndex=currentIndex;
+                            childGroup.checkState=Qt.Unchecked;
+                            tcheckitem.restart();
+                            if(mode=="form"){
+                                setCurrentIndexForm();
+                            }
+                        }
+
+                    }
+                }
+                Label{
+                    text: (currentIndex + 1).toString()+"/"+total_count.toString()
+                    padding: 0
+                    visible: isMenuBackForward
+                    Layout.preferredWidth: 30
+                    verticalAlignment: Label.AlignVCenter
+                    horizontalAlignment: Label.AlignHCenter
+
+                    color: "grey"
+                    fontSizeMode: Label.Fit
+                }
+                ButtonAwesome{
+                    id:buttonright
+                    flat: true
+                    text: "\uf054"
+                    textToolTip: qsTr("forward")
+                    visible: isMenuBackForward
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
+                    enabled: hasItems
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+                    onClicked: {
+                        if(currentIndex<modelLinesOM.count-1){
+                            currentIndex+=1;
+                            viewLinesOM.currentIndex=currentIndex;
+                            childGroup.checkState=Qt.Unchecked;
+                            tcheckitem.restart();
+                            if(mode=="form"){
+                                setCurrentIndexForm();
+                            }
+                        }
+                    }
+                }
+
+                ButtonAwesome{
+                    id:buttonopen
+                    flat: true
+                    text: "\uf35d"
+                    textToolTip: qsTr("open")
+                    enabled: isMenuOpen
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+                    onClicked: {
+                        if(isOpenDialogEdit){
+
+                        }else{
+                            if(modelLinesOM.count>0){
+                                mode="form";
+                            }
+                            if(currentIndex>=0){
+                                setCurrentIndexForm();
+                            }else{
+                                enabledFields(false);
+                                clearItemsForm();
+                            }
+                        }
+
+                    }
+                }
+                ButtonAwesome{
+                    id:buttonnew
+                    flat: true
+                    text: "\uf067"
+                    textToolTip: qsTr("new")
+                    enabled: isMenuNew
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+                    onClicked: {
+                        if(isOpenDialogEdit){
+
+                        }else{
                             if(mode=="form"){
                                 clearItemsForm();
                             }else{
@@ -316,221 +440,246 @@ Pane{
                             addRecordBlank(true);
                         }
                     }
-                    ButtonAwesome{
-                        id:buttondel
-                        flat: true
-                        text: "\uf2ed"
-                        textToolTip: qsTr("remove")
-                        Layout.preferredWidth: 30
-                        Layout.preferredHeight: 35
-                        enabled: hasItems
-                        Material.foreground: mainroot.Material.accent
-                        font.pixelSize: 18
-                        onClicked: {
-                            if(multiSelectItems==true){
-                                var listIndex = getIndexCheckIds();
-                                if(listIndex.length>0){
-                                    deleteRecordsIndex(listIndex);
-                                }
-                            }else{
-                                if(currentIndex!=-1){
-                                    deleteRecord();
-                                }
-                            }
+                }
+                ButtonAwesome{
+                    id:buttondel
+                    flat: true
+                    text: "\uf2ed"
+                    textToolTip: qsTr("remove")
+//                    visible: isMenuRemove
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 35
 
-//                            if(currentIndex >= 0){
-//                                if(childGroup.checkState!=0){
-//                                    var listIndex = getIndexIds();
-//                                    if(listIndex.length>1){
-//                                        deleteRecordsIndex(listIndex);
-//                                    }else{
-//                                        deleteRecord();
-//                                    }
-//                                }
-//                            }
+                    enabled: hasItems && isMenuRemove
+                    Material.foreground: mainroot.Material.accent
+                    font.pixelSize: 18
+                    onClicked: {
+                        if(multiSelectItems==true){
+                            var listIndex = getIndexCheckIds();
+                            if(listIndex.length>0){
+                                deleteRecordsIndex(listIndex);
+                            }
+                        }else{
+                            if(currentIndex!=-1){
+                                deleteRecord();
+                            }
                         }
+
+                        //                            if(currentIndex >= 0){
+                        //                                if(childGroup.checkState!=0){
+                        //                                    var listIndex = getIndexIds();
+                        //                                    if(listIndex.length>1){
+                        //                                        deleteRecordsIndex(listIndex);
+                        //                                    }else{
+                        //                                        deleteRecord();
+                        //                                    }
+                        //                                }
+                        //                            }
                     }
                 }
             }
+
+            //            Flickable {//TODO MENU
+            //                id: itoolmenu
+            //                visible: activeMenu
+            //                Layout.fillWidth: true
+            //                Layout.preferredHeight: 35
+            //                clip: true
+            //                contentWidth: rww.width
+            //                boundsBehavior: Flickable.StopAtBounds
+            //                Layout.alignment: Qt.AlignRight
+
+            //            }
         }
-        ListView{
-            id:viewLinesOM
-            visible: !pform.visible//mode=="tree"?true:false
-            property int countMini: -1
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            clip: true
-            model: modelLinesOM
-            delegate: pdelegate
-            ScrollBar.vertical: ScrollBar {policy: viewLinesOM.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
-            ScrollBar.horizontal: ScrollBar {policy: viewLinesOM.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
-            flickableDirection: isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
-            contentWidth: headerItem.width
-            headerPositioning:isMobile?ListView.InlineHeader:ListView.OverlayHeader
 
-            function getId(){
-                if(currentIndex!=-1){
-                    var mid = currentItem.getId();
-                    return mid;
-                }
-            }
+//        Item {
+//            Layout.fillHeight: true
+//            Layout.fillWidth: true
+            ListView{
+                id:viewLinesOM
+                visible: !pform.visible//mode=="tree"?true:false
+                property int countMini: -1
+//                anchors.fill: parent
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                clip: true
+                model: modelLinesOM
+                delegate: pdelegate
+                ScrollBar.vertical: ScrollBar {policy: viewLinesOM.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AsNeeded}
+                ScrollBar.horizontal: ScrollBar {policy: viewLinesOM.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
+                flickableDirection: isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
+                contentWidth: visibleHeader?headerItem.width:getWidthContentView()
+                headerPositioning:isMobile?ListView.InlineHeader:ListView.OverlayHeader
 
-            function getObject(){
-                if(currentIndex!=-1){
-                    return currentItem.getObject();
-                }
-            }
-
-            function reloadItem(){
-                if(currentIndex!=-1){
-                    currentItem.reloadItem();
-                }
-            }
-            header: Row{
-                id:iph
-                z:8
-                Rectangle{
-                    width: multiSelectItems?0:1
-                    height: heightHeader
-                    visible: !multiSelectItems
-                    color: mainroot.Material.accent
-                }
-                Row {
-                    id:mHeaderView
-                    z:8
-                    height: heightHeader
-                    spacing: 1
-                    function itemAt(index) { return repeater.itemAt(index) }
-                    Label{
-                        width: multiSelectItems?heightField+1:0
-                        height: heightHeader
-                        visible: multiSelectItems
-                        padding: 4
-                        text:" "
-                        background: Rectangle {color:Qt.lighter(mainroot.Material.accent) }
-                        CheckBox {
-                            id: parentBox
-                            checked: false
-                            width: heightField
-                            height: heightHeader
-                            checkState: childGroup.checkState
-                            Component.onCompleted: {if(multiSelectItems){childGroup.checkState=parentBox.checkState;}}
-                            anchors.centerIn: parent
-                            onClicked:  {
-                                if(checkState === Qt.Unchecked){
-                                    childGroup.checkState=Qt.Unchecked;
-                                }else{
-                                    childGroup.checkState=Qt.Checked;
-                                }
-                            }
-                            text: ""
-
-                        }
-                        Rectangle{
-                            width: 1
-                            height: parent.height
-                            color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
-                            x:parent.width
-                        }
+                function getId(){
+                    if(currentIndex!=-1){
+                        var mid = currentItem.getId();
+                        return mid;
                     }
+                }
 
-                    Repeater {
-                        id: repeater
-                        model: listHead
-                        Label {
-                            id:mll
-                            text: modelData.alias
-                            font.bold: true
-                            width:  modelData.width<=20?20:modelData.width
-                            height: 30
-                            elide: Label.ElideRight
+                function getObject(){
+                    if(currentIndex!=-1){
+                        return currentItem.getObject();
+                    }
+                }
+
+                function reloadItem(){
+                    if(currentIndex!=-1){
+                        currentItem.reloadItem();
+                    }
+                }
+                header: Row{
+                    id:iph
+                    visible: visibleHeader
+                    z:8
+                    Rectangle{
+                        width: multiSelectItems?0:1
+                        height: visibleHeader?heightHeader:0
+                        visible: !multiSelectItems
+                        color: mainroot.Material.accent
+                    }
+                    Row {
+                        id:mHeaderView
+                        z:8
+                        height:visibleHeader? heightHeader:0
+                        spacing: 1
+                        function itemAt(index) { return repeater.itemAt(index) }
+                        Label{
+                            width: multiSelectItems?heightField+1:0
+                            height: heightHeader
+                            visible: multiSelectItems
                             padding: 4
-                            background: Rectangle {color:mainroot.Material.accent }//Qt.lighter(mainroot.Material.accent)
-                            horizontalAlignment: modelData.align
-                            verticalAlignment: Label.AlignVCenter
-                            z:100-index
-                            Rectangle{
-                                id:rec_shadow
-                                objectName: "rec_shadow"
-                                anchors.fill: parent
-                                opacity: 0.5
-                                color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"
-                                visible: false
+                            text:" "
+                            background: Rectangle {color:Qt.lighter(mainroot.Material.accent) }
+                            CheckBox {
+                                id: parentBox
+                                checked: false
+                                width: heightField
+                                height: heightHeader
+                                checkState: childGroup.checkState
+                                Component.onCompleted: {if(multiSelectItems){childGroup.checkState=parentBox.checkState;}}
+                                anchors.centerIn: parent
+                                onClicked:  {
+                                    if(checkState === Qt.Unchecked){
+                                        childGroup.checkState=Qt.Unchecked;
+                                    }else{
+                                        childGroup.checkState=Qt.Checked;
+                                    }
+                                }
+                                text: ""
+
                             }
                             Rectangle{
-                                id:rec_view_exp
                                 width: 1
                                 height: parent.height
                                 color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
                                 x:parent.width
                             }
-                            MouseArea{
-                                id:pmap
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onEntered:  {rec_shadow.visible=true;rec_view_exp.width=2}
-                                onExited:  {rec_shadow.visible=false;rec_view_exp.width=1}
-                                cursorShape: isPresedExpand?Qt.SizeHorCursor:Qt.ArrowCursor
+                        }
 
+                        Repeater {
+                            id: repeater
+                            model: listHead
+                            Label {
+                                id:mll
+                                text: modelData.alias
+                                font.bold: true
+                                width:  modelData.width<=20?20:modelData.width
+                                height: 30
+                                elide: Label.ElideRight
+                                padding: 4
+                                background: Rectangle {color:mainroot.Material.accent }//Qt.lighter(mainroot.Material.accent)
+                                horizontalAlignment: modelData.align
+                                verticalAlignment: Label.AlignVCenter
+                                z:100-index
                                 Rectangle{
-                                    id:rec_right
-                                    width: 2
+                                    id:rec_shadow
+                                    objectName: "rec_shadow"
+                                    anchors.fill: parent
+                                    opacity: 0.5
+                                    color: "white"//setting.theme == Material.Dark?"white":"grey"//mainroot.Material.accent//"grey"
+                                    visible: false
+                                }
+                                Rectangle{
+                                    id:rec_view_exp
+                                    width: 1
                                     height: parent.height
-                                    color: "grey"
+                                    color: setting.theme == Material.Dark?Qt.darker(mainroot.Material.accent):"white"
                                     x:parent.width
-                                    opacity: 0
-                                    MouseArea{
-                                        id:ma
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape : Qt.SizeHorCursor
-                                        onPressed:{isPresedExpand=true}// { map.cursorShape = Qt.SizeHorCursor; pmap.cursorShape = Qt.SizeHorCursor}
-                                        onEntered: {rec_right.opacity=1}
-                                        onExited: {rec_right.opacity=0}
-                                        drag.target: rec_right
-                                        drag.axis: Drag.XAxis
-                                        drag.minimumX: 20
-                                        drag.filterChildren: true
-                                        onReleased: {
-                                            modelData.width = rec_right.x;
-                                            mll.width = rec_right.x;
-                                            var pi = rep_column.itemAt(index);
-                                            pi.value = rec_right.x;
-                                            isPresedExpand=false;
+                                }
+                                MouseArea{
+                                    id:pmap
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onEntered:  {if(isShadowExpand){rec_shadow.visible=true;}rec_view_exp.width=2;}
+                                    onExited:  {if(isShadowExpand){rec_shadow.visible=false;}rec_view_exp.width=1;}
+                                    cursorShape: isPresedExpand?Qt.SizeHorCursor:Qt.ArrowCursor
+
+                                    Rectangle{
+                                        id:rec_right
+                                        width: 2
+                                        height: parent.height
+                                        color: "grey"
+                                        x:parent.width
+                                        opacity: 0
+                                        MouseArea{
+                                            id:ma
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape : Qt.SizeHorCursor
+                                            onPressed:{isPresedExpand=true}// { map.cursorShape = Qt.SizeHorCursor; pmap.cursorShape = Qt.SizeHorCursor}
+                                            onEntered: {rec_right.opacity=1}
+                                            onExited: {rec_right.opacity=0}
+                                            drag.target: rec_right
+                                            drag.axis: Drag.XAxis
+                                            drag.minimumX: 20
+                                            drag.filterChildren: true
+                                            onReleased: {
+                                                modelData.width = rec_right.x;
+                                                mll.width = rec_right.x;
+                                                var pi = rep_column.itemAt(index);
+                                                pi.value = rec_right.x;
+                                                isPresedExpand=false;
+                                            }
+
                                         }
-
                                     }
-                                }
-                                Rectangle{
-                                    id:rec_view_line
-                                    x:rec_right.x
-                                    width: 2
-                                    height: viewLinesOM.height
-                                    color: "grey"
-                                    visible: ma.pressed?1:0
-                                }
+                                    Rectangle{
+                                        id:rec_view_line
+                                        x:rec_right.x
+                                        width: 2
+                                        height: viewLinesOM.height
+                                        color: "grey"
+                                        visible: ma.pressed?1:0
+                                    }
 
+                                }
                             }
                         }
                     }
-                }
-                Rectangle{
-                    width: multiSelectItems?0:1
-                    height: heightHeader
-                    visible: !multiSelectItems
-                    color: mainroot.Material.accent
+                    Rectangle{
+                        width: multiSelectItems?0:1
+                        height: visibleHeader?heightHeader:0
+                        visible: !multiSelectItems
+                        color: mainroot.Material.accent
+                    }
+
                 }
 
             }
-        }
+            Pane{
+                id:pform
+                padding: 0
+//                anchors.fill: parent
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                visible: mode=="form"?true:false
+            }
+//        }
 
-        Pane{
-            id:pform
-            padding: 0
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            visible: mode=="form"?true:false
-        }
+
+
     }
     Repeater {
         id: rep_column
@@ -681,9 +830,9 @@ Pane{
                                         return myformatDecimalPlaces(value,2);
                                     }
                                     function myformatDecimalPlaces(value, mplaces){
-//                                        if(value==null){
-//                                            return "";
-//                                        }
+                                        //                                        if(value==null){
+                                        //                                            return "";
+                                        //                                        }
 
                                         var number = parseFloat(value);
                                         if (isNaN(number)){
@@ -809,6 +958,12 @@ Pane{
                                                 return "";
                                             }
                                             return rnm;
+                                        case 'boolean':
+                                            if(myobject[modelData.name]==true){
+                                                label.font.family=fawesome.name;
+                                                return "\uf00c";
+                                            }
+                                            return "";
                                         default:
                                             return "";
                                         }
@@ -822,6 +977,64 @@ Pane{
                                 }
                             }
                         }
+                        Pane{
+                            id:paneColButton
+                            padding: 0
+                            width:  paneColButtonWidth
+                            visible:visiblePaneColButton
+                            height: heightField
+
+                            RowLayout{
+//                                anchors.fill: parent
+                                ButtonAwesome{
+                                    id:bview
+                                    flat: true
+                                    text: "\uf019"
+                                    visible: visiblePanelButtonDownload
+                                    textToolTip: qsTr("Download")
+                                    Layout.preferredWidth: 30
+                                    Layout.preferredHeight: heightField
+                                    Material.foreground: mainroot.Material.accent
+                                    font.pixelSize: 16
+                                    onClicked: {
+                                        viewLinesOM.forceActiveFocus();
+                                        viewLinesOM.currentIndex = model.index;
+                                        templateO2M.currentIndex = model.index;
+                                        if(multiSelectItems==true){
+                                            childGroup.checkState=Qt.Unchecked;
+                                            tcheckitem.restart();
+                                        }
+                                        clickPanelButtons(itdele.getId(),"download");
+                                    }
+                                }
+                                ButtonAwesome{
+                                    id:bremove
+                                    flat: true
+                                    text: "\uf2ed"
+                                    visible: visiblePanelButtonRemove
+                                    enabled: isMenuRemove
+                                    textToolTip: qsTr("Remove")
+                                    Layout.preferredWidth: 30
+                                    Layout.preferredHeight: heightField
+                                    Material.foreground: mainroot.Material.accent
+                                    font.pixelSize: 16
+                                    onClicked: {
+                                        viewLinesOM.forceActiveFocus();
+                                        viewLinesOM.currentIndex = model.index;
+                                        templateO2M.currentIndex = model.index;
+                                        if(multiSelectItems==true){
+                                            childGroup.checkState=Qt.Unchecked;
+                                            tcheckitem.restart();
+                                        }
+                                        if(currentIndex!=-1){
+                                            deleteRecord();
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
                 Rectangle {
@@ -848,6 +1061,10 @@ Pane{
                 //check only this item
                 childGroup.checkState=Qt.Unchecked;
                 tcheckitem.restart();
+                doubleClick(itdele.getId())
+                if(isOpenDialogEdit){
+
+                }
             }
 
             Keys.onPressed: {
@@ -855,17 +1072,26 @@ Pane{
                     event.accepted = true;
                     viewLinesOM.currentIndex = model.index;
                     templateO2M.currentIndex = model.index;
+                    if(isOpenDialogEdit){
+
+                    }
                 }
                 if (event.key === Qt.Key_Enter ) {
                     event.accepted = true;
                     viewLinesOM.currentIndex = model.index;
                     templateO2M.currentIndex = model.index;
+                    if(isOpenDialogEdit){
+
+                    }
                 }
             }
         }
     }
 
 
+    function exChange(){
+        change(listRecords);
+    }
 
     function changeField(field, value){
         var index_real = findIndexReal(currentIndex);
@@ -923,6 +1149,16 @@ Pane{
         clearValues();
     }
 
+    function deleteAllRecords(){
+        var countm = modelLinesOM.count;
+        var listin=[];
+        for(var i=0,len=countm;i<len;i++){
+            listin.push(i);
+        }
+
+        deleteRecordsIndex(listin);
+    }
+
     function clearValues(){
         currentIndex = -1;
         listRecords=[];
@@ -933,16 +1169,18 @@ Pane{
             addRecordBlank(false);
         }else{
             isChange=false;
-           // if(mode=="form"){
+            // if(mode=="form"){
             enabledFields(false);
-           // }
+            // }
         }
         mode = mode_init;
     }
 
     function enabledFields(active){
         for(var i=0,len=itemsField.length;i<len;i++){
-            itemsField[i].enabled=active;
+            if(itemsField[i].readOnly==false){
+                itemsField[i].enabled=active;
+            }
         }
         hasItems = active;
     }
@@ -969,24 +1207,111 @@ Pane{
             var nfield = listF[i]
             if(values[nfield]===null){
                 _values[nfield] = "";
-                var type = mapFieldItem[nfield].type;
-                if(type==="many2one"){
-                    _values[nfield] = -1;
-                }
-                if(type==="text"){
-                    _values[nfield] = "";
-                }
-                if(type ==="integer" || type ==="float"){
-                    _values[nfield] = 0;
-                }
-                if(type==="numeric"){
-                    _values[nfield] = {"__class__":"Decimal","decimal":""}
+                if(mapFieldItem[nfield]){
+                    var type = mapFieldItem[nfield].type;
+                    if(type==="many2one"){
+                        _values[nfield] = -1;
+                    }
+                    if(type==="text"){
+                        _values[nfield] = "";
+                    }
+                    if(type ==="integer" || type ==="float"){
+                        _values[nfield] = 0;
+                    }
+                    if(type==="numeric"){
+                        _values[nfield] = {"__class__":"Decimal","decimal":""}
+                    }
+                    if(type==="binary"){
+                        _values[nfield] = {"__class__":"bytes","base64":""};
+                    }
                 }
             }else{
                 _values[nfield] = values[nfield];
             }
         }
         return _values;
+    }
+    function addRecords2(list_values){
+        var template = JSON.stringify(getFieldsInitValues())
+        for(var i = 0, len=list_values.length;i<len;i++){
+            var values_data = list_values[i];//getFieldsInitValues(false);
+            var values = JSON.parse(template);
+            for(var itemt in values_data){
+                values[itemt] = values_data[itemt];
+            }
+            values["id"]=-1;
+            if(isSequence){
+                values["sequence"]=null;
+            }
+            values["action"]="write";
+            values["change"]={};
+            for(var item in values){
+                if(values[item]){
+                    values["change"][item]=item;
+                }
+            }
+
+
+            values = Object.assign(values, paramsPlusCreate)
+//            addRecord(values, true);
+//            console.log(JSON.stringify(values))
+            listRecords.push(values);
+//            var countm =  modelLinesOM.count;
+            modelLinesOM.append(fixValuesNull(values));
+            isChange=true;
+            change(listRecords);
+
+//            if(echange){
+//                change(listRecords);
+//            }
+
+
+        }
+        if(list_values.length>0){
+            currentIndex=0;
+        }
+//        currentIndex=countm;
+        setCurrentIndexForm();
+        isChange = true;
+        viewLinesOM.currentIndex=currentIndex;
+        childGroup.checkState=Qt.Unchecked;
+        tcheckitem.restart();
+    }
+
+    function addRecords(list_values){
+        var countm =  modelLinesOM.count;
+        for(var i = 0, len=list_values.length;i<len;i++){
+            listRecords.push(list_values[i]);
+            modelLinesOM.append(fixValuesNull(list_values[i]));
+        }
+        if(list_values.length>0){
+            countm=0;
+            currentIndex = 0;
+            if(mode=="form"){
+                setCurrentIndexForm();
+            }else{
+                hasItems=true;
+            }
+        }
+
+        viewLinesOM.currentIndex=currentIndex;
+        childGroup.checkState=Qt.Unchecked;
+        tcheckitem.restart();
+        isChange=true;
+//        currentIndex=countm;
+//        setCurrentIndexForm();
+//        isChange = true;
+//        viewLinesOM.currentIndex=currentIndex;
+//        childGroup.checkState=Qt.Unchecked;
+//        tcheckitem.restart();
+//        isChange=false;
+//        if(echange){
+//            change(listRecords);
+//        }
+
+        viewLinesOM.currentIndex=currentIndex;
+        childGroup.checkState=Qt.Unchecked;
+//        tcheckitem.restart();
     }
 
     function addRecord(values, echange){
@@ -1022,7 +1347,7 @@ Pane{
     function deleteRecordsIndex(listIndex){
         listIndex.sort(function(a, b) {
             return b - a;
-          });
+        });
         for(var i = 0, len = listIndex.length;i<len;i++){
             var index = listIndex[i];
             var index_real = findIndexReal(index);
@@ -1051,6 +1376,9 @@ Pane{
         viewLinesOM.currentIndex=currentIndex;
         childGroup.checkState=Qt.Unchecked;
         tcheckitem.restart();
+        if(modelLinesOM.count==0){
+            mode="tree";
+        }
     }
 
     function deleteRecord(){
@@ -1064,6 +1392,9 @@ Pane{
         change(listRecords);
         modelLinesOM.remove(currentIndex);
         selectIndexBack();
+        if(modelLinesOM.count==0){
+            mode="tree";
+        }
     }
 
     function selectIndexBack(){
@@ -1122,19 +1453,53 @@ Pane{
     function _read(ids){
         var params = getFieldsNamesTryton40();
         openBusy();
-        var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".read",
-                                                 [
-                                                     ids,
-                                                     params,
-                                                     preferences
-                                                 ]);
-        closeBusy();
-        if(data.data!=="error"){
-            if(data.data.result.length>0){
-                var obj = data.data.result;
-                setValue(obj);
+
+        var r_params = prepareParamsLocal("model."+modelName+".read",
+                                          [
+                                              ids,
+                                              params,
+                                              preferences
+                                          ]);
+        var url = getUrl();
+        var http = getHttpRequest(url, r_params, "");
+
+        http.onreadystatechange = function() { // Call a function when the state changes.
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+                    closeBusy();
+                    //                    console.log(http.responseText);
+                    var response = JSON.parse(http.responseText.toString());
+                    if(response.hasOwnProperty("result")){
+                        if(response.result.length>0){
+                            var obj = response.result;
+                            setValue(obj);
+                        }
+                    }else{
+                        analizeErrors(response);
+                    }
+
+                } else {
+                    MessageLib.showMessage("error: "+http.status,mainroot);
+                    closeBusy();
+                }
             }
         }
+        http.send(JSON.stringify(r_params));
+
+
+        //        var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".read",
+        //                                                 [
+        //                                                     ids,
+        //                                                     params,
+        //                                                     preferences
+        //                                                 ]);
+        //        closeBusy();
+        //        if(data.data!=="error"){
+        //            if(data.data.result.length>0){
+        //                var obj = data.data.result;
+        //                setValue(obj);
+        //            }
+        //        }
     }
 
     function setValue(values){//TODO order
@@ -1152,7 +1517,7 @@ Pane{
             listRecords.push(data);
             modelLinesOM.append(fixValuesNull(data));
         }
-
+        isChange=false;
         if(listRecords.length>0){
             currentIndex = 0;
             if(mode=="form"){
@@ -1219,6 +1584,23 @@ Pane{
 
     }
 
+    function get_context_timestamp(){
+        var ocontext={};
+        for(var i=0,len=listRecords.length;i<len;i++){
+            var data = JSON.parse(JSON.stringify(listRecords[i]));
+            if(data.id!=-1){
+                if(data.hasOwnProperty("_timestamp") && (data.action==='write' || data.action==='delete')){
+                    if(data._timestamp!=null){
+                        var itemTimeStamp = JSON.parse('{"'+modelName+','+data.id.toString()+'":"'+data._timestamp+'"}');
+                        //add one2many timestamp
+                        ocontext = Object.assign(JSON.parse(JSON.stringify(ocontext)), itemTimeStamp)
+                    }
+                }
+            }
+        }
+        return ocontext;
+    }
+
     function getValue(){
         var lines =[];
         var add = [];
@@ -1240,7 +1622,11 @@ Pane{
                 for(var nf in record){
                     if(nf.indexOf(".")<0){
                         if(mapFieldItem.hasOwnProperty(nf)==true){
-                            if(mapFieldItem[nf].readOnly==false){
+//                            if(mapFieldItem[nf].readOnly==false){
+                                _recordfix[nf] = record[nf];
+//                            }
+                        }else{
+                            if(addMemoryFields){
                                 _recordfix[nf] = record[nf];
                             }
                         }
@@ -1376,6 +1762,9 @@ Pane{
                 if(type==="numeric"){
                     params[nameFieldHead] = {"__class__":"Decimal","decimal":""}
                 }
+                if(type==="binary"){
+                    params[nameFieldHead] = {"__class__":"bytes","base64":""};
+                }
             }
         }
         return params;
@@ -1396,7 +1785,7 @@ Pane{
                             mode="form";
                             setCurrentIndexForm();
                             itemsField[i]._forceActiveFocus();
-                            MessageLib.showMessage(itemsField[i].labelAlias+ " "+qsTr("required"), mainroot);
+                            MessageLib.showMessage(itemsField[i].labelAlias+ " "+qsTr("Required"), mainroot);
                             return false;
                         }
                     }
@@ -1448,6 +1837,8 @@ Pane{
             }
         }
         params.push("id");
+        params.push("rec_name");
+        params.push("_timestamp");
         return params;
     }
 

@@ -7,12 +7,12 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
-import thesatools 1.0
-import TrytonControls 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
+import "../thesatools"
+import "../TrytonControls"
 
 Control{
     id:control
@@ -22,12 +22,15 @@ Control{
     property string labelAlias: ""
     property bool required: false
     property bool readOnly: false
+    property real fontPixelSizeContent: 18
     enabled: !readOnly
     property alias item_field: tfield
     property var model: []//TODO append "", ""
     property bool isChange: false
     property var itemParent: -1
     signal change(string text)
+
+    property string mvalue: ""
 
     padding: 0
 
@@ -115,7 +118,7 @@ Control{
         boolBack:false
         ComboBox{
             id:tfield
-            font.pixelSize:18
+            font.pixelSize:fontPixelSizeContent
             textRole: "alias"
             valueRole: "name"
             model: control.model

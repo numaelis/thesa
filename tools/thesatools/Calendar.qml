@@ -7,16 +7,16 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Layouts 1.3
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
 
 Item {
     id:mainCaDes
     width: gdays.width
     height: ibody.height+barra.height
-    property real widthGrid: 28
+    property real widthGrid: 30
     property real heightGrid: 30
     //property real heightBarra: 20
     property int fontPixel: 16
@@ -102,31 +102,44 @@ Item {
         id:modelmonth
     }
 
-    function setDate(year,month){
+    function setDate(year,month,day){
         currentMonth=month;
         currentYear=year;
+        currentDay=day;
         reload();
     }
     property int indexCurrentDay: -1
+    property int indexRealCurrentDay: -1
 
     function checkCurrentDay(){
         if(indexCurrentDay!=-1){
             gdays.currentIndex = indexCurrentDay;
             gdays.currentItem.isCurrentDay = true;
         }
+        if(indexRealCurrentDay!=-1){
+            gdays.currentIndex = indexRealCurrentDay;
+            gdays.currentItem.isRealCurrentDay = true;
+        }
     }
 
     function reload(){
         modelmonth.clear()
         indexCurrentDay = -1;
+        indexRealCurrentDay = -1;
         var dataNow = new Date();
         var _currentMonth = dataNow.getMonth()+1;
         var _currentYear = dataNow.getFullYear();
+        var _realCurrentDay = dataNow.getDay();
         var lista = Tools.calendarMonth(currentYear, currentMonth);
         for(var i = 0, len = lista.length; i < len; i++){
             modelmonth.append(lista[i]);
-            if(lista[i].dia == currentDay){
+            if(lista[i].dia == _realCurrentDay){
                 if(_currentMonth==currentMonth && _currentYear==currentYear && lista[i].type==0){
+                    indexRealCurrentDay = i;
+                }
+            }
+            if(lista[i].dia == currentDay){
+                if(lista[i].type==0){
                     indexCurrentDay = i;
                 }
             }
@@ -146,7 +159,7 @@ Item {
 
         Button{
             id:bleft
-            width: height-dpis*4
+            width: height-4*4
             height: parent.height
             anchors{left: parent.left;}
             onClicked: {back()}
@@ -159,7 +172,7 @@ Item {
 
         Button{
             id:bright
-            width: height-dpis*4
+            width: height-4*4
             height: parent.height
             anchors{right: parent.right;}
             onClicked: {forward()}
@@ -172,7 +185,7 @@ Item {
 
         Text{
             id:nameMonth
-            width: parent.width-bleft.width-inputYear.width-bright.width-dpis// - (dpis*2)
+            width: parent.width-bleft.width-inputYear.width-bright.width-6// - (4*2)
             height: parent.height
             anchors{left: bleft.right;leftMargin: 0}
             font.italic: true
@@ -201,7 +214,7 @@ Item {
             width: textWidth.width
             //height: parent.height
             placeholderText: qsTr("yyyy")
-            anchors{right: bright.left; rightMargin: dpis;}
+            anchors{right: bright.left; rightMargin: 4;}
             mouseSelectionMode: TextInput.SelectWords
             selectByMouse: true
             font.pixelSize: fontPixel
@@ -278,7 +291,7 @@ Item {
         Row{
             id:rownamesDays
             width: gdays.width
-            height: dpis*4
+            height: 4*4
             anchors{top: parent.top;}
             Repeater{
                 model:7
@@ -292,7 +305,7 @@ Item {
                     Text{
                         anchors{fill: parent;margins: 0.5}
                         text: namesDays[index]
-                        font.pixelSize: dpis*3
+                        font.pixelSize: 4*3
                         minimumPixelSize: 6
                         fontSizeMode: Text.Fit
                         verticalAlignment: Text.AlignVCenter
@@ -318,8 +331,15 @@ Item {
                 font.bold: true
                 font.pixelSize: fontPixel
                 property bool isCurrentDay: false
+                property bool isRealCurrentDay: false
                 contentItem: Item{
                     anchors.fill: parent
+                    Rectangle{
+                        id:irbase
+                        anchors{fill: parent;margins: 0.5}
+                        opacity: 0.5
+                        color: isRealCurrentDay?"gray":"transparent"
+                    }
                     Rectangle{
                         id:ibase
                         anchors{fill: parent;margins: 0.5}

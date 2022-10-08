@@ -203,6 +203,7 @@ TabDesktop {
                     Layout.preferredHeight: 100
                     Layout.fillWidth: true
                     oneItemDefault: true
+                    mode_init:"form"
                     contentItemForm: ColumnLayout{
                         TemplateFieldChar{
                             labelAlias: "Calle"

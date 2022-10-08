@@ -7,12 +7,12 @@
 //__maintainer__ = "Numael Garay"
 //__email__ = "mantrixsoft@gmail.com"
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Controls.Material 2.12
-import QtQuick.Layouts 1.12
-import thesatools 1.0
-import TrytonControls 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Material 2.15
+import QtQuick.Layouts 1.15
+import "../thesatools"
+import "../TrytonControls"
 
 Dialog {
     id:dialogTsearch
@@ -38,7 +38,7 @@ Dialog {
     property alias treeViewItem: myTreeView
     property var modelStates: []
     property QtObject dialogEdit
-    title: _title
+//    title: _title
     closePolicy: Dialog.CloseOnEscape
     signal actionSelect(int _id, var fields)
     signal actionEdit(int index)
@@ -93,6 +93,24 @@ Dialog {
         dialogTsearch.accept();
     }
 
+    header: ToolBar{
+        Material.foreground: Qt.darker(mainroot.Material.accent)
+        Item{
+            id:mh
+            anchors.fill: parent
+            implicitHeight: 30
+            Label{
+                text:_title
+                height: 30
+                anchors.centerIn: parent
+                font.pixelSize: 20
+                font.bold: true
+                verticalAlignment: Label.AlignVCenter
+                horizontalAlignment: Label.AlignHCenter
+            }
+        }
+    }
+
     footer: ToolBar {
         id:mtb
         implicitHeight: 42
@@ -106,7 +124,7 @@ Dialog {
             spacing: 8
             ToolButton {
                 id:bclican
-                text: isMobile?"\uf05e":qsTr("Cancel")
+                text: isMobile?"\uf05e":qsTr("Cerrar")
                 Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionCancel
@@ -135,12 +153,12 @@ Dialog {
             }
             ToolButton {
                 id:bclirem
-                text: isMobile?"\uf2ed":qsTr("Remove")
+                text: isMobile?"\uf2ed":qsTr("Eliminar")
                 Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionRemove
                 onClicked: {
-                     MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
+                     MessageLib.showQuestion(qsTr("¿Eliminar Registro?"),myTreeView,"myTreeView.removeItems()");
 
                 }
                 contentItem: Text {
@@ -155,17 +173,17 @@ Dialog {
                 Keys.onPressed: {
                     if (event.key === Qt.Key_Return ) {
                         event.accepted = true;
-                         MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
+                         MessageLib.showQuestion(qsTr("¿Eliminar Registro?"),myTreeView,"myTreeView.removeItems()");
                     }
                     if (event.key === Qt.Key_Enter ) {
                         event.accepted = true;
-                        MessageLib.showQuestion(qsTr("¿Remove Items?"),myTreeView,"myTreeView.removeItems()");
+                        MessageLib.showQuestion(qsTr("¿Eliminar Registro?"),myTreeView,"myTreeView.removeItems()");
                     }
                 }
             }
             ToolButton {
                 id:bcliedit
-                text: isMobile?"\uf044":qsTr("Edit")
+                text: isMobile?"\uf044":qsTr("Editar")
                 Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionEdit
@@ -195,7 +213,7 @@ Dialog {
             }
             ToolButton {
                 id:bclinew
-                text: isMobile?"\uf067":qsTr("New")
+                text: isMobile?"\uf067":qsTr("Nuevo")
                 Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionNew
@@ -224,7 +242,7 @@ Dialog {
             }
             ToolButton {
                 id:bcliselect
-                text: isMobile?"\uf00c":qsTr("Select")
+                text: isMobile?"\uf00c":qsTr("Seleccionar")
                 Component.onCompleted: {if(isMobile){font.family=fawesome.name;font.pixelSize=20}}
                 implicitHeight: 34
                 visible: dialogTsearch.activeActionSelect
@@ -263,6 +281,7 @@ Dialog {
         TreeView{
             id:myTreeView
             property var objectFields: ({})
+            visible: dialogTsearch.visible
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.preferredHeight: 400
@@ -284,14 +303,14 @@ Dialog {
             buttonRestart:true
             maximumLineCount:3
             onClicked:{
-                var mid = getId();
+                var mid = getCurrentId();
                 if (mid!=-1){
                     idRecordSearch = mid;
                     objectFields = getObject();
                 }
             }
             onDoubleClick: {
-                var mid = getId();
+                var mid = getCurrentId();
                 if (mid!=-1){
                     idRecordSearch = mid;
                     objectFields = getObject();

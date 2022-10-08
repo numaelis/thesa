@@ -12,7 +12,8 @@ import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import "../thesatools"
-
+import "../thesatools/messages.js" as MessageLib
+import "../thesatools/conections.js" as ConectionLib
 //TODO  add type button, type ext file
 
 Control{
@@ -42,16 +43,16 @@ Control{
     property bool multiSelectItems: true
     property var listHead: []
     //    property bool useTableView: true
-    property string modelName: ""
-    property var fields: []
+
+    //    property var fields: []
     property var fieldsFormatDecimal: []
     property var fieldsFormatDateTime: []
-    property int limit: 500
+
     property int maximunItemView: 10000//config
     property int _cacheBuffer: maximunItemView*heightField
-    property var order: []
+    //    property var order: []
     property var initOrder: []
-    property var domain: []
+
     property var _models//: [null,null]
     property var _manager: null
     property string defaultFormatDatetime: "dd/MM/yy hh:mm:ss"
@@ -67,6 +68,17 @@ Control{
     property string placeholderText: "" ////expand rec_name from client
     signal doubleClick(int id)
     signal clicked(int id)
+
+    property var domain:[]
+    property var domainFind: []
+    property int limit: 100
+    property var order:[]// [['name', 'ASC']]
+    property var fields:[]// ["rec_name", "name", "lang", "phone"]
+    property int _count: -1
+    property var context: ({})
+    property string modelName: ""
+    property var _hashIndexOfId: ({})
+
     Component.onCompleted: {
         for(var i=0,len=listHead.length;i<len;i++){
             fields.push(listHead[i].name);
@@ -90,16 +102,17 @@ Control{
                         format = defaultFormatDate;
                     }
                 }
-                fieldsFormatDateTime.push([listHead[i].name, format]);
+                //                fieldsFormatDateTime.push([listHead[i].name, format]);
             }
         }
-        _initModel();
+
+        //        _initModel();
         if(activeStates==true && modelStates.length>0){
             domainState = modelStates[0].name===""?[]:[filterState,"=",modelStates[0].name];
         }
         initOrder = JSON.parse(JSON.stringify(order));
         initTextOrderHead();
-        //filters
+        //        //filters
         _defaultFilters=_defaultFilters.concat(filters);
         filterin.setFilters(_defaultFilters);
 
@@ -128,10 +141,6 @@ Control{
         _repeaterHead.shadowOff();
     }
 
-    function updateRecords(ids){
-        _models.model.updateRecords(ids);
-        listview.reloadItem();
-    }
 
     function setOrder(headOrder){//{"head":"","type": none, asc, desc
         var mapOrder={};
@@ -155,7 +164,7 @@ Control{
             }
             order = _norder;
         }
-        _models.model.setOrder(order)
+        //        _models.model.setOrder(order)
         find(filterin._getData());
     }
 
@@ -167,6 +176,88 @@ Control{
         listview.forceActiveFocus();
     }
 
+    ///////////////////
+    ListModel{
+        id:mymodel
+    }
+
+    function getDataModel(){
+        var data=[];
+        for(var i=0,len=mymodel.count; i<len;i++){
+            data.push(mymodel.get(i));
+        }
+        return data;
+    }
+
+    function _find(dom){
+        domainFind = dom;
+        initSearch(-1);
+    }
+
+    function initSearch(maxlimit){
+        ids_temp=[];
+        mymodel.clear();
+        _count = 0;
+        _hashIndexOfId={};
+        nextSearch(maxlimit);
+    }
+
+    function addResult(result, update){
+        for(var i=0, len=result.length;i<len;i++){
+            //            console.log("hom");
+            if(update==false){
+                mymodel.append({"id":result[i]["id"], "json":result[i]});
+                _hashIndexOfId[result[i].id] = _count;
+                _count+=1;
+            }else{
+                var index = _hashIndexOfId[result[i]["id"]];
+                //                console.log(index,result[i]["id"],JSON.stringify(result));
+                if (index!="undefined" || index!=null || index>-1){
+                    if(mymodel.count>=index){
+                        mymodel.set(index,{"id":result[i]["id"], "json":result[i]});
+                        listview.reloadIndex(index);
+                    }
+                }
+            }
+        }
+    }
+
+    function nextSearch(maxlimit){
+        openBusy();
+        var methodlocal="model."+modelName+".search_read";
+        var step = limit;
+        if(maxlimit!=-1){
+            limit = maxlimit;
+        }
+        var paramslocal=[domainFind, _count, step, order, fields, contextPreferences(context)];
+
+        //        var params = prepareParams();
+        var params = prepareParamsLocal(methodlocal, paramslocal);
+        var url = getUrl();
+        var http = getHttpRequest(url, params, "");
+
+        http.onreadystatechange = function() { // Call a function when the state changes.
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+                    closeBusy();
+                    var response = JSON.parse(http.responseText.toString());
+                    //                    console.log(http.responseText.toString());
+                    if(response.hasOwnProperty("result")){
+                        addResult(response["result"], false);
+                        //                        response["result"];
+                    }else{
+                        analizeErrors(response);
+                    }
+
+                } else {
+                    analizeErrorsStatus(http.status);
+                    closeBusy();
+                }
+            }
+        }
+        http.send(JSON.stringify(params));
+    }
+    /////////////////////
     function find(data){
         var domainplus = ['AND'];
         domainplus.push(domain);
@@ -177,41 +268,135 @@ Control{
             domainplus.push(data);
         }
         domainplus.push([domainState]);
-        _models.model.find(domainplus);
+        //        _models.model.find(domainplus);
+        _find(domainplus);
     }
 
-    function _initModel(){
-        _models = ModelManagerQml.addModel("_model"+_getNewNumber(), "_proxymodel"+_getNewNumber());
-        if(_models.hasOwnProperty("model")){
-            _models.model.setLanguage(planguage);
-            _models.model.setModelMethod("model."+modelName);
-            _models.model.setDomain(domain);
-            _models.model.setMaxLimit(limit);
-            _models.model.setOrder(order)
-            _models.model.setFields(fields);
-            _models.model.setPreferences(preferences);
-            _models.model.addFieldFormatDecimal(fieldsFormatDecimal);// config .setLanguage(planguage);
-            _models.model.addFieldFormatDateTime(fieldsFormatDateTime);//:
+    function updateRecords(ids){
+        if(ids.length>0){
+            _updateRecords(ids);
+        }
+    }
+    function _updateRecords(ids){
+        openBusy();
+        var methodlocal="model."+modelName+".read";
+        var paramslocal=[ids, fields, contextPreferences(context)];
+        var params = prepareParamsLocal(methodlocal, paramslocal);
+        var url = getUrl();
+        var http = getHttpRequest(url, params, "");
+
+        http.onreadystatechange = function() { // Call a function when the state changes.
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+                    closeBusy();
+                    var response = JSON.parse(http.responseText.toString());
+                    if(response.hasOwnProperty("result")){
+                        addResult(response["result"], true);
+
+                    }else{
+                        analizeErrors(response);
+                    }
+
+                } else {
+                    analizeErrorsStatus(http.status);
+                    closeBusy();
+                }
+            }
+        }
+        http.send(JSON.stringify(params));
+    }
+
+    function updateHashIndexes(){
+        //        console.log(JSON.stringify(_hashIndexOfId));
+        _hashIndexOfId={}
+        _count=0;
+        for(var i=0, len = mymodel.count;i<len;i++){
+            _hashIndexOfId[mymodel.get(i).id]=_count;
+            _count+=1;
         }
     }
 
+    function _removeItems(ids){
+        var indexes = [];
+        for(var i=0, len=ids.length;i<len;i++){
+            var index = _hashIndexOfId[ids[i]];
+            if (index!="undefined" || index!=null || index>-1){
+                indexes.push(index);
+            }
+        }
+        indexes.sort(function(a, b) {
+            return b - a;
+        });
+        for( i=0, len=indexes.length;i<len;i++){
+            mymodel.remove(indexes[i]);
+        }
+        if(ids.length==0){
+            //get position view
+            find(domain);
+        }
+        updateHashIndexes();
+
+    }
+
+    property var ids_temp: []
     function removeItems(){
         var ids = getIds();
+        ids_temp=ids;
         if(ids.length>0){
-            openBusy();
-            var data = QJsonNetworkQml.recursiveCall("remove","model."+modelName+".delete",
-                                                     [
-                                                         ids,
-                                                         preferences
-                                                     ]);
-            closeBusy();
-            if(data.data!=="error"){
-                MessageLib.showToolTip(qsTr("Removed"),16,3000,"white","red", mainroot);
-                _models.model.removeItems(ids);
+            var methodlocal="model."+modelName+".delete";
+            var paramslocal=[ids, contextPreferences(context)];
+            var params = prepareParamsLocal(methodlocal, paramslocal);
 
+            ConectionLib.jsonRpcAction(control,params,context,
+                                       "control._removeItemsOk(response)",
+                                       "control._removeItemsBack()",
+                                       "control._removeItemsError()");
+        }
+    }
+    function _removeItemsOk(response){
+        MessageLib.showToolTip(qsTr("Removed"),16,3000,"white","red", mainroot);
+        _removeItems(ids_temp)
+    }
+    function _removeItemsBack(){
+        ids_temp=[];
+    }
+    function _removeItemsError(){
+        ids_temp=[];
+    }
+
+
+    function removeItemsLast(){
+        var ids = getIds();
+        if(ids.length>0){
+            var methodlocal="model."+modelName+".delete";
+
+            var paramslocal=[ids, contextPreferences(context)];
+
+            //        var params = prepareParams();
+            var params = prepareParamsLocal(methodlocal, paramslocal);
+            var url = getUrl();
+            var http = getHttpRequest(url, params, "");
+
+            http.onreadystatechange = function() { // Call a function when the state changes.
+                if (http.readyState == 4) {
+                    if (http.status == 200) {
+                        closeBusy();
+                        var response = JSON.parse(http.responseText.toString());
+                        //                    console.log(http.responseText.toString());
+                        if(response.hasOwnProperty("result")){
+                            MessageLib.showToolTip(qsTr("Removed"),16,3000,"white","red", mainroot);
+                            _removeItems(ids)
+                        }else{
+                            analizeErrors(response);
+                        }
+
+                    } else {
+                        analizeErrorsStatus(http.status);
+                        closeBusy();
+                    }
+                }
             }
-        }else{
-            MessageLib.showMessage(qsTr("no items selected"), mainroot);
+            http.send(JSON.stringify(params));
         }
     }
 
@@ -235,13 +420,50 @@ Control{
     }
 
     function getId(){
-        if(listview.currentIndex!=-1){
-            return listview.currentItem.getId();
+        if(multiSelectItems){
+            var cindex = listview.currentIndex;
+            if(cindex!=-1){
+                listview.currentIndex=cindex;
+                if(listview.currentItem.isSelect()){
+                    return listview.currentItem.getId();
+                }
+            }
+            for(var i=0,len=listview.count;i<len;i++){
+                listview.currentIndex=i;
+                if(listview.currentItem.isSelect()){
+                    return listview.currentItem.getId();
+                }
+            }
+        }else{
+            if(listview.currentIndex!=-1){
+                return listview.currentItem.getId();
+            }
         }
+
         return -1;
     }
 
+    function getFirstId(){
+        if(listview.count>0){
+            listview.currentIndex=0;
+            listview.currentItem.checkItem();
+            return listview.currentItem.getId();
+        }
+        return -1
+    }
 
+    function getIdOrFisrt(){
+        var mid = getId();
+        if(mid!=-1){
+            return mid
+        }else{
+            return getFirstId();
+        }
+    }
+
+    function getCurrentId(){
+        return listview.currentItem.getId();
+    }
 
     function getObject(){
         if(listview.currentIndex!=-1){
@@ -254,10 +476,21 @@ Control{
         filterin.clear();
     }
 
+    function _initIndex(){
+        if(multiSelectItems){
+            for(var i=0,len=listview.count;i<len;i++){
+                listview.currentIndex=i;
+                listview.currentItem.unCheckItem();
+            }
+        }
+        listview.currentIndex=-1;
+
+    }
+
     function _restart(){
         order = JSON.parse(JSON.stringify(initOrder));
         initTextOrderHead();
-        _models.model.setOrder(order);
+        //        _models.model.setOrder(order);
         //find([]);
         timerfindblank.restart();
     }
@@ -342,10 +575,10 @@ Control{
                 var mindex = barStates.currentIndex;
                 if (mindex!==-1 && activeStates==true && (modelStates.length > 0)){
                     domainState = modelStates[mindex].name===""?[]:[filterState,"=",modelStates[mindex].name];
-                    if(_models!=null){
-                        //                        find(filterin._getData());
-                        timerfind.restart();
-                    }
+                    //if(_models!=null){
+                    //                        find(filterin._getData());
+                    timerfind.restart();
+                    // }
                 }
             }
         }
@@ -363,12 +596,12 @@ Control{
         anchors{fill: parent;topMargin: filsta.height+2}
         clip: true
         focus: true
-        model:_models.model//proxy
+        model:mymodel//_models.model//proxy
         cacheBuffer: _cacheBuffer//contentHeight+heightField
         delegate: pdelegate
         ScrollBar.vertical: ScrollBar {policy: listview.contentHeight > height?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
         ScrollBar.horizontal: ScrollBar {policy: listview.contentWidth > width?ScrollBar.AlwaysOn:ScrollBar.AlwaysOff}
-        flickableDirection: isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
+        flickableDirection: Flickable.HorizontalAndVerticalFlick//isMobile?Flickable.HorizontalAndVerticalFlick:Flickable.AutoFlickIfNeeded
         contentWidth: headerItem.width
         //keyNavigationWraps: true
 
@@ -387,6 +620,13 @@ Control{
 
         function reloadItem(){
             if(currentIndex!=-1){
+                currentItem.reloadItem();
+            }
+        }
+
+        function reloadIndex(index){
+            if(index!=-1){
+                listview.currentIndex = index;
                 currentItem.reloadItem();
             }
         }
@@ -662,7 +902,7 @@ Control{
         onContentYChanged: {
             if (atYEnd){
                 if(parseFloat(contentY).toFixed(5) == contentHeight - (height+heightHeader)){
-                    _models.model.nextSearch();
+                    nextSearch(-1);
                 }
             }
         }
@@ -693,7 +933,8 @@ Control{
             height: heightField
             property bool selectItem: false
             // property bool completed: false
-            property var myobject: JSON.parse(JSON.stringify(object.json))// performance PySide
+            //            property var myobject: JSON.parse(JSON.stringify(object.json))// performance PySide
+            property var myobject: listview.model.get(index)
             function isSelect(){
                 return selectItem;
             }
@@ -703,12 +944,17 @@ Control{
             function checkItem(){
                 selectItem = true;
             }
+            function unCheckItem(){
+                selectItem = false;
+            }
             function getObject(){
-                return myobject;
+                var fields = myobject.json;
+                fields.id = myobject.id
+                return fields;
             }
 
             function reloadItem(){//update
-                myobject = JSON.parse(JSON.stringify(object.json));
+                myobject = listview.model.get(index)//JSON.parse(JSON.stringify(object.json));
                 var itemstoreload = finditemsField(itdele.contentItem.children);
                 for(var i=0, len= itemstoreload.length;i<len;i++){
                     itemstoreload[i].setValue();
@@ -801,9 +1047,9 @@ Control{
                                                                                       fillMode: Image.PreserveAspectFit;
                                                                                 }', label, "dynamicSnippet1");
                                             imageId=imageQmlObject;
-                                            if(myobject[modelData.name] !== null){
-                                                if(myobject[modelData.name]["__class__"] === "bytes"){
-                                                    imageQmlObject.source = "data:image/"+modelData.format+";base64,"+myobject[modelData.name]["base64"];
+                                            if(myobject["json"][modelData.name] !== null){
+                                                if(myobject["json"][modelData.name]["__class__"] === "bytes"){
+                                                    imageQmlObject.source = "data:image/"+modelData.format+";base64,"+myobject["json"][modelData.name]["base64"];
                                                 }else{
                                                     imageQmlObject.source="";
                                                 }
@@ -811,7 +1057,7 @@ Control{
                                                 imageQmlObject.source="";
                                             }
                                         }else{
-                                            text = parseData(modelData.type);
+                                            text = parseData(modelData.type);//.toString();
                                         }
                                     }
 
@@ -857,56 +1103,99 @@ Control{
                                     }
 
                                     function parseData(type){
-                                        if(myobject[modelData.name]===null){
+                                        if(myobject["json"][modelData.name]===null){
                                             return "";
                                         }
                                         switch(type){
                                         case 'text'://
-                                            if(typeof myobject[modelData.name] === 'string'||typeof myobject[modelData.name] === 'number'){
-                                                return myobject[modelData.name];
+
+                                            if(typeof myobject["json"][modelData.name] == 'string'||typeof myobject["json"][modelData.name] == 'number'){
+                                                return myobject["json"][modelData.name];
                                             }else{// WARNING this should not happen, use type numeric or date
-                                                if(typeof myobject[modelData.name] === 'object'){
-                                                    if (Array.isArray(myobject[modelData.name])){
-                                                        return "("+myobject[modelData.name].length+")";
+                                                if(typeof myobject["json"][modelData.name] === 'object'){
+                                                    if (Array.isArray(myobject["json"][modelData.name])){
+                                                        return "("+myobject["json"][modelData.name].length+")";
                                                     }else{
-                                                        return parseObject(myobject[modelData.name]);
+                                                        return parseObject(myobject["json"][modelData.name]);
                                                     }
                                                 }else{
                                                     return "";
                                                 }
                                             }
                                         case 'integer':
-                                            return myobject[modelData.name];
+                                            return myobject["json"][modelData.name];
                                         case 'numeric':
-                                            return myobject[modelData.name+"_format"];
+                                            var value_de = myobject["json"][modelData.name].decimal;
+                                            if(typeof value_de === "undefined"){
+                                                value_de = myobject["json"][modelData.name];
+                                            }
+                                            if(typeof modelData.decimals !== "undefined"){
+                                                return myformatDecimalPlaces(value_de, modelData.decimals);
+                                            }
+                                            return myformatDecimal(value_de);
                                         case 'float':
-                                            return myobject[modelData.name+"_format"];
+                                            if(typeof modelData.decimals !== "undefined"){
+                                                return myformatDecimalPlaces(myobject["json"][modelData.name], modelData.decimals);
+                                            }
+                                            return myformatDecimal(myobject["json"][modelData.name]);
                                         case 'datetime':
-                                            return myobject[modelData.name+"_format"];
+                                            var format_dt = modelData.format;
+                                            if(typeof format_dt === "undefined"){
+                                                format_dt = defaultFormatDatetime;
+                                            }
+                                            var value_dt = myobject["json"][modelData.name];
+                                            if(typeof value_dt.hour !== "undefined"){
+                                                return Qt.formatDateTime(new Date(value_dt.year, value_dt.month-1, value_dt.day, value_dt.hour, value_dt.minute, value_dt.second), format_dt);
+                                            }
+                                            return value_dt;
                                         case 'date':
-                                            return myobject[modelData.name+"_format"];
+                                            var format_d = modelData.format
+                                            if(typeof format_d === "undefined"){
+                                                format_d = defaultFormatDate;
+                                            }
+                                            var value_d = myobject["json"][modelData.name];
+                                            if(typeof value_d.year !== "undefined"){
+                                                return Qt.formatDateTime(new Date(value_d.year, value_d.month-1, value_d.day), format_d);
+                                            }
+                                            return value_d;
                                         case 'selection':
                                             if(modelData.hasOwnProperty("selectionalias")){
-                                                if (modelData.selectionalias.hasOwnProperty(myobject[modelData.name])){
-                                                    return modelData.selectionalias[myobject[modelData.name]]
+                                                if (modelData.selectionalias.hasOwnProperty(myobject["json"][modelData.name])){
+                                                    return modelData.selectionalias[myobject["json"][modelData.name]]
                                                 }
                                             }
-                                            return myobject[modelData.name];
+                                            return myobject["json"][modelData.name];
                                         case 'one2many':
-                                            if (Array.isArray(myobject[modelData.name])){
-                                                return "("+myobject[modelData.name].length+")";
+                                            if (Array.isArray(myobject["json"][modelData.name])){
+                                                return "("+myobject["json"][modelData.name].length+")";
                                             }
                                             return "";
                                         case 'many2many':
-                                            if (Array.isArray(myobject[modelData.name])){
-                                                return "("+myobject[modelData.name].length+")";
+                                            if (Array.isArray(myobject["json"][modelData.name])){
+                                                return "("+myobject["json"][modelData.name].length+")";
                                             }
                                             return "";
                                         case 'many2one':
-                                            if(myobject[modelData.name+".rec_name"]===null){
+                                            if(myobject["json"][modelData.name]===null || myobject["json"][modelData.name]===-1){
                                                 return "";
                                             }
-                                            return myobject[modelData.name+".rec_name"];
+                                            var rnm = "";
+                                            if(setting.typelogin===0){
+                                                rnm = myobject["json"][modelData.name+".rec_name"];
+                                            }else{
+                                                rnm = myobject["json"][modelData.name+"."]["rec_name"];
+                                            }
+
+                                            if(typeof rnm === "undefined"){
+                                                return "";
+                                            }
+                                            return rnm;
+                                        case 'boolean':
+                                            if(myobject["json"][modelData.name]==true){
+                                                label.font.family=fawesome.name;
+                                                return "\uf00c";
+                                            }
+                                            return "";
                                         default:
                                             return "";
                                         }

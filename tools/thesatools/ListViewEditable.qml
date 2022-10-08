@@ -53,7 +53,6 @@ Rectangle {
         var len=data.length;
         for(i=0;i<len;i++){
             miModel.append(data[i]);
-            //console.log(listaObject[i].dato);
         }
     }
     function getModel(){

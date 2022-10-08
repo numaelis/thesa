@@ -347,6 +347,14 @@ class QJsonNetwork(QObject):
         #reply->bytesAvailable();
         #reply.deleteLater()
         return reply
+    
+    @Slot(str, QJsonArray, result=str)
+    def getSessionToken(self, user, listToken):
+        self.usuario=user
+        self.token=listToken.toVariantList()
+        auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
+        auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
+        return auth.replace("b","")
         
     def processingDataPython(self, response):
         data = response.text
@@ -374,7 +382,10 @@ class QJsonNetwork(QObject):
                         self.token = data["result"]
                         self.boolConnect = True
                         self.intCountConnect+=1
+                        auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
+                        auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
                         resultObject["credentials"] = True
+                        resultObject["sessionToken"] = auth.replace("b","")
             resultObject["data"] = data
             if self.boolDirect==False:
                 self.signalResponse.emit(self.mpid, 2, resultObject)#ok
@@ -451,7 +462,10 @@ class QJsonNetwork(QObject):
                                             self.token = document.object()["result"]
                                             self.boolConnect = True
                                             self.intCountConnect+=1
+                                            auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
+                                            auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
                                             resultObject["credentials"] = True
+                                            resultObject["sessionToken"] = auth.replace("b","")
                             result = document.object()
                     resultObject["data"] = result
                     if self.boolDirect==False:
