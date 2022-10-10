@@ -64,27 +64,6 @@ InputSearchPopupList{
     }
     property var context: ({})
     function _selectIfOneItem(){
-//        var domainplus = [];
-//        domainplus.push(domain);
-//        if(!QJsonNetworkQml.isRunning()){
-//            var result= QJsonNetworkQml.recursiveCall("@cm2oone",
-//                                                      "model."+modelName+".search_read",
-//                                                      [
-//                                                          domainplus,
-//                                                          0,
-//                                                          limit,
-//                                                          order,
-//                                                          ['id','rec_name'],
-//                                                          preferences
-//                                                      ]
-//                                                      );
-//            if(result.data!=="error"){
-//                var resultArray = result.data.result;
-//                if(resultArray.length === 1){
-//                    updateValue({"id":resultArray[0].id, "name":resultArray[0].rec_name});
-//                }
-//            }
-//        }
     }
 
     function listSearch(methodlocal, paramslocal){
@@ -96,7 +75,6 @@ InputSearchPopupList{
                                    "controlm2o.listSearchError()");
     }
     function listSearchOk(response){
-//        var response = JSON.parse(http.responseText.toString());
         if(response.hasOwnProperty("result")){
             var dataList=[];
             var resultArray = response["result"];
@@ -126,59 +104,6 @@ InputSearchPopupList{
 
     }
 
-//    function qqlistSearch(methodlocal, paramslocal) {
-//        openBusy();
-//        //        var methodlocal= "model."+modelName+".search_read";
-//        //        var paramslocal=[true,{}];
-//        var params = prepareParamsLocal(methodlocal, paramslocal);
-//        var url = getUrl();
-//        var http = getHttpRequest(url, params,"");
-//        //        var timer = Qt.createQmlObject("import QtQuick 2.3; Timer {interval: 4000; repeat: false; running: true;}",mainroot,"MyTimer");
-//        //        timer.triggered.connect(function(){
-//        //            http.abort();
-//        //            console.log("timeout");
-
-//        //        });
-//        //        timer.start();
-
-//        http.onreadystatechange = function() { // Call a function when the state changes.
-//            if (http.readyState == 4) {
-//                if (http.status == 200) {
-//                    closeBusy();
-//                    //                    console.log(http.responseText);
-//                    var response = JSON.parse(http.responseText.toString());
-//                    if(response.hasOwnProperty("result")){
-//                        var dataList=[];
-//                        var resultArray = response["result"];
-//                        for(var i=0,len=resultArray.length;i<len;i++){
-//                            dataList.push({"id":resultArray[i].id, "name":resultArray[i].rec_name});
-//                        }
-//                        if(len==0){
-//                            showtooltip(qsTr("no items"));
-//                        }
-
-//                        updateModel(dataList);
-//                        if(boolLastCall){
-//                            boolLastCall=false;
-//                            if(boolSearch==true && boolValueAssigned==false){
-//                                execTimerDelaySearch();// textChanged last
-//                            }
-//                        }
-//                    }else{
-//                        textSearch="";
-//                        analizeErrors(response);
-//                    }
-
-//                } else {
-//                    MessageLib.showMessage("error: "+http.status,mainroot);
-//                    closeBusy();
-//                }
-//            }
-//        }
-//        http.send(JSON.stringify(params));
-
-//    }
-
     onTextChanged: {
         var domainplus = [];
         if(text.trim()!=""){
@@ -198,49 +123,5 @@ InputSearchPopupList{
                    ]);
 
     }
-
-    //    onTextChanged: {
-    //        var domainplus = [];
-    //        if(text.trim()!=""){
-    //            domainplus.push(['rec_name', 'ilike', '%'+text+'%']);
-    //        }
-
-    //        domainplus.push(domain);
-    //        if(!QJsonNetworkQml.isRunning()){
-    //            var result= QJsonNetworkQml.recursiveCall("@cm2o"+countSearch,
-    //                                                      "model."+modelName+".search_read",
-    //                                                      [
-    //                                                          domainplus,
-    //                                                          0,
-    //                                                          limit,
-    //                                                          order,
-    //                                                          ['id','rec_name'],
-    //                                                          preferences
-    //                                                      ]
-    //                                                      );
-    //            if(result.data!=="error"){
-    //                var dataList=[];
-    //                var resultArray = result.data.result;
-    //                for(var i=0,len=resultArray.length;i<len;i++){
-    //                    dataList.push({"id":resultArray[i].id, "name":resultArray[i].rec_name});
-    //                }
-    //                if(len==0){
-    //                    showtooltip(qsTr("no items"));
-    //                }
-
-    //                updateModel(dataList);
-    //                if(boolLastCall){
-    //                    boolLastCall=false;
-    //                    if(boolSearch==true && boolValueAssigned==false){
-    //                        execTimerDelaySearch();// textChanged last
-    //                    }
-    //                }
-    //            }else{
-    //                textSearch="";
-    //            }
-    //        }else{
-    //            boolLastCall = true;
-    //        }
-    //    }
 
 }

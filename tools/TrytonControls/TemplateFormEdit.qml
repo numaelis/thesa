@@ -124,21 +124,9 @@ Pane{
         var ocontext={};
         for(var i=0,len=itemsField.length;i<len;i++){//itemsField[i].isChange == true &&
             if(itemsField[i].type == "one2many"){
-//                console.log(JSON.stringify(itemsField[i].get_context_timestamp()))
                 ocontext = Object.assign(JSON.parse(JSON.stringify(ocontext)), itemsField[i].get_context_timestamp());
             }
-
-//            if(onlyChange==true){
-//                if(itemsField[i].isChange){
-//                    params[itemsField[i].fieldName]=itemsField[i].getValue();
-//                }
-//            }else{
-//                if(itemsField[i].readOnly==false){
-//                    params[itemsField[i].fieldName]=itemsField[i].getValue();
-//                }
-//            }
         }
-//        console.log("q",JSON.stringify(ocontext))
         return ocontext;
     }
     function isChanged(){
@@ -150,7 +138,6 @@ Pane{
     }
 
     function context_timestamp(){
-//        var ocontext = JSON.parse('{"_timestamp":{"'+modelName+','+idRecord.toString()+'":"'+_timestamp+'"}}');
         var ocontext ={}
         if(_timestamp==null){//|| readAfterAction==false
             ocontext=JSON.parse('{"'+modelName+','+idRecord.toString()+'":'+null+'}');
@@ -159,16 +146,11 @@ Pane{
 
         }
         //add one2many timestamp
-//        console.log(JSON.stringify(ocontext))
-
-//        console.log(JSON.stringify(context),JSON.stringify(ocontext))
         ocontext = Object.assign(JSON.parse(JSON.stringify(ocontext)), getFields_context_timestamp());
-//        console.log(JSON.stringify(ocontext));
         ocontext = {"_timestamp":ocontext};
         ocontext = Object.assign(JSON.parse(JSON.stringify(context)), ocontext);
         return ocontext;
     }
-//    property bool reloadUpdate: value
 
     property var paramstempup:({})
     function _updateRPC(params){
@@ -189,9 +171,7 @@ Pane{
 
 
         if(readAfterAction==false){
-//                            console.log("aqui")
             updated(paramstempup);
-
             if(myParent!=-1){
                 if(myParent.closeUpdate){
                     myParent.accept();
@@ -206,8 +186,6 @@ Pane{
             beforeAction="write"
             _reload();
         }
-
-        //MessageLib.showMessage(qsTr("Updated"), mainroot);
         MessageLib.showToolTip(qsTr("Updated"),16,3000,"white","green", mainroot);
     }
     function _updateRPCCancel(){
@@ -217,82 +195,6 @@ Pane{
         MessageLib.showToolTip(qsTr("No Updated"),16,3000,"white","red", mainroot);
         signalPreUpdate(false);
     }
-
-//    function _updateRPCLast(params){
-//        openBusy();
-
-//        var r_params = prepareParamsLocal("model."+modelName+".write",
-//                                          [
-//                                              [idRecord],
-//                                                  params,
-//                                              contextPreferences(context_timestamp())
-//                                          ]);
-//        var url = getUrl();
-//        var http = getHttpRequest(url, r_params);
-
-//        http.onreadystatechange = function() { // Call a function when the state changes.
-//            if (http.readyState == 4) {
-//                if (http.status == 200) {
-//                    closeBusy();
-//                    //                    console.log(http.responseText);
-//                    var response = JSON.parse(http.responseText.toString());
-//                    if(response.hasOwnProperty("result")){
-//                        params["id"]=idRecord;
-
-
-//                        if(readAfterAction==false){
-////                            console.log("aqui")
-//                            updated(params);
-
-//                            if(myParent!=-1){
-//                                if(myParent.closeUpdate){
-//                                    myParent.accept();
-//                                    clearValues();
-//                                }
-//                            }else{
-
-//                            }
-//                            signalPreUpdate(true);
-//                        }else{
-//                            _tempParams=params;
-//                            beforeAction="write"
-//                            _reload();
-//                        }
-
-//                        //MessageLib.showMessage(qsTr("Updated"), mainroot);
-//                        MessageLib.showToolTip(qsTr("Updated"),16,3000,"white","green", mainroot);
-
-
-//                    }else{
-//                        analizeErrors(response);
-//                        MessageLib.showToolTip(qsTr("No Updated"),16,3000,"white","red", mainroot);
-//                        signalPreUpdate(false);
-//                    }
-
-//                } else {
-//                    MessageLib.showMessage("error: "+http.status,mainroot);
-//                    closeBusy();
-//                }
-//            }
-//        }
-//        http.send(JSON.stringify(r_params));
-
-
-
-////        var data = QJsonNetworkQml.recursiveCall("update..","model."+modelName+".write",
-////                                                 [
-////                                                     [idRecord],
-////                                                         params,
-////                                                     preferences
-////                                                 ]);
-////        closeBusy();
-////        if(data.data!=="error"){
-////            params["id"]=idRecord;
-////            updated(params);
-////            return true;
-////        }
-////        return false;
-//    }
 
     function getFieldsValues(onlyChange){
         var params={};
@@ -316,22 +218,6 @@ Pane{
             if(Object.keys(paramsf).length>0){
                 var params = Object.assign(paramsf,paramsPlusUpdate);
                 _updateRPC(params);
-//                if(_updateRPC(params)==true){
-//                    if(myParent!=-1){
-//                        myParent.accept();
-//                        clearValues();
-//                    }else{
-
-//                    }
-
-//                    //MessageLib.showMessage(qsTr("Updated"), mainroot);
-//                    MessageLib.showToolTip(qsTr("Updated"),16,3000,"white","green", mainroot);
-//                    return true;
-//                }else{
-//                   // MessageLib.showMessage(qsTr("No Updated"), mainroot);
-//                    MessageLib.showToolTip(qsTr("No Updated"),16,3000,"white","red", mainroot);
-//                    return false;
-//                }
             }else{
                 if(myParent.closeUpdate){
                     if(myParent!=-1){
@@ -392,21 +278,6 @@ Pane{
             if(Object.keys(paramsf).length>=0){
                 var params = Object.assign(paramsf,paramsPlusCreate)
                 _createRPC(params);
-//                if(_createRPC(params)==true){
-//                    if(myParent!=-1){
-//                        myParent.accept();
-//                        clearValues();
-//                    }else{
-
-//                    }
-//                    //MessageLib.showMessage(qsTr("Created"), mainroot);
-//                    MessageLib.showToolTip(qsTr("Created"),16,3000,"white","green", mainroot);
-//                    return true;
-//                }else{
-//                    MessageLib.showToolTip(qsTr("No Created"),16,3000,"white","red", mainroot);
-//                    //MessageLib.showMessage(qsTr("No Created"), mainroot);
-//                    return false;
-//                }
             }
             //return true;
         }else{
@@ -450,8 +321,6 @@ Pane{
             beforeAction="create"
             _reload();
         }
-
-        //MessageLib.showMessage(qsTr("Created"), mainroot);
         MessageLib.showToolTip(qsTr("Created"),16,3000,"white","green", mainroot);
     }
     function _createRPCCancel(){
@@ -461,82 +330,6 @@ Pane{
         MessageLib.showToolTip(qsTr("No Created"),16,3000,"white","red", mainroot);
         signalPreCreate(false);
     }
-
-//    function _createRPCLast(params){
-//        openBusy();
-
-//        var r_params = prepareParamsLocal("model."+modelName+".create",
-//                                        [
-//                                            [ params
-//                                            ],
-//                                            contextPreferences(context)
-//                                        ]);
-//        var url = getUrl();
-//        var http = getHttpRequest(url, r_params);
-
-//        http.onreadystatechange = function() { // Call a function when the state changes.
-//            if (http.readyState == 4) {
-//                if (http.status == 200) {
-//                    closeBusy();
-//                    //                    console.log(http.responseText);
-//                    var response = JSON.parse(http.responseText.toString());
-//                    if(response.hasOwnProperty("result")){
-//                        var idResult = response.result[0];
-//                        params["id"]=idResult;
-//                        idRecord = idResult;
-//                        if(readAfterAction==false){
-//                            created(params);
-//                            //////////
-//                            if(myParent!=-1){
-//                                if(myParent.closeCreate){
-//                                    myParent.accept();
-//                                    clearValues();
-//                                }
-//                            }else{
-
-//                            }
-//                            signalPreCreate(true);
-//                        }else{
-//                            _tempParams=params;
-//                            beforeAction="create"
-//                            _reload();
-//                        }
-
-//                        //MessageLib.showMessage(qsTr("Created"), mainroot);
-//                        MessageLib.showToolTip(qsTr("Created"),16,3000,"white","green", mainroot);
-
-//                    }else{
-//                        analizeErrors(response);
-//                        MessageLib.showToolTip(qsTr("No Created"),16,3000,"white","red", mainroot);
-//                        signalPreCreate(false);
-//                    }
-
-//                } else {
-//                    MessageLib.showMessage("error: "+http.status,mainroot);
-//                    closeBusy();
-//                }
-//            }
-//        }
-//        http.send(JSON.stringify(r_params));
-
-
-////        var data = QJsonNetworkQml.recursiveCall("crearin","model."+modelName+".create",
-////                                                 [
-////                                                     [ params
-////                                                     ],
-////                                                     preferences
-////                                                 ]);
-////        closeBusy();
-////        if(data.data!=="error"){
-////            var idResult = data.data.result[0];
-////            params["id"]=idResult;
-////            idRecord = idResult;
-////            created(params);
-////            return true
-////        }
-
-////        return false;
-//    }
 
     function _default(fields){
         var r_params = prepareParamsLocal("model."+modelName+".default_get",
@@ -567,49 +360,6 @@ Pane{
         }
     }
 
-//    function _defaultLast(fields){
-
-////        var params = getFieldsNames();
-//        openBusy();
-
-//        var r_params = prepareParamsLocal("model."+modelName+".default_get",
-//                                          [
-//                                              fields,
-//                                              preferences
-//                                          ]);
-//        var url = getUrl();
-//        var http = getHttpRequest(url, r_params,"");
-
-//        http.onreadystatechange = function() { // Call a function when the state changes.
-//            if (http.readyState == 4) {
-//                if (http.status == 200) {
-//                    closeBusy();
-//                    var response = JSON.parse(http.responseText.toString());
-//                    if(response.hasOwnProperty("result")){
-////                        console.log(JSON.stringify(response))
-//                        setValues(response.result);
-
-//                    }else{
-//                        analizeErrors(response);
-//                        clearValues();
-//                        if(myParent!=-1){
-//                            if(myParent.type == "dialogedit"){
-//                                if(myParent.closeCreate){
-//                                    myParent.emitActionCancel();
-//                                }
-//                            }
-//                        }
-//                    }
-
-//                } else {
-//                    MessageLib.showMessage("error: "+http.status,mainroot);
-//                    closeBusy();
-//                }
-//            }
-//        }
-//        http.send(JSON.stringify(r_params));
-
-//    }
     property var _tempParams:({})
     Timer{
         id:tAfterReload
@@ -689,73 +439,6 @@ Pane{
         }
     }
 
-//    function _reloadLast(){
-//        var params = getFieldsNames();
-//        openBusy();
-//        //                                              [['id','=',idRecord]],
-//        //                                              0,2,[],
-
-//        var r_params = prepareParamsLocal("model."+modelName+".read",
-//                                          [
-//                                              [idRecord],
-//                                              params,
-//                                              contextPreferences(context)
-//                                          ]);
-//        var url = getUrl();
-//        var http = getHttpRequest(url, r_params,"");
-
-//        http.onreadystatechange = function() { // Call a function when the state changes.
-//            if (http.readyState == 4) {
-//                if (http.status == 200) {
-//                    closeBusy();
-//                    var response = JSON.parse(http.responseText.toString());
-////                    console.log(http.responseText.toString());
-//                    if(response.hasOwnProperty("result")){
-//                        if(response.result.length>0){
-//                            var obj = response.result[0];
-//                            setValues(obj);
-//                            tAfterReload.restart();
-//                        }
-//                    }else{
-//                        analizeErrors(response);
-//                        clearValues();
-//                        if(myParent!=-1){
-//                            if(myParent.type == "dialogedit"){
-//                                myParent.emitActionCancel();
-//                            }
-//                        }
-//                    }
-
-//                } else {
-//                    MessageLib.showMessage("error: "+http.status,mainroot);
-//                    closeBusy();
-//                }
-//            }
-//        }
-//        http.send(JSON.stringify(r_params));
-
-
-////        var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".search_read",
-////                                                 [
-////                                                     [['id','=',idRecord]],
-////                                                     0,2,[],params,
-////                                                     preferences
-////                                                 ]);
-////        closeBusy();
-////        if(data.data!=="error"){
-////            if(data.data.result.length>0){
-////                var obj = data.data.result[0];
-////                setValues(obj);
-////            }
-////        }else{
-////            clearValues();
-////            if(myParent!=-1){
-////                if(myParent.type == "dialogedit"){
-////                    myParent.emitActionCancel();
-////                }
-////            }
-////        }
-//    }
 
     function getFieldsNames(){
         var params=[];

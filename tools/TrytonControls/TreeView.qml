@@ -1,7 +1,7 @@
 //this file is part the thesa: tryton client based PySide2(qml2)
 // view tree
 //__author__ = "Numael Garay"
-//__copyright__ = "Copyright 2020-2021"
+//__copyright__ = "Copyright 2020-2022"
 //__license__ = "GPL"
 //__version__ = "1.8.0"
 //__maintainer__ = "Numael Garay"
@@ -204,14 +204,12 @@ Control{
 
     function addResult(result, update){
         for(var i=0, len=result.length;i<len;i++){
-            //            console.log("hom");
             if(update==false){
                 mymodel.append({"id":result[i]["id"], "json":result[i]});
                 _hashIndexOfId[result[i].id] = _count;
                 _count+=1;
             }else{
                 var index = _hashIndexOfId[result[i]["id"]];
-                //                console.log(index,result[i]["id"],JSON.stringify(result));
                 if (index!="undefined" || index!=null || index>-1){
                     if(mymodel.count>=index){
                         mymodel.set(index,{"id":result[i]["id"], "json":result[i]});
@@ -241,10 +239,8 @@ Control{
                 if (http.status == 200) {
                     closeBusy();
                     var response = JSON.parse(http.responseText.toString());
-                    //                    console.log(http.responseText.toString());
                     if(response.hasOwnProperty("result")){
                         addResult(response["result"], false);
-                        //                        response["result"];
                     }else{
                         analizeErrors(response);
                     }
@@ -307,7 +303,6 @@ Control{
     }
 
     function updateHashIndexes(){
-        //        console.log(JSON.stringify(_hashIndexOfId));
         _hashIndexOfId={}
         _count=0;
         for(var i=0, len = mymodel.count;i<len;i++){
@@ -382,7 +377,6 @@ Control{
                     if (http.status == 200) {
                         closeBusy();
                         var response = JSON.parse(http.responseText.toString());
-                        //                    console.log(http.responseText.toString());
                         if(response.hasOwnProperty("result")){
                             MessageLib.showToolTip(qsTr("Removed"),16,3000,"white","red", mainroot);
                             _removeItems(ids)
@@ -1147,7 +1141,10 @@ Control{
                                             if(typeof value_dt.hour !== "undefined"){
                                                 return Qt.formatDateTime(new Date(value_dt.year, value_dt.month-1, value_dt.day, value_dt.hour, value_dt.minute, value_dt.second), format_dt);
                                             }
-                                            return value_dt;
+                                            if(typeof value_dt.year !== "undefined"){
+                                                return Qt.formatDateTime(new Date(value_dt.year, value_dt.month-1, value_dt.day), defaultFormatDatetime);
+                                            }
+                                            return "";
                                         case 'date':
                                             var format_d = modelData.format
                                             if(typeof format_d === "undefined"){
@@ -1157,7 +1154,7 @@ Control{
                                             if(typeof value_d.year !== "undefined"){
                                                 return Qt.formatDateTime(new Date(value_d.year, value_d.month-1, value_d.day), format_d);
                                             }
-                                            return value_d;
+                                            return "";
                                         case 'selection':
                                             if(modelData.hasOwnProperty("selectionalias")){
                                                 if (modelData.selectionalias.hasOwnProperty(myobject["json"][modelData.name])){

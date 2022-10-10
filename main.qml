@@ -1221,7 +1221,7 @@ ApplicationWindow {
 
     function analizeErrors(response){
         if(response.hasOwnProperty("error")){
-            console.log("wsi", JSON.stringify(response));
+//            console.log("wsi", JSON.stringify(response));
             var error = response["error"];
             if(error[0].startsWith("403")){
 
@@ -1245,8 +1245,9 @@ ApplicationWindow {
                         if(error[0] == "ConcurrencyException"){
                             MessageLib.showMessageLog("error:\n Error de concurrencia, Este registro ha sido modificado mientras lo editaba, por favor actualice el registro antes de guardar",mainroot);
                         }else{
-
-                            MessageLib.showMessageLog("error:\n "+error[0],mainroot);
+                            var info_error = error[0];
+                            var trace = error[1]=="undefined"?error[1]:"";
+                            MessageLib.showMessageLog("error:\n "+info_error+"\n\ntraceback: "+trace,mainroot);
                         }
                     }
                 }

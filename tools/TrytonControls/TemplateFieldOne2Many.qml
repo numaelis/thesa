@@ -1253,24 +1253,15 @@ Pane{
 
 
             values = Object.assign(values, paramsPlusCreate)
-//            addRecord(values, true);
-//            console.log(JSON.stringify(values))
             listRecords.push(values);
-//            var countm =  modelLinesOM.count;
             modelLinesOM.append(fixValuesNull(values));
             isChange=true;
             change(listRecords);
-
-//            if(echange){
-//                change(listRecords);
-//            }
-
 
         }
         if(list_values.length>0){
             currentIndex=0;
         }
-//        currentIndex=countm;
         setCurrentIndexForm();
         isChange = true;
         viewLinesOM.currentIndex=currentIndex;
@@ -1298,20 +1289,9 @@ Pane{
         childGroup.checkState=Qt.Unchecked;
         tcheckitem.restart();
         isChange=true;
-//        currentIndex=countm;
-//        setCurrentIndexForm();
-//        isChange = true;
-//        viewLinesOM.currentIndex=currentIndex;
-//        childGroup.checkState=Qt.Unchecked;
-//        tcheckitem.restart();
-//        isChange=false;
-//        if(echange){
-//            change(listRecords);
-//        }
 
         viewLinesOM.currentIndex=currentIndex;
         childGroup.checkState=Qt.Unchecked;
-//        tcheckitem.restart();
     }
 
     function addRecord(values, echange){
@@ -1485,21 +1465,6 @@ Pane{
             }
         }
         http.send(JSON.stringify(r_params));
-
-
-        //        var data = QJsonNetworkQml.recursiveCall("sread","model."+modelName+".read",
-        //                                                 [
-        //                                                     ids,
-        //                                                     params,
-        //                                                     preferences
-        //                                                 ]);
-        //        closeBusy();
-        //        if(data.data!=="error"){
-        //            if(data.data.result.length>0){
-        //                var obj = data.data.result;
-        //                setValue(obj);
-        //            }
-        //        }
     }
 
     function setValue(values){//TODO order

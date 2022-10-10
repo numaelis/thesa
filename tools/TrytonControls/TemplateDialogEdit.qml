@@ -187,10 +187,12 @@ Dialog {
     }
 
     function _preClose(){
-        if(dialogTedit.isChanged()){
-            MessageLib.showQuestionAndNotAction(qsTr("Record modified,\n¿save?"),mainroot,"dialogTedit.closeAfter()","dialogTedit.emitActionCancel()");
-        }else{
-            dialogTedit.emitActionCancel();
+        if(dialogTedit.visible==true){
+            if(dialogTedit.isChanged()){
+                MessageLib.showQuestionAndNotAction(qsTr("Record modified,\n¿save?"),mainroot,"dialogTedit.closeAfter()","dialogTedit.emitActionCancel()");
+            }else{
+                dialogTedit.emitActionCancel();
+            }
         }
     }
 
