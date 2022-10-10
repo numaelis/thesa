@@ -1246,8 +1246,8 @@ ApplicationWindow {
                             MessageLib.showMessageLog("error:\n Error de concurrencia, Este registro ha sido modificado mientras lo editaba, por favor actualice el registro antes de guardar",mainroot);
                         }else{
                             var info_error = error[0];
-                            var trace = error[1]=="undefined"?error[1]:"";
-                            MessageLib.showMessageLog("error:\n "+info_error+"\n\ntraceback: "+trace,mainroot);
+                            var trace = error[1]!="undefined"?error[1]:"";
+                            MessageLib.showMessageLog("error:\n "+info_error+"\n\n"+trace,mainroot);
                         }
                     }
                 }
