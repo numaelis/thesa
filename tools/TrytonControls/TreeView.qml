@@ -78,10 +78,14 @@ Control{
     property var context: ({})
     property string modelName: ""
     property var _hashIndexOfId: ({})
+    property var _fieldsPoint: []
 
     Component.onCompleted: {
         for(var i=0,len=listHead.length;i<len;i++){
             fields.push(listHead[i].name);
+            if(listHead[i].name.indexOf(".")!=-1){
+                _fieldsPoint.push(listHead[i].name);
+            }
             if(listHead[i].type==='numeric' || listHead[i].type==='float'){
                 var decimals = 2;
                 if(listHead[i].hasOwnProperty("decimals")){//warning quantity
@@ -127,7 +131,9 @@ Control{
         }else{
             activeStates=true
         }
+
     }
+
 
     function initTextOrderHead(){
         var mapOrder={};
@@ -202,8 +208,45 @@ Control{
         nextSearch(maxlimit);
     }
 
+    //TODO
+    function _recusivepoint(doc){
+        for(var i=0, len=_fieldsPoint.length;i<len;i++){
+            var list_names = _fieldsPoint[i].split(".");
+            for(var j=0, lenj=list_names.length-1;j<lenj;j++){
+                list_names[j]=list_names[j]+".";
+            }
+            var temp =doc[list_names[0]];
+            for(var jj=1, lenjj=list_names.length;jj<lenjj;jj++){
+                if(temp!="undefined" && temp!=null){
+                    if(temp[list_names[jj]]!="undefined"){
+                        temp = temp[list_names[jj]];
+                    }
+                }
+            }
+            doc[_fieldsPoint[i]]=temp;
+        }
+        return doc;
+    }
+
+    function checkData(list_data){
+        var new_list_data=[];
+        if(setting.typelogin===0){
+            return list_data;
+        }else{
+            if(_fieldsPoint.length<=0){
+                return list_data;
+            }else{
+                for(var i=0, len=list_data.length;i<len;i++){
+                    new_list_data.push(_recusivepoint(list_data[i]));
+                }
+            }
+        }
+        return new_list_data;
+    }
+
     function addResult(result, update){
-        for(var i=0, len=result.length;i<len;i++){
+        var data_check = checkData(result);
+        for(var i=0, len=data_check.length;i<len;i++){
             if(update==false){
                 mymodel.append({"id":result[i]["id"], "json":result[i]});
                 _hashIndexOfId[result[i].id] = _count;
