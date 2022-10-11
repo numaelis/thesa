@@ -245,8 +245,8 @@ Control{
     }
 
     function addResult(result, update){
-        var data_check = checkData(result);
-        for(var i=0, len=data_check.length;i<len;i++){
+        result = checkData(result);
+        for(var i=0, len=result.length;i<len;i++){
             if(update==false){
                 mymodel.append({"id":result[i]["id"], "json":result[i]});
                 _hashIndexOfId[result[i].id] = _count;
