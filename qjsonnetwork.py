@@ -8,7 +8,7 @@ qjsonnetwork is basic connector json-rpc async or sync
 
 """
 __author__ = "Numael Garay"
-__copyright__ = "Copyright 2020-2021"
+__copyright__ = "Copyright 2020-2022"
 __license__ = "GPL"
 __version__ = "1.8" 
 __maintainer__ = "Numael Garay" 
@@ -355,6 +355,10 @@ class QJsonNetwork(QObject):
         auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
         auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
         return auth.replace("b","")
+    
+    @Slot(result = QJsonArray)    
+    def getListToken(self):
+        return self.token
         
     def processingDataPython(self, response):
         data = response.text
@@ -385,7 +389,9 @@ class QJsonNetwork(QObject):
                         auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
                         auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
                         resultObject["credentials"] = True
+                        resultObject["listToken"] = self.token
                         resultObject["sessionToken"] = auth.replace("b","")
+                        
             resultObject["data"] = data
             if self.boolDirect==False:
                 self.signalResponse.emit(self.mpid, 2, resultObject)#ok
@@ -465,6 +471,7 @@ class QJsonNetwork(QObject):
                                             auth = '{0}:{1}:{2}'.format(self.usuario, self.token[0], self.token[1])
                                             auth = 'Session '+ str(base64.b64encode(auth.encode()).decode('utf-8'))
                                             resultObject["credentials"] = True
+                                            resultObject["listToken"] = self.token
                                             resultObject["sessionToken"] = auth.replace("b","")
                             result = document.object()
                     resultObject["data"] = result

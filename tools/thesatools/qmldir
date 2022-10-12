@@ -27,5 +27,5 @@ InputQZXing 1.0 InputQZXing.qml
 LabelCube 1.0 LabelCube.qml
 QuestionAction 1.0 QuestionAction.qml
 ToolTipDynamic 1.0 ToolTipDynamic.qml
-ConectionsLib 1.0 conections.js
+ConectionLib 1.0 conections.js
 Conections 1.0 Conections.qml

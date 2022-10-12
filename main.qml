@@ -68,6 +68,8 @@ ApplicationWindow {
     property int mid: 0
     property string methodLogin: "common.db.login"
     property string sessionToken: ""
+    property var listToken: []
+    property bool visibleCheckAlways: false
 
     visibility:  Window.Maximized
     title: qsTr("thesa mushroom [tryton]  -  "+ myCompany)
@@ -559,6 +561,7 @@ ApplicationWindow {
                         myLogin.saveSettings();
                         boolLogin=true;
                         sessionToken=jsonDataOpen.sessionToken;
+                        listToken=jsonDataOpen.listToken;
                         if (bool403){
                             timerLastCall.start();//deprecate
                         }else{

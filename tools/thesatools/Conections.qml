@@ -1,3 +1,9 @@
+//this file is part of Thesa
+//__author__ = "Numael Garay"
+//__copyright__ = "Copyright 2020-2022"
+//__license__ = "GPL"
+//__version__ = "1.0"
+
 import QtQuick 2.15
 import "messages.js" as MessageLib
 Item {
@@ -33,7 +39,7 @@ Item {
                     }else{
                         if (response["result"].length>0 &&  Array.isArray(response["result"])){
                             waitUseLogin=false;
-//                            listToken=response["result"];
+                            listToken=response["result"];
                             sessionToken = QJsonNetworkQml.getSessionToken(setting.user, response["result"]);
                             //boolLogin=true;
 //                            luser=setting.user;

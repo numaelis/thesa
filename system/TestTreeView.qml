@@ -28,7 +28,7 @@ TabDesktop {
         limit: 300//step, step
         multiSelectItems:true
         activeFilters: true
-        domain:[['type', '=', 'out']]
+        domain:[['type', '=', 'in']]
         order:[['create_date','DESC'],['invoice_date','DESC']]
         filters:[
             {"field":"party.name","fieldalias":"Tercero","type":"text"},
@@ -125,7 +125,35 @@ TabDesktop {
 
         ]
         onDoubleClick: {
-            console.log("double click", getId())
+            var mid = getCurrentId();
+            console.log("double click", mid);
+            MessageLib.showQuestion(qsTr("¿Post Invoice?"),mainroot,"testTreeView._toPost("+mid.toString()+")");
         }
     }
+    property int tempRecord: -1
+    function _toPost(mid){
+        tempRecord=mid;
+        var r_params = prepareParamsLocal("model.account.invoice.post",
+                                          [
+                                              [mid],
+                                              contextPreferences({'type': 'in'})
+                                          ]);
+        ConectionLib.jsonRpcAction(testTreeView,r_params,{},
+                                   "testTreeView._postOk(response)",
+                                   "testTreeView._postCancel()",
+                                   "testTreeView._postError()");
+    }
+    function _postOk(response){
+        MessageLib.showMessage(qsTr("posted"), mainroot);
+        myvt.updateRecords([tempRecord]);
+
+    }
+    function _postCancel(){
+
+    }
+    function _postError(){
+
+    }
+
+
 }
