@@ -144,7 +144,7 @@ Control{
         id:tcursorChangued
         interval: 20
         onTriggered: {
-            dateChangedNoCursor(getDate());
+            dateChangedNoCursor(_getDate());
         }
     }
 
@@ -592,7 +592,15 @@ Control{
     function setDateTime(data){//TODO
         setDate(data);
     }
-
+    
+    function _getDate(){
+        if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
+            return null;
+        }
+        var myDate = new Date(currentYear,currentMonth-1,currentDay);
+        return myDate;
+    }
+    
     function getDate(){
         inputDay.focus=false;
         inputMonth.focus=false;
@@ -602,6 +610,16 @@ Control{
         }
         var myDate = new Date(currentYear,currentMonth-1,currentDay);
         return myDate;
+    }
+    
+    function getDateForceLocale(){
+        inputDay.focus=false;
+        inputMonth.focus=false;
+        inputYear.focus=false;
+        if(inputDay.text == "" || inputMonth.text == "" || inputYear.text == ""){
+            return null;
+        }
+        return Date.fromLocaleString(Qt.locale(), currentYear.toString() + " " + currentMonth.toString() + " " + currentDay.toString(), "yyyy M d");
     }
 
     function getDateTime(){//TODO add inputs Hours and Minutes
