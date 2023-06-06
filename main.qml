@@ -904,7 +904,7 @@ ApplicationWindow {
     property string textBlocking: qsTr("Wait...")
     Timer{
         id:timerBlockingFalse
-        interval: 110
+        interval: 300
         onTriggered: boolBlocking=false;
     }
     onBoolBlockingChanged: {
